@@ -1,0 +1,15 @@
+AC_INIT(src/cgi.c)
+AC_CONFIG_HEADER(src/config.h)
+
+dnl Searching for a compiler
+AC_PROG_CC
+AC_PROG_INSTALL
+
+AC_DEFINE(HAVE_MD5)
+
+dnl Check headers
+AC_HEADER_STDC
+
+dnl Generate Makefile
+AC_OUTPUT(Makefile)
+

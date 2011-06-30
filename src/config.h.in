@@ -1,0 +1,5 @@
+#define	HAVE_MD5	0
+#define HAVE_TYPES	0
+#define HAVE_SOCKET	0
+#define HAVE_NETDB	0
+#define HAVE_NETINET	0

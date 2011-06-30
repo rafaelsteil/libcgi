@@ -1,0 +1,580 @@
+.TH "Strings" 3 "13 Mar 2003" "LibCGI" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Strings \- 
+.SH "Detailed Description"
+.PP 
+General string manipulation and utilities functions.
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "char * \fBstr_base64_encode\fP (char *str)"
+.br
+.RI "\fIEncodes a given tring to its base64 form.\fP"
+.ti -1c
+.RI "char * \fBstr_base64_decode\fP (char *str)"
+.br
+.RI "\fIDecode a base64 encoded string.\fP"
+.ti -1c
+.RI "char * \fBaddnslashes\fP (char *s, int n)"
+.br
+.RI "\fISame to \fBaddslashes()\fP, except that this one only do the action while 'n' is great than 0.\fP"
+.ti -1c
+.RI "char * \fBaddslashes\fP (char *s)"
+.br
+.RI "\fIAdd slashes to a string when necessary.\fP"
+.ti -1c
+.RI "char * \fBstripnslashes\fP (char *s, int n)"
+.br
+.RI "\fIStrip no more than 'n' slashes from a string.\fP"
+.ti -1c
+.RI "char * \fBstripslashes\fP (char *str)"
+.br
+.RI "\fIStrip slashes from a string.\fP"
+.ti -1c
+.RI "void \fBltrim\fP (char *str)"
+.br
+.RI "\fIStrip left white spaces from a string.\fP"
+.ti -1c
+.RI "void \fBrtrim\fP (char *str)"
+.br
+.RI "\fIStrip right white spaces from a string.\fP"
+.ti -1c
+.RI "void \fBtrim\fP (char *str)"
+.br
+.RI "\fIStrip both left and right white spaces from a string.\fP"
+.ti -1c
+.RI "char * \fBsubstr\fP (char *src, const int start, const int count)"
+.br
+.RI "\fICopy part of a string.\fP"
+.ti -1c
+.RI "char ** \fBexplode\fP (char *src, const char *token, int *total)"
+.br
+.RI "\fICreate an array from a string separated by some special char.\fP"
+.ti -1c
+.RI "char * \fBstr_nreplace\fP (char *src, const char *delim, const char *with, int n)"
+.br
+.RI "\fIReplace characteres in a string, but not more than 'n'.\fP"
+.ti -1c
+.RI "char * \fBstr_replace\fP (char *str, const char *delim, const char *with)"
+.br
+.RI "\fIReplace characteres in a string.\fP"
+.ti -1c
+.RI "int \fBstrnpos\fP (char *s, char *ch, unsigned int count)"
+.br
+.RI "\fIReturns the position of a character in a string, but parses no more that 'n' chars.\fP"
+.ti -1c
+.RI "int \fBstrpos\fP (char *s, char *ch)"
+.br
+.RI "\fIReturns the position of a character in a string.\fP"
+.ti -1c
+.RI "char * \fBstrdel\fP (char *s, int start, int count)"
+.br
+.RI "\fIDelete characters from a string.\fP"
+.ti -1c
+.RI "char * \fBrecvline\fP (FILE *s)"
+.br
+.RI "\fIReads an entire line.\fP"
+.ti -1c
+.RI "char * \fBmake_string\fP (char *s,...)"
+.br
+.RI "\fIMakes a string.\fP"
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "char* addnslashes (char * s, int n)"
+.PP
+Same to \fBaddslashes()\fP, except that this one only do the action while 'n' is great than 0.\fBParameters:\fP
+.RS 4
+\fIs\fP String to parse 
+.br
+\fIn\fP Number of characters to work with. 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBaddslashes()\fP 
+.PP
+.nf
+
+ char *name = 'My test string is called \'foobar\'';
+ puts(name); // will display My test string is called 'foobar'
+ 
+ name = addnslashes(name, 31);
+ puts(name); // will display My test string is called \'foobar'
+ 
+
+.PP
+.RE
+.PP
+
+.SS "char* addslashes (char * s)"
+.PP
+Add slashes to a string when necessary.Adds a '\\' in every quote ( ' ), apostrophe ( ' ) or backslash ( \\ ) It's useful when working with databases, for example, because someone can try insert this caracters to try hack the application... 
+.PP
+\fBParameters:\fP
+.RS 4
+\fI*s\fP String to parse 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+The new string, with slashes 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+stripslashes, addnslashes
+.RE
+.PP
+.PP
+.nf
+
+ char *name = 'My test string is called \'foobar\'';
+ puts(name); // will display My test string is called 'foobar'
+ 
+ name = addslashes(name);
+ puts(name); // will display My test string is called \'foobar\'
+ 
+.PP
+
+.SS "char** explode (char * src, const char * token, int * total)"
+.PP
+Create an array from a string separated by some special char.Divides the src string in pieces, each delimited by token and storing the total of pieces in total 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsrc\fP String to parse 
+.br
+\fItoken\fP Character delimiter to search. 
+.br
+\fItotal\fP An integer variable passed as reference, which stores the total of itens of the array 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+The array, where each item is one separeted by token
+.RE
+.PP
+.PP
+.nf
+
+  
+  char **pieces;
+  char *name = 'This,is,a,string,of,test';
+  int total, i;
+  pieces = explode(name, ',', &total);
+  for (i = 0; i < total; i++)
+        printf('Piece %d: %s\n', i, *(pieces+i));
+ 
+.PP
+
+.SS "void ltrim (char * str)"
+.PP
+Strip left white spaces from a string.\fBParameters:\fP
+.RS 4
+\fIstr\fP String to parse 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+The new string, without left spaces 
+.RE
+.PP
+\fBAuthor:\fP
+.RS 4
+Original code was contribuition by Erik Jansson 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+rtrim, trim
+.RE
+.PP
+.PP
+.nf
+
+ char *s = '     String with spaces    ';
+ printf('_%s_\n', s);
+ s = ltrim(s);
+ printf('_%s_\n', s);
+ 
+.PP
+
+.SS "char* make_string (char * s, ...)"
+.PP
+Makes a string.Works like printf(), with the difference that it returns a string that is the concatenation of the values passed as parameter.
+.PP
+\fBParameters:\fP
+.RS 4
+\fI*s\fP Inicial String and optionally formatation parameters ( just s is allowed ) 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+The new String 
+.PP
+.nf
+
+ char *sql = make_string('INSERT INTO myTable VALUES ('%s', '%s', '%s')', varValue1, varValue2, varValue3);
+ 
+
+.PP
+.RE
+.PP
+\fBTodo\fP
+.RS 4
+String limits/error checking 
+.RE
+.PP
+
+.SS "char* recvline (FILE * s)"
+.PP
+Reads an entire line.Reads a line from the file specified by the file pointer passed as parameter. This function is intead to replace the non-portable GNU getline() function.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIs\fP File pointer to the file to read from. 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+String containing the line read or NULL if no more line are available 
+.RE
+.PP
+\fBAuthor:\fP
+.RS 4
+Robert Csok 
+.RE
+.PP
+
+.SS "void rtrim (char * str)"
+.PP
+Strip right white spaces from a string.\fBParameters:\fP
+.RS 4
+\fIstr\fP String to parse 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+The new string, without left spaces 
+.RE
+.PP
+\fBAuthor:\fP
+.RS 4
+Original code was contribuition by Erik Jansson 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+ltrim, trim
+.RE
+.PP
+.PP
+.nf
+
+ char *s = '     String with spaces    ';
+ printf('_%s_\n', s);
+ s = rtrim(s);
+ printf('_%s_\n', s);
+ 
+.PP
+
+.SS "char* str_base64_decode (char * str)"
+.PP
+Decode a base64 encoded string.\fBParameters:\fP
+.RS 4
+\fI*str\fP Encoded String to decode 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+The decoded string 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBstr_base64_encode\fP 
+.RE
+.PP
+
+.SS "char* str_base64_encode (char * str)"
+.PP
+Encodes a given tring to its base64 form.\fBParameters:\fP
+.RS 4
+\fI*str\fP String to convert 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+Base64 encoded String 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBstr_base64_decode\fP 
+.RE
+.PP
+
+.SS "char* str_nreplace (char * src, const char * delim, const char * with, int n)"
+.PP
+Replace characteres in a string, but not more than 'n'.Replace all occourences of *delim on *src with characteres pointed by *with, stopping after 'n' char. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fI*src\fP String to parse 
+.br
+\fI*delim\fP Character to search that will be replaced 
+.br
+\fIwith\fP String to replace with 
+.br
+\fIn\fP Maximum number of chars to parse 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+The new string 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBstr_replace\fP
+.RE
+.PP
+.PP
+.nf
+
+  char *linux = 'Linux C';
+  linux = str_nreplace(linux, 'C', 'Cool', strlen(linux));
+  puts(linux);
+ //  -- OR --
+  char *name = 'rAfAel steil';
+  name = str_nreplace(name, 'A', 'a', 3);
+  puts(name);
+  
+.PP
+
+.SS "char* str_replace (char * str, const char * delim, const char * with)"
+.PP
+Replace characteres in a string.Replace all occourences of *delim on *src with characteres pointed by *with. The problem with the folowing code is that the function only searches for the first caracter of *delim, ingoring the rest. Other problem is speed relacioned: note that the function ever compare the length of *with to do the correct action. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsrc\fP String to parse 
+.br
+\fIdelim\fP Character to search that will be replaced 
+.br
+\fIwith\fP String to replace with 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+The new string 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBstr_nreplace\fP
+.RE
+.PP
+.PP
+.nf
+
+  char *linux = 'Linux C';
+  linux = str_replace(linux, 'C', 'Cool');
+  puts(linux);
+ //  -- OR --
+  char *name = 'rAfAel steil';
+  name = str_replace(name, 'A', 'a');
+  puts(name);
+  
+.PP
+
+.SS "char* strdel (char * s, int start, int count)"
+.PP
+Delete characters from a string.Delete count characters of s, starting in start 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIs\fP String to search 
+.br
+\fIstart\fP Initial offset to begin search 
+.br
+\fIcount\fP Number of characteres to delete 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+The new string 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+strndel()
+.RE
+.PP
+.PP
+.nf
+
+  *txt = 'Some text to test anything';
+  puts(txt);
+  txt = strdel(txt, 2, 8);
+  puts(txt);
+ 
+.PP
+
+.SS "char* stripnslashes (char * s, int n)"
+.PP
+Strip no more than 'n' slashes from a string.Strip the backslash character ( \\ ) from a string, stopping after 'n' char 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIs\fP String to parse 
+.br
+\fIn\fP Maximum number of chars to parse 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+The new string, without slashes 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+addslashes, stripslashes
+.RE
+.PP
+.PP
+.nf
+
+ char *name = 'My another string is called \\\'blablabla\\\'';
+ puts(name); // will display My another string is called \'blablabla\'
+ name = stripslashes(name, 33);
+ puts(name); // will display My another string is called 'blablabla\'
+ 
+.PP
+
+.SS "char* stripslashes (char * str)"
+.PP
+Strip slashes from a string.Strip the backslash character ( \\ ) from a string 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIs\fP String to parse 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+The new string, without slashes 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+addslashes, stripnslashes
+.RE
+.PP
+.PP
+.nf
+
+ char *name = 'My another string is called \\\'blablabla\\\'';
+ puts(name); // will display My another string is called \'blablabla\'
+ name = stripslashes(name);
+ puts(name); // will display My another string is called 'blablabla'
+ 
+.PP
+
+.SS "int strnpos (char * s, char * ch, unsigned int count)"
+.PP
+Returns the position of a character in a string, but parses no more that 'n' chars.\fBParameters:\fP
+.RS 4
+\fIs\fP String where the search will be done 
+.br
+\fIch\fP Character to search 
+.br
+\fIcount\fP Maximum number of chars to parse before exiting the function 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBstrpos()\fP 
+.RE
+.PP
+
+.SS "int strpos (char * s, char * ch)"
+.PP
+Returns the position of a character in a string.\fBParameters:\fP
+.RS 4
+\fIs\fP String where the search will be done 
+.br
+\fIch\fP Character to search 
+.br
+\fIcount\fP Maximum number of ch to search 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBstrnpos()\fP 
+.RE
+.PP
+
+.SS "char* substr (char * src, const int start, const int count)"
+.PP
+Copy part of a string.Copy count characters from src, starting from start 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsrc\fP String to copy from 
+.br
+\fIstart\fP Initial offset 
+.br
+\fIcount\fP Number of chars to copy 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+The new string
+.RE
+.PP
+.PP
+.nf
+
+ char *part, *str = 'Test one, test two';
+ part = substr(str, 1, 5);
+ puts(part); // -> est o
+ 
+.PP
+
+.SS "void trim (char * str)"
+.PP
+Strip both left and right white spaces from a string.\fBParameters:\fP
+.RS 4
+\fIstr\fP String to parse 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+The new string, without left spaces 
+.RE
+.PP
+\fBAuthor:\fP
+.RS 4
+Original code was contribuition by Erik Jansson 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+ltrim, trim
+.RE
+.PP
+.PP
+.nf
+
+ char *s = '     String with spaces    ';
+ printf('_%s_\n', s);
+ s = trim(s);
+ printf('_%s_\n', s);
+ 
+.PP
+

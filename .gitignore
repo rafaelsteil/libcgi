@@ -1,0 +1,8 @@
+README.html
+Makefile
+config.cache
+config.log
+config.status
+src/*.o
+libcgi.a
+libcgi.so

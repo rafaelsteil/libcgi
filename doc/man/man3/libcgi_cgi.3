@@ -1,0 +1,299 @@
+.TH "CGI manipulation" 3 "13 Mar 2003" "LibCGI" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+CGI manipulation \- 
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "formvars * \fBcgi_process_form\fP ()"
+.br
+.RI "\fIProcess HTML form or URL data.\fP"
+.ti -1c
+.RI "void \fBcgi_fatal\fP (const char *msg)"
+.br
+.RI "\fIKills the application with a message.\fP"
+.ti -1c
+.RI "int \fBcgi_include\fP (const char *filename)"
+.br
+.RI "\fIInclude static files.\fP"
+.ti -1c
+.RI "void \fBcgi_init_headers\fP ()"
+.br
+.RI "\fIInitialize HTML headers.\fP"
+.ti -1c
+.RI "char * \fBcgi_param_multiple\fP (const char *name)"
+.br
+.RI "\fIReturn all values with the same name sent by a form.\fP"
+.ti -1c
+.RI "void \fBcgi_redirect\fP (char *url)"
+.br
+.RI "\fIRecirects to the specified url.\fP"
+.ti -1c
+.RI "int \fBcgi_init\fP ()"
+.br
+.RI "\fIMain cgi function.\fP"
+.ti -1c
+.RI "void \fBcgi_end\fP ()"
+.br
+.RI "\fIPerforms cgi clean ups.\fP"
+.ti -1c
+.RI "char * \fBcgi_unescape_special_chars\fP (char *str)"
+.br
+.RI "\fITransforms' URL special chars.\fP"
+.ti -1c
+.RI "char * \fBcgi_escape_special_chars\fP (char *str)"
+.br
+.RI "\fITransforms' special characters into hexadecimal form ( %E1 ).\fP"
+.ti -1c
+.RI "char * \fBcgi_param\fP (const char *var_name)"
+.br
+.RI "\fIGets the of HTML or URL variable indicated by 'name'.\fP"
+.ti -1c
+.RI "void \fBcgi_send_header\fP (const char *header)"
+.br
+.RI "\fISends a specific header.\fP"
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "void cgi_end ()"
+.PP
+Performs cgi clean ups.Provides some methods to clean memory or any other job that need to be done before the end of the application. 
+.PP
+\fBSee also:\fP
+.RS 4
+\fBcgi_init\fP 
+.RE
+.PP
+
+.SS "char* cgi_escape_special_chars (char * str)"
+.PP
+Transforms' special characters into hexadecimal form ( %E1 ).\fBParameters:\fP
+.RS 4
+\fIstr\fP String to parse 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+The new string 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBcgi_unescape_special_chars\fP 
+.RE
+.PP
+
+.SS "void cgi_fatal (const char * msg)"
+.PP
+Kills the application with a message.Writes msg and terminate 
+.PP
+\fBParameters:\fP
+.RS 4
+\fImsg\fP Message to send to the browser before killing 
+.RE
+.PP
+
+.SS "int cgi_include (const char * filename)"
+.PP
+Include static files.Function used to include static data ( normaly html files ). File contents will never be processed. Note that I don't scan for any special character. The reason I did it is, if the you are using this library, you have a shell where you can compile the cgi program. And can do much more ;-) 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIfilename\fP Filename with full path to include 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+If an error occurs and libcgi_debug is true, then a warning message is showed. 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+libcgi_debug
+.RE
+.PP
+.PP
+.nf
+
+ cgi_include('top_bar.htm');
+ 
+.PP
+
+.SS "int cgi_init ()"
+.PP
+Main cgi function.Configures all (most?) we need to get cgi library working correctly. It MUST be called before any other cgi function. 
+.PP
+\fBSee also:\fP
+.RS 4
+\fBcgi_end\fP, \fBcgi_process_form\fP, \fBcgi_init_headers\fP 
+.RE
+.PP
+
+.SS "void cgi_init_headers ()"
+.PP
+Initialize HTML headers.You need to call this function before that any content is send to the brosert, otherwise you'll get an error (Error 500). 
+.PP
+\fBSee also:\fP
+.RS 4
+\fBcgi_init\fP 
+.RE
+.PP
+
+.SS "char* cgi_param (const char * var_name)"
+.PP
+Gets the of HTML or URL variable indicated by 'name'.\fBParameters:\fP
+.RS 4
+\fIname\fP Form Variable name 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBcgi_param_multiple\fP, \fBcgi_process_form\fP, \fBcgi_init\fP
+.RE
+.PP
+.PP
+.nf
+
+ // ...
+ char *contents;
+ 
+ cgi_init();
+ cgi_process_form();
+ cgi_init_headers();
+ 
+ contents = cgi_param('foo');
+ 
+ puts(contents);
+ 
+ // ...
+ 
+.PP
+
+.SS "char* cgi_param_multiple (const char * name)"
+.PP
+Return all values with the same name sent by a form.\fBParameters:\fP
+.RS 4
+\fIname\fP Form variable name 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+Form variable contents 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBcgi_param\fP
+.RE
+.PP
+Example: For example, if in your HTML you have something like
+.br
+ 
+.br
+ 
+.PP
+.nf
+
+ 'What do you like??'
+.br
+
+  Computers : <input type='checkbox' name='like' value='computers'><br>
+  Internet : <input type='checkbox' name='like' value='net'><br>
+  games : <input type='checkbox' name='like' 'value='games''><br>
+ 
+.PP
+ 
+.br
+ then, to retrieve all values, you can make a code like
+.br
+
+.br
+.PP
+.PP
+.nf
+
+ // ...
+ char *data;
+ \\ ...
+ while ((data = cgi_param_multiple('like')) != NULL)
+        puts(data);
+ \\ ...
+ 
+.PP
+
+.SS "formvars* cgi_process_form ()"
+.PP
+Process HTML form or URL data.Used to retrieve GET or POST data. It handles automaticaly the correct REQUEST_METHOD, so you don't need to afraid about it. 
+.PP
+\fBReturns:\fP
+.RS 4
+Returns the contents of URL or FORM into a formvars variable, or NULL if FALSE. Most of time, you don't need any variable to store the form data, because is used an internal variable to manipulate the contents. 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBcgi_init\fP, \fBcgi_init_headers\fP 
+.RE
+.PP
+
+.SS "void cgi_redirect (char * url)"
+.PP
+Recirects to the specified url.Remember that you cannot send any header before this function, or it will not work. \fBNote:\fP
+.br
+ LibCGI does not implement RFC 2396 to make the lib simple and quick. You should be sure to pass a correct URI to this function. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIurl\fP url to redirect the browser
+.RE
+.PP
+.PP
+.nf
+
+ cgi_redirect('http://wwww.linux.org');
+ 
+.PP
+
+.SS "void cgi_send_header (const char * header)"
+.PP
+Sends a specific header.Sends a specific HTTP header. You won't need to add '\\n\\n' chars. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIheader\fP HTTP header to send, without new line characteres 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+True 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBcgi_init_headers\fP 
+.RE
+.PP
+
+.SS "char* cgi_unescape_special_chars (char * str)"
+.PP
+Transforms' URL special chars.Search for special chars ( like %E1 ) in str, converting them to the ascii character correspondent. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIstr\fP String containing data to parse 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+The new string 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBcgi_escape_special_chars\fP 
+.RE
+.PP
+

@@ -1,0 +1,63 @@
+.TH "Cookies" 3 "13 Mar 2003" "LibCGI" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Cookies \- 
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBcgi_add_cookie\fP (const char *name, const char *value, const char *max_age, const char *path, const char *domain, const int secure)"
+.br
+.RI "\fISend a cookie to the client.\fP"
+.ti -1c
+.RI "char * \fBcgi_cookie_value\fP (const char *cookie_name)"
+.br
+.RI "\fIGets cookie value.\fP"
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "int cgi_add_cookie (const char * name, const char * value, const char * max_age, const char * path, const char * domain, const int secure)"
+.PP
+Send a cookie to the client.\fBParameters:\fP
+.RS 4
+\fIname\fP Cookie name 
+.br
+\fIvalue\fP Cookie value 
+.br
+\fImax_age\fP Cookie time life, in seconds. A value equal to 0 ( zero ) means to discard the cookie when the session is done. 
+.br
+\fIpath\fP Cookie path at the server 
+.br
+\fIdomain\fP Domain where cookie will work :) 
+.br
+\fIsecure\fP Secure or not 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBcgi_cookie_value\fP
+.RE
+.PP
+.PP
+.nf
+
+ cgi_add_cookie('mycookie', 'mycookie value', 0, 0, 0, 0);
+ 
+.PP
+
+.SS "char* cgi_cookie_value (const char * cookie_name)"
+.PP
+Gets cookie value.Like \fBcgi_param()\fP, \fBcgi_cookie_value()\fP returns the data contained in cookie_name cookie 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIcookie_name\fP Cookie name to get the value 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+The cookie value 
+.RE
+.PP
+

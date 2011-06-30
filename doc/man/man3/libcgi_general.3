@@ -1,0 +1,95 @@
+.TH "General purpose" 3 "13 Mar 2003" "LibCGI" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+General purpose \- 
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "char * \fBhtmlentities\fP (const char *str)"
+.br
+.RI "\fITransforms HTML special chars.\fP"
+.ti -1c
+.RI "char ** \fBfile\fP (const char *filename, unsigned int *total)"
+.br
+.RI "\fIReads entire file into an array.\fP"
+.ti -1c
+.RI "char * \fBmd5\fP (const char *str)"
+.br
+.RI "\fIConverts a string to MD5 format.\fP"
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "char** file (const char * filename, unsigned int * total)"
+.PP
+Reads entire file into an array.\fBParameters:\fP
+.RS 4
+\fIfilename\fP Filename to open 
+.br
+\fItotal\fP Integer variable passed as reference, which will store the total of items 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+Returns the file in an array. Each element of the array corresponds to a line in the file.
+.RE
+.PP
+.PP
+.nf
+
+ char **lines;
+ unsigned int total, i;
+  
+ lines = file('filename.ext', &total);
+    
+ printf('Total of lines: %u\n', total);
+    
+ for (i = 0; i < total; i++)
+        printf('[%u] %s\n', i, lines[i]);
+     
+ for (i = 0; i < total; i++) {
+        if (lines[i])
+                 free(lines[i]);
+ }
+ 
+.PP
+
+.SS "char* htmlentities (const char * str)"
+.PP
+Transforms HTML special chars.Transforms chars like '<', '>' and others in HTML form, like '&lt' and '&gt' 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIstr\fP String containing code to parse 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+The new string 
+.RE
+.PP
+\fBAuthor:\fP
+.RS 4
+Robert Csok <rcsok@gmx.de> 
+.RE
+.PP
+
+.SS "char* md5 (const char * str)"
+.PP
+Converts a string to MD5 format.\fBAuthor:\fP
+.RS 4
+Diogo Gonzaga 
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIstr\fP String to convert to MD5 hash 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+MD5 hash code 
+.RE
+.PP
+

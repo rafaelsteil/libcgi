@@ -1,0 +1,219 @@
+.TH "Session Handling" 3 "13 Mar 2003" "LibCGI" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Session Handling \- 
+.SH "Detailed Description"
+.PP 
+One of the most diferencials of LibCGI is its support to sessions, a mechanism that permits the application to keep variables trough the user's session, when he is visiting your website.
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBcgi_session_destroy\fP ()"
+.br
+.RI "\fIDestroys the session.\fP"
+.ti -1c
+.RI "char * \fBcgi_session_var\fP (const char *var_name)"
+.br
+.RI "\fIGets session variable's value.\fP"
+.ti -1c
+.RI "void \fBcgi_session_cookie_name\fP (const char *cookie_name)"
+.br
+.RI "\fIDefines the name of the cookie that LibCGI will use to store session's ID.\fP"
+.ti -1c
+.RI "void \fBcgi_session_save_path\fP (const char *path)"
+.br
+.RI "\fIDefines where session control files will be saved.\fP"
+.ti -1c
+.RI "int \fBcgi_session_register_var\fP (const char *name, const char *value)"
+.br
+.RI "\fIRegister a variable in the current opened session.\fP"
+.ti -1c
+.RI "int \fBcgi_session_alter_var\fP (const char *name, const char *new_value)"
+.br
+.RI "\fIAlter session variable value.\fP"
+.ti -1c
+.RI "int \fBcgi_session_var_exists\fP (const char *name)"
+.br
+.RI "\fISearches for determined session variable.\fP"
+.ti -1c
+.RI "int \fBcgi_session_unregister_var\fP (char *name)"
+.br
+.RI "\fIUnregister some session variable.\fP"
+.ti -1c
+.RI "int \fBcgi_session_start\fP ()"
+.br
+.RI "\fIStarts a new session.\fP"
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "int cgi_session_alter_var (const char * name, const char * new_value)"
+.PP
+Alter session variable value.Change session variable 'name' value to data pointer by 'new_value' 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP Session variable name to change 
+.br
+\fInew_value\fP New session variable value 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBcgi_session_register_var()\fP, \fBcgi_session_unregister_var()\fP 
+.RE
+.PP
+
+.SS "void cgi_session_cookie_name (const char * cookie_name)"
+.PP
+Defines the name of the cookie that LibCGI will use to store session's ID.This function works like \fBcgi_session_save_path()\fP. This functionality let you to use different names for each site, but remember, you cannot use multiple session for the same application yet.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIcookie_name\fP Name of the cookie to create 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBcgi_session_save_path()\fP 
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+This function must be called before \fBcgi_session_start()\fP 
+.RE
+.PP
+
+.SS "int cgi_session_destroy ()"
+.PP
+Destroys the session.Destroys the current opened session, including all data. After session_destroy() was called, is not more possible to use session functions before an another call to session_start() 
+.PP
+\fBReturns:\fP
+.RS 4
+1 if no errors, 0 if. 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBcgi_session_start\fP 
+.PP
+cgi_session_error_message 
+.RE
+.PP
+
+.SS "int cgi_session_register_var (const char * name, const char * value)"
+.PP
+Register a variable in the current opened session.Note that we are opening and closing the session file every time this function is called... ( I/O ^ 1000000 :-/ ) 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIname\fP Variable name 
+.br
+\fIvalue\fP Variable value 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBcgi_session_alter_var()\fP, \fBcgi_session_unregister_var()\fP 
+.RE
+.PP
+
+.SS "void cgi_session_save_path (const char * path)"
+.PP
+Defines where session control files will be saved.If in the your CGI you don't make a call to \fBcgi_session_save_path()\fP, LibCGI will use the default value, which is '/tmp/'. To see how to modify the value, see the following example. 
+.br
+Just note you need to add '/' at the end of the directory name 
+.PP
+.nf
+
+ // your_cgi.c
+ // Set 'session_files' directory under your CGI directory as the path 
+ // which LibCGI will use to store session files.
+ 
+ cgi_session_save_path('session_files/');
+  
+
+.PP
+.PP
+Note that using this form, LibCGI will search for 'session_files' directory using relative path to your cgi application. For example, if your CGI script is located at /usr/local/httpd/web/your_name/cgi-bin/ directory, and you use the above declaration, the files for the session will be stored at /usr/local/httpd/web/your_name/cgi-bin/session_files directory. Resuming, the path is relative to where your application resides. 
+.br
+
+.br
+And remember, LibCGI \fBdoes\fP \fBnot\fP create the directory for you.
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpath\fP Path, relative or absolute 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBcgi_session_cookie_name\fP 
+.RE
+.PP
+\fBNote:\fP
+.RS 4
+This function must be called before \fBcgi_session_start()\fP 
+.RE
+.PP
+
+.SS "int cgi_session_start ()"
+.PP
+Starts a new session.This function is responsible for starting and creating a new session. It must be called before any other session function, and every time before any HTML header has sent. 
+.PP
+\fBSee also:\fP
+.RS 4
+session_destroy() 
+.RE
+.PP
+
+.SS "int cgi_session_unregister_var (char * name)"
+.PP
+Unregister some session variable.\fBParameters:\fP
+.RS 4
+\fIname\fP Session variable name to unregister 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBcgi_session_var_exists()\fP, \fBcgi_session_register_var()\fP 
+.RE
+.PP
+
+.SS "char* cgi_session_var (const char * var_name)"
+.PP
+Gets session variable's value.\fBParameters:\fP
+.RS 4
+\fIname\fP Session variable name to get the value 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+Variable contents if found, NULL if not. 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBcgi_session_var_exists()\fP 
+.RE
+.PP
+
+.SS "int cgi_session_var_exists (const char * name)"
+.PP
+Searches for determined session variable.\fBParameters:\fP
+.RS 4
+\fIname\fP Session variable name to search 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+1 if variable is registered, 0 if not 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBcgi_session_var()\fP 
+.RE
+.PP
+
