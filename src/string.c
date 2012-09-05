@@ -584,7 +584,7 @@ char *make_string(char *s, ...)
 
 	va_start(ptr, s);
 
-	va_copy(bkp, str);
+	va_copy(bkp, ptr);
 	len = strlen(s);
 
 	while (*str) {

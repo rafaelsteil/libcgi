@@ -336,7 +336,7 @@ void init_hex_table()
 	hextable['b'] = 11;
 	hextable['c'] = 12;
 	hextable['d'] = 13;
-	hextable['e'] = 13;
+	hextable['e'] = 14;
 	hextable['f'] = 15;
 	hextable['A'] = 10;
 	hextable['B'] = 11;
