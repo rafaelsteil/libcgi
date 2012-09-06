@@ -1,26 +1,32 @@
-INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
-INSTALL_DATA = @INSTALL_DATA@
+INSTALL = @INSTALL@ -D
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ -D
+INSTALL_DATA = @INSTALL_DATA@ -D
 
 prefix = @prefix@
 exec_prefix = @exec_prefix@
 
-SHAREDOPT = -shared
-LIBDIR = $(prefix)/lib
-INCDIR = $(prefix)/include
-MANDIR	= $(prefix)/man/man3
+SHAREDOPT = -shared -shared -fPIC,-Wl,-soname,libcgi.so.0
+libdir = $(prefix)/lib
+incdir = $(prefix)/include/libcgi
+mandir	= $(prefix)/man/man3
 SHELL = /bin/sh
 EXTRA_LIBS = 
 
 INCS =  -Isrc
-FLAGS = -Wall -fpic
+FLAGS = -Wall -D_REENTRANT
 
 OBJS = src/error.o src/cgi.o src/session.o src/base64.o src/md5.o \
 	src/string.o src/general.o src/list.o src/cookie.o
 
-.c.o: $(CC) $(FLAGS) -c $<
+SHOBJS = $(OBJS:.o=.sh.o)
 
-all: $(OBJS) src/libcgi.so
+%.o: %.c
+	$(CC) $(FLAGS) -c $*.c -o $@
+
+%.sh.o: %.c
+	$(CC) $(FLAGS) -fPIC -c $*.c -o $@
+
+all: src/libcgi.so src/libcgi.a
 
 	@echo ""
 	@echo ""
@@ -41,20 +47,19 @@ all: $(OBJS) src/libcgi.so
 
 
 shared: src/libcgi.so
-	cp src/libcgi.so $(LIBDIR)
+	$(INSTALL) -m 0644 src/libcgi.so $(DESTDIR)$(libdir)
 
 src/libcgi.a: $(OBJS)
 	$(AR) rc src/libcgi.a $(OBJS)
 
-src/libcgi.so: src/libcgi.a
-	$(CC) $(SHAREDOPT) -o src/libcgi.so $(OBJS) $(EXTRA_LIBS)
+src/libcgi.so: $(SHOBJS)
+	$(CC) $(SHAREDOPT) -o src/libcgi.so $(SHOBJS) $(EXTRA_LIBS)
 
 install:
-	cp src/libcgi.a $(LIBDIR)
-	cp src/libcgi.so $(LIBDIR)
-	cp src/cgi.h $(INCDIR)
-	cp src/session.h $(INCDIR)
-
+	$(INSTALL) -m 0644 src/libcgi.a $(DESTDIR)/$(libdir)/libcgi.a
+	$(INSTALL) -m 0644 src/libcgi.so $(DESTDIR)/$(libdir)/libcgi.so
+	$(INSTALL) -m 0644 src/cgi.h $(DESTDIR)/$(incdir)/cgi.h
+	$(INSTALL) -m 0644 src/session.h $(DESTDIR)/$(incdir)/session.h
 
 src/error.o: src/error.c src/error.h
 src/cgi.o: src/cgi.c src/cgi.h
@@ -67,20 +72,21 @@ src/general.o: src/general.c
 src/list.o: src/list.c
 
 clean:
-	find src/ -name *.*o -exec rm -f {} \;
+	find src/ -name *.o -exec rm -f {} \;
 	find src/ -name *.a -exec rm -f {} \;
+	find src/ -name *.so -exec rm -f {} \;
 
 uninstall: clean
-	rm -f $(LIBDIR)/libcgi.*
-	rm -f $(INCDIR)/cgi.h
-	rm -f $(INCDIR)/session.h
-	rm -f $(MANDIR)/libcgi*
+	rm -f $(libdir)/libcgi.*
+	rm -f $(incdir)/cgi.h
+	rm -f $(incdir)/session.h
+	rm -f $(mandir)/libcgi*
 
 install_man:
-	cp doc/man/man3/libcgi_base64.3 $(MANDIR)
-	cp doc/man/man3/libcgi_cgi.3 $(MANDIR)
-	cp doc/man/man3/libcgi_general.3 $(MANDIR)
-	cp doc/man/man3/libcgi_string.3 $(MANDIR)
-	cp doc/man/man3/libcgi_session.3 $(MANDIR)
-	cp doc/man/man3/libcgi_cookie.3 $(MANDIR)
+	cp doc/man/man3/libcgi_base64.3 $(DESTDIR)$(mandir)
+	cp doc/man/man3/libcgi_cgi.3 $(DESTDIR)$(mandir)
+	cp doc/man/man3/libcgi_general.3 $(DESTDIR)$(mandir)
+	cp doc/man/man3/libcgi_string.3 $(DESTDIR)$(mandir)
+	cp doc/man/man3/libcgi_session.3 $(DESTDIR)$(mandir)
+	cp doc/man/man3/libcgi_cookie.3 $(DESTDIR)$(mandir)
 
