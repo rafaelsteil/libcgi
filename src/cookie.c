@@ -41,24 +41,24 @@ extern int cgi_display_errors;
 */
 
 /**
-* Send a cookie to the client. 
+* Send a cookie to the client.
 * @param name Cookie name
 * @param value Cookie value
-* @param max_age  Cookie time life, in seconds. A value equal to 0 ( zero ) means to discard the cookie when the session is done. 
+* @param max_age  Cookie time life, in seconds. A value equal to 0 ( zero ) means to discard the cookie when the session is done.
 * @param path Cookie path at the server
 * @param domain Domain where cookie will work :)
 * @param secure Secure or not
 * @see cgi_cookie_value
-* 
+*
 * \code
 * cgi_add_cookie("mycookie", "mycookie value", 0, 0, 0, 0);
-* \endcode  
+* \endcode
 **/
-int cgi_add_cookie(const char *name, 
-	const char *value, 
+int cgi_add_cookie(const char *name,
+	const char *value,
 	const char *max_age,
-	const char *path, 
-	const char *domain, 
+	const char *path,
+	const char *domain,
 	const int secure)
 {
 	if (headers_initialized)
@@ -81,7 +81,7 @@ int cgi_add_cookie(const char *name,
 
 formvars *cgi_get_cookies()
 {
-	register formvars *data;	
+	register formvars *data;
 	register size_t position;
 	char *cookies, *aux;
 
@@ -117,7 +117,7 @@ formvars *cgi_get_cookies()
 			position = strlen(cookies);
 		}
 		else {
-			while (*aux++ != ';') 
+			while (*aux++ != ';')
 				position++;
 			// Eliminate the blank space after ';'
 			aux++;

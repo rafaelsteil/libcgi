@@ -26,15 +26,15 @@
 #include "error.h"
 #include "cgi.h"
 
-// Add a new item to the list 
+// Add a new item to the list
 void slist_add(formvars *item, formvars **start, formvars **last)
 {
 	// if *start is empty, then our list is also empty. So, the only
 	// task to do is fill the variables *start and *last with the data pointed by item
-	// *start contains the firts item in the list, and we need *last to know the 
+	// *start contains the firts item in the list, and we need *last to know the
 	// end of the list
 	if (!*start) {
-		// item->next needs to be NULL, otherwise we never will 
+		// item->next needs to be NULL, otherwise we never will
 		// find the end of list
 		item->next = NULL;
 
@@ -59,8 +59,8 @@ void slist_add(formvars *item, formvars **start, formvars **last)
 
 // Delete from list the item pointed by name
 
-// This code is a bit complicated, and I needed some 
-// long hours to terminate it. In a future release, 
+// This code is a bit complicated, and I needed some
+// long hours to terminate it. In a future release,
 // I will explain the algorithm better
 int slist_delete(char *name, formvars **start, formvars **last)
 {
@@ -68,7 +68,7 @@ int slist_delete(char *name, formvars **start, formvars **last)
 	// *prior will store the prior item relacted to actual in the loop
 	formvars *begin, *prior;
 
-	// Before of all, is more simple to check if the item 
+	// Before of all, is more simple to check if the item
 	// to delete is in the next item. If true, we don't need
 	// to enter in the loop
 	if (!strcasecmp((*start)->name, name)) {
@@ -76,8 +76,8 @@ int slist_delete(char *name, formvars **start, formvars **last)
 		*start = (*start)->next;
 
 		// if start is null, then we haven't more itens
-		// in the list.. 
-		if (!*start) 
+		// in the list..
+		if (!*start)
 			*last = NULL;
 
 		return 1 ;
@@ -86,7 +86,7 @@ int slist_delete(char *name, formvars **start, formvars **last)
 	// Stores the start of the list
 	begin = *start;
 
-	// Stays in the loop while the item to be deleted 
+	// Stays in the loop while the item to be deleted
 	// is not found
 	while (*start) {
 		// Stores the prior item of the list
@@ -98,13 +98,13 @@ int slist_delete(char *name, formvars **start, formvars **last)
 		// the next item is the one to be deleted???
 		if (!strcasecmp((*start)->next->name, name)) {
 			// Before, check if the item that will be deleted
-			// is the last... if true, then the next item need to 
+			// is the last... if true, then the next item need to
 			// contain null ( the end of list ), and the actual
 			// value is changed with the value of the prior variable
 			if ((*start)->next == *last) {
 				(*start)->next = NULL;
 				*last = prior;
-			}			
+			}
 			else
 				// otherwise... well
 				// the item that will be deleted is pointed
@@ -157,7 +157,7 @@ char *slist_item(const char *name, formvars *start)
 	begin = start;
 
 	while (begin) {
-		if (!strcasecmp(begin->name, name)) 
+		if (!strcasecmp(begin->name, name))
 			return (!begin->value[0] ? NULL : begin->value);
 
 		begin = begin->next;

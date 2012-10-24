@@ -59,7 +59,7 @@ typedef struct MD5Context MD5_CTX;
 
 /**
 * Converts a string to MD5 format.
-* 
+*
 * @param str String to convert to MD5 hash
 * @return MD5 hash code
 **/
@@ -82,7 +82,7 @@ char *md5(const char *str)
 
 	// finally, here is a final string encrypted in hex float format
 	MD5Final(md, &context);
-	
+
 	// here, the loop is less than 32 because a md5 string can content
 	// just 32 bytes
 	for(i = 0; i < 32; i++) {
@@ -206,7 +206,7 @@ MD5Update(struct MD5Context *ctx, unsigned char const *buf, unsigned len)
 }
 
 /*
- * Final wrapup - pad to 64-byte boundary with the bit pattern 
+ * Final wrapup - pad to 64-byte boundary with the bit pattern
  * 1 0* (64-bit count of bits processed, MSB-first)
  */
 void
