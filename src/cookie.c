@@ -83,12 +83,13 @@ formvars *cgi_get_cookies()
 {
 	register formvars *data;
 	register size_t position;
-	char *cookies, *aux;
+	char *cookies, *aux, *str_unesc;
 
 	if ((cookies = getenv("HTTP_COOKIE")) == NULL)
 		return NULL;
 
-	cookies = cgi_unescape_special_chars(cookies);
+	str_unesc = cgi_unescape_special_chars(cookies);
+	cookies = str_unesc;
 	aux = cookies;
 
 	while (cookies) {
@@ -134,6 +135,8 @@ formvars *cgi_get_cookies()
 		slist_add(data, &cookies_start, &cookies_last);
 		cookies = aux;
 	}
+
+	free(str_unesc);
 
 	return cookies_start;
 }

@@ -51,7 +51,7 @@ extern formvars *cookie_end;
 formvars *process_data(char *query, formvars **start, formvars **last, const char delim, const char sep)
 {
 	register size_t position = 0, total_len = 0, i = 0;
-	char *aux;
+	char *aux, *str_unesc;
 	formvars *data;
 
 	if (query == NULL)
@@ -113,8 +113,10 @@ formvars *process_data(char *query, formvars **start, formvars **last, const cha
 		if (data->value == NULL)
 			libcgi_error(E_MEMORY, "%s, line %s", __FILE__, __LINE__);
 
-		strncpy(data->value, cgi_unescape_special_chars(query), position);
+		str_unesc = cgi_unescape_special_chars(query);
+		strncpy(data->value, str_unesc, position);
 		data->value[position] = '\0';
+		free(str_unesc);
 
 		slist_add(data, start, last);
 
