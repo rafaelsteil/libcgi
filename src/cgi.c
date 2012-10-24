@@ -161,6 +161,7 @@ formvars *cgi_process_form()
 		char *post_data;
 		char *tmp_data;
 		int content_length;
+		formvars *ret;
 
 		tmp_data = getenv("CONTENT_LENGTH");
 		if (tmp_data == NULL)
@@ -175,7 +176,9 @@ formvars *cgi_process_form()
 		fread(post_data, content_length, 1, stdin);
 		post_data[content_length] = '\0';
 
-		return process_data(post_data, &formvars_start, &formvars_last, '=', '&');
+		ret = process_data(post_data, &formvars_start, &formvars_last, '=', '&');
+		free(post_data);
+		return ret;
 	}
 
 	return NULL;
