@@ -49,7 +49,7 @@ static int ncodes = sizeof(he) / sizeof(struct iso8859_15);
 
 /**************************************************************
 						GENERAL GROUP
-***************************************************************/	
+***************************************************************/
 /** @defgroup libcgi_general General purpose
 * @{
 */
@@ -59,42 +59,42 @@ static int ncodes = sizeof(he) / sizeof(struct iso8859_15);
 * like '&lt' and '&gt'
 * @param str String containing code to parse
 * @return The new string
-* @author Robert Csok <rcsok@gmx.de> 
+* @author Robert Csok <rcsok@gmx.de>
 */
 // This one needs the struct and ncodes above.
-// ncodes is the number of elements in the struct. 
+// ncodes is the number of elements in the struct.
 char *htmlentities(const char *str)
 {
 	char *buf;
 	int siz, len, i = 0, j;
 
 	siz = strlen(str) + 1;
-	
-	buf = (char *)malloc(siz);	
+
+	buf = (char *)malloc(siz);
 	if (!buf)
 		libcgi_error(E_MEMORY, "Failed to alloc memory at htmlentities, cgi.c");
-	
+
 	for (; *str; str++, i++)  {
 		for (j = 0; j < ncodes; j++) {
 			if (*str == he[j].code) {
 				len = strlen(he[j].html) - 1;
-				
-				buf = realloc(buf, siz += len);	
+
+				buf = realloc(buf, siz += len);
 				if (!buf)
 					libcgi_error(E_MEMORY, "Failed to alloc memory at htmlentities, cgi.c");
-				
+
 				strcpy(buf + i, he[j].html);
 				i += len;
 				break;
 			}
 		}
-			
-		if (j == ncodes) 
+
+		if (j == ncodes)
 			buf[i] = *str;
 	}
-	
+
 	buf[i] = '\0';
-	return buf;	
+	return buf;
 }
 
 /**
@@ -102,23 +102,23 @@ char *htmlentities(const char *str)
 * @param filename Filename to open
 * @param total Integer variable passed as reference, which will store the total of items
 * @return Returns the file in an array. Each element of the array corresponds to a line in the file.
-* 
+*
 * \code
 * char **lines;
 * unsigned int total, i;
-*  
+*
 * lines = file("filename.ext", &total);
-*    
+*
 * printf("Total of lines: %u\n", total);
-*    
+*
 * for (i = 0; i < total; i++)
 *	printf("[%u] %s\n", i, lines[i]);
-*     
+*
 * for (i = 0; i < total; i++) {
 * 	if (lines[i])
 *		 free(lines[i]);
 * }
-* \endcode	  
+* \endcode
 */
 char **file(const char *filename, unsigned int *total)
 {
@@ -138,7 +138,7 @@ char **file(const char *filename, unsigned int *total)
 	// initial line length
 	columms = 100;
 
-	// How many characteres in the line 
+	// How many characteres in the line
 	char_count = 1;
 
 	i = 0;
@@ -148,9 +148,9 @@ char **file(const char *filename, unsigned int *total)
 	if (!str)
 		libcgi_error(E_MEMORY, "%s, line %s", __FILE__, __LINE__);
 
-	// Allocate initial memory to buf variable. It is the one 
+	// Allocate initial memory to buf variable. It is the one
 	// that will contain the chars of the lines
-	// By default, we're allocating 80 chars.. if more is needed, 
+	// By default, we're allocating 80 chars.. if more is needed,
 	// then we'll realloc()
 	buf = (char *)malloc(columms);
 	if (buf == NULL)
@@ -158,8 +158,8 @@ char **file(const char *filename, unsigned int *total)
 
 	while (!feof(fp)) {
 		ch = fgetc(fp);
-		
-		// The next while() loop is  to get all contents of actual line 
+
+		// The next while() loop is  to get all contents of actual line
 		while ((ch != '\n') && (ch != EOF)) {
 			// Increments the character counter
 			char_count++;
@@ -201,7 +201,7 @@ char **file(const char *filename, unsigned int *total)
 	fclose(fp);
 
 	*total = lines - 1;
-	return str;	
+	return str;
 }
 
 /**

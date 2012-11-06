@@ -21,6 +21,8 @@
 #ifndef _CGI_H
 #define _CGI_H	1
 
+#include <stdio.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -28,7 +30,7 @@ extern "C" {
 
 // general purpose linked list. Actualy isn't very portable
 // because uses only 'name' and 'value' variables to store data.
-// Problably, in a future release, this will be replaced by 
+// Problably, in a future release, this will be replaced by
 // another type of struct
 typedef struct formvarsA {
         char *name;
@@ -86,7 +88,7 @@ extern int slist_delete(char *name, formvars **start, formvars **last);
 extern char *slist_item(const char *name, formvars *start);
 
 extern void slist_free(formvars **start);
- 
+
 // Session stuff
 // We can use this variable to get the error message from a ( possible ) session error
 // Use it togheter with session_lasterror
@@ -98,7 +100,7 @@ extern formvars *sess_list_start;
 
 extern char SESSION_SAVE_PATH[255];
 extern char SESSION_COOKIE_NAME[50];
- 
+
 extern void cgi_session_set_max_idle_time(unsigned long seconds);
 extern int cgi_session_destroy();
 extern int cgi_session_register_var(const char *name, const char *value);
@@ -109,7 +111,7 @@ extern int cgi_session_start();
 extern void cgi_session_cookie_name(const char *cookie_name);
 extern char *cgi_session_var(const char *name);
 extern void cgi_session_save_path(const char *path);
- 
+
 #ifdef __cplusplus
 }
 #endif

@@ -27,7 +27,7 @@
 #include "cgi.h"
 #include "error.h"
 
-// Whow... if hextable array has a length less than 256, 
+// Whow... if hextable array has a length less than 256,
 // the cgi_unescape_special_chars function will fail.  And I don't know why
 static int hextable[256];
 
@@ -51,7 +51,7 @@ extern formvars *cookie_end;
 formvars *process_data(char *query, formvars **start, formvars **last, const char delim, const char sep)
 {
 	register size_t position = 0, total_len = 0, i = 0;
-	char *aux;
+	char *aux, *str_unesc;
 	formvars *data;
 
 	if (query == NULL)
@@ -61,13 +61,13 @@ formvars *process_data(char *query, formvars **start, formvars **last, const cha
 	aux = query;
 	while (*query) {
 		position = 0;
-				
+
 		data = (formvars *)malloc(sizeof(formvars));
 		if (!data)
 			libcgi_error(E_MEMORY, "%s, line %s", __FILE__, __LINE__);
-			
-		memset(data, 0, sizeof(formvars));							
-		
+
+		memset(data, 0, sizeof(formvars));
+
 		// Scans the string for the next 'delim' character
 		while (*aux && (*aux != delim)) {
 			position++;
@@ -86,7 +86,7 @@ formvars *process_data(char *query, formvars **start, formvars **last, const cha
 
 		strncpy(data->name, query, position);
 		data->name[position] = '\0';
-		
+
 		query = aux;
 		position = 0;
 		while (*aux && (*aux != sep)) {
@@ -97,27 +97,29 @@ formvars *process_data(char *query, formvars **start, formvars **last, const cha
 					position++;
 				}
 			}
-			else			
+			else
 				position++;
-				
+
 			aux++;
 			i++;
 		}
-				
+
 		if (*aux) {
 			aux++;
 			i++;
 		}
-		
+
 		data->value = (char *)malloc(position+1);
 		if (data->value == NULL)
 			libcgi_error(E_MEMORY, "%s, line %s", __FILE__, __LINE__);
 
-		strncpy(data->value, cgi_unescape_special_chars(query), position);
+		str_unesc = cgi_unescape_special_chars(query);
+		strncpy(data->value, str_unesc, position);
 		data->value[position] = '\0';
-		
+		free(str_unesc);
+
 		slist_add(data, start, last);
-		
+
 		query = aux;
 	}
 
@@ -134,8 +136,8 @@ formvars *process_data(char *query, formvars **start, formvars **last, const cha
 /**
 * Process HTML form or URL data.
 * Used to retrieve GET or POST data. It handles automaticaly the correct REQUEST_METHOD, so you don't need to afraid about it.
-* @return Returns the contents of URL or FORM into a formvars variable, or NULL if FALSE. Most of time, you 
-* don't need any variable to store the form data, because is used an internal variable to manipulate the contents. 
+* @return Returns the contents of URL or FORM into a formvars variable, or NULL if FALSE. Most of time, you
+* don't need any variable to store the form data, because is used an internal variable to manipulate the contents.
 * @see cgi_init, cgi_init_headers
 **/
 formvars *cgi_process_form()
@@ -146,7 +148,7 @@ formvars *cgi_process_form()
 
 	// When METHOD has no contents, the default action is to process it as GET method
 	if (method == NULL || !strcasecmp("GET", method)) {
-		char *dados; 
+		char *dados;
 		dados =	getenv("QUERY_STRING");
 
 		// Sometimes, GET comes with not any data
@@ -159,6 +161,7 @@ formvars *cgi_process_form()
 		char *post_data;
 		char *tmp_data;
 		int content_length;
+		formvars *ret;
 
 		tmp_data = getenv("CONTENT_LENGTH");
 		if (tmp_data == NULL)
@@ -173,7 +176,9 @@ formvars *cgi_process_form()
 		fread(post_data, content_length, 1, stdin);
 		post_data[content_length] = '\0';
 
-		return process_data(post_data, &formvars_start, &formvars_last, '=', '&');
+		ret = process_data(post_data, &formvars_start, &formvars_last, '=', '&');
+		free(post_data);
+		return ret;
 	}
 
 	return NULL;
@@ -222,7 +227,7 @@ int cgi_include(const char *filename)
 
 		return 0;
 	}
-	
+
  	while (fgets(buffer, 255, inc))
 		printf("%s", buffer);
 
@@ -250,7 +255,7 @@ void cgi_init_headers()
 * @param name Form variable name
 * @return Form variable contents
 * @see cgi_param
-* 
+*
 * Example:
 * For example, if in your HTML you have something like<br>
 *  <br>
@@ -262,7 +267,7 @@ void cgi_init_headers()
 * </pre>
 *       <br>
 * then, to retrieve all values, you can make a code like<br><br>
-* 
+*
 * \code
 * // ...
 * char *data;
@@ -296,13 +301,13 @@ char *cgi_param_multiple(const char *name)
 }
 
 /**
-*  Recirects to the specified url. 
+*  Recirects to the specified url.
 * Remember that you cannot send any header before this function, or it will not work.
 * <b>Note:</b><br>
 * LibCGI does not implement RFC 2396 to make the lib simple and quick. You should be sure
-* to pass a correct URI to this function. 
+* to pass a correct URI to this function.
 * @param url url to redirect the browser
-* 
+*
 * \code
 * cgi_redirect("http://wwww.linux.org");
 * \endcode
@@ -347,7 +352,7 @@ void init_hex_table()
 }
 
 /**
-*  Main cgi function. 
+*  Main cgi function.
 *  Configures all (most?) we need to  get cgi library working correctly. It MUST be called before
 *  any other cgi function.
 *  @see cgi_end, cgi_process_form, cgi_init_headers
@@ -360,7 +365,7 @@ int cgi_init()
 	// cause problems with session's. Note that, when you want
 	// to use session within your program, you need  cgi_get_cookies()
 	// before session_start(), otherwise we will get some problems... :)
-	// Calling this function here is the best way. Trust me :)	
+	// Calling this function here is the best way. Trust me :)
 	cgi_get_cookies();
 
 	return 1;
@@ -377,7 +382,7 @@ void cgi_end()
 
 	formvars_last = NULL;
 
-	if (sess_list_start) 
+	if (sess_list_start)
 		slist_free(&sess_list_start);
 
 	if (cookies_start)
@@ -414,7 +419,7 @@ char *cgi_unescape_special_chars(char *str)
 			tmp[pos] = ' ';
 		else
 			tmp[pos] = str[i];
-		
+
 		pos++;
 	}
 
@@ -464,21 +469,21 @@ char *cgi_escape_special_chars(char *str)
 
 /**
 * Gets the of HTML or URL variable indicated by 'name'
-* @param name Form Variable name 
+* @param name Form Variable name
 * @see cgi_param_multiple,  cgi_process_form, cgi_init
-* 
+*
 * \code
 * // ...
 * char *contents;
-* 
+*
 * cgi_init();
 * cgi_process_form();
 * cgi_init_headers();
-* 
+*
 * contents = cgi_param("foo");
-* 
+*
 * puts(contents);
-* 
+*
 * // ...
 * \endcode
 **/

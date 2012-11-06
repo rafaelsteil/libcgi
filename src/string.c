@@ -31,7 +31,7 @@
 /*********************************************************
 * 					STRING GROUP
 *********************************************************/
-/** 
+/**
 * @defgroup libcgi_string Strings
 * General string manipulation and utilities functions
 * @{
@@ -40,12 +40,12 @@
 /**
 * Same to addslashes(), except that this one only do the action while 'n' is great than 0.
 * @param s String to parse
-* @param n Number of characters to work with. 
+* @param n Number of characters to work with.
 * @see addslashes()
 * \code
 * char *name = "My test string is called \"foobar\"";
 * puts(name); // will display My test string is called "foobar"
-* 
+*
 * name = addnslashes(name, 31);
 * puts(name); // will display My test string is called \"foobar"
 * \endcode
@@ -81,7 +81,7 @@ char *addnslashes(char *s, int n)
 	return tmp;
 }
 
-/** 
+/**
 * Add slashes to a string when necessary.
 * Adds a '\' in every quote ( " ), apostrophe ( ' ) or  backslash ( \ )
 * It's useful when working with databases, for example, because
@@ -93,7 +93,7 @@ char *addnslashes(char *s, int n)
 * \code
 * char *name = "My test string is called \"foobar\"";
 * puts(name); // will display My test string is called "foobar"
-* 
+*
 * name = addslashes(name);
 * puts(name); // will display My test string is called \"foobar\"
 * \endcode
@@ -131,7 +131,7 @@ char *stripnslashes(char *s, int n)
 		return NULL;
 
 	while (*s) {
-		if ((n-- > 0) && (*s == '\\')) 
+		if ((n-- > 0) && (*s == '\\'))
 			s++;
 		tmp[j++] = *s++;
 	}
@@ -233,10 +233,10 @@ void trim(char *str)
 * Copy part of a string.
 * Copy  count characters from src, starting from start
 * @param src String to copy from
-* @param start Initial offset 
+* @param start Initial offset
 * @param count Number of chars to copy
 * @return The new string
-* 
+*
 * \code
 * char *part, *str = "Test one, test two";
 * part = substr(str, 1, 5);
@@ -265,12 +265,12 @@ char *substr(char *src, const int start, const int count)
 *  and storing the total of pieces in total
 * @param src String to parse
 * @param token Character delimiter to search.
-* @param total An integer variable passed as reference, which stores the total of 
+* @param total An integer variable passed as reference, which stores the total of
 * itens of the array
 * @return The array, where each item is one separeted by token
-* 
+*
 * \code
-*  
+*
 *  char **pieces;
 *  char *name = "This,is,a,string,of,test";
 *  int total, i;
@@ -280,14 +280,14 @@ char *substr(char *src, const int start, const int count)
 * \endcode
 **/
 char **explode(char *src, const char *token, int *total)
-{	
+{
 	char **str;
 	register int i, j, count, item, start;
 	int len;
 
 	if (!src || !token) {
 		*total = 0;
-		
+
 		return NULL;
 	}
 
@@ -348,7 +348,7 @@ char **explode(char *src, const char *token, int *total)
 
 /**
 * Replace characteres in a string, but not more than 'n'.
-*  Replace all occourences of *delim on *src with characteres pointed by *with, 
+*  Replace all occourences of *delim on *src with characteres pointed by *with,
 *  stopping after 'n' char.
 *  @param *src String to parse
 *  @param *delim Character to search that will be replaced
@@ -356,7 +356,7 @@ char **explode(char *src, const char *token, int *total)
 *  @param n Maximum number of chars to parse
 *  @return The new string
 *  @see str_replace
-*  
+*
 *  \code
 *  char *linux = "Linux C";
 *  linux = str_nreplace(linux, "C", "Cool", strlen(linux));
@@ -414,7 +414,7 @@ char *str_nreplace(char *src, const char *delim, const char *with, int n)
 /**
 * Replace characteres in a string.
 *  Replace all occourences of *delim on *src with characteres pointed by *with.
-*  The problem with the folowing code is that the function only searches for the 
+*  The problem with the folowing code is that the function only searches for the
 *  first caracter of *delim, ingoring the rest. Other problem is speed relacioned:
 *  note that the function ever compare the length of *with to do the correct action.
 *  @param src String to parse
@@ -422,7 +422,7 @@ char *str_nreplace(char *src, const char *delim, const char *with, int n)
 *  @param with String to replace with
 *  @return The new string
 *  @see str_nreplace
-*  
+*
 *  \code
 *  char *linux = "Linux C";
 *  linux = str_replace(linux, "C", "Cool");
@@ -454,14 +454,14 @@ char *replace(char *str, const char *delim, const char *with)
 int strnpos(char *s, char *ch, unsigned int count)
 {
 	register unsigned int pos = 0, i;
-	
+
 	for (i = 0; i <= count && *s; i++) {
 		if (*s++ == *ch)
 			return pos;
-		
+
 		pos++;
 	}
-	
+
 	return -1;
 }
 
@@ -485,13 +485,13 @@ int strpos(char *s, char *ch)
 *  @param count Number of characteres to delete
 *  @return The new string
 *  @see strndel()
-* 
+*
 *  \code
 *  *txt = "Some text to test anything";
 *  puts(txt);
 *  txt = strdel(txt, 2, 8);
 *  puts(txt);
-* \endcode   
+* \endcode
 **/
 char *strdel(char *s, int start, int count)
 {
@@ -508,7 +508,7 @@ char *strdel(char *s, int start, int count)
 		libcgi_error(E_MEMORY, "%s, line %s", __FILE__, __LINE__);
 
 	for (i = 0; i < len; i++) {
-		if ((i >= start) && (i < (start+count))) 
+		if ((i >= start) && (i < (start+count)))
 			s++;
 		else
 			tmp[contador++] = *s++;
@@ -536,37 +536,37 @@ char *recvline(FILE *s)
 	size_t siz = 0;
 
 	for (; (ch = fgetc(s)) != EOF; i++) {
-		if (i == siz) 
+		if (i == siz)
 			buf = realloc(buf, siz += BUFSIZ);
-			
+
 		buf[i] = ch;
-		
+
 		if (buf[i] == '\n') {
 			buf[i] = '\0';
-			
-			if (i > 0 && buf[i-1] == '\r') 
+
+			if (i > 0 && buf[i-1] == '\r')
 				buf[i-1] = '\0';
-				
+
 			return buf;
 		}
 	}
-	
+
 	if (i > 0) {
 		if (i == siz) buf = realloc(buf, siz + 1);
 			buf[i] = '\0';
-			
+
 		return buf;
 	}
-	
+
 	return NULL;
 }
 
 /**
 * Makes a string.
 * Works like printf(), with the difference
-* that it returns a string that is the 
+* that it returns a string that is the
 * concatenation of the values passed as parameter.
-* 
+*
 * @param *s Inicial String and optionally formatation parameters ( just %s is allowed )
 * @return The new String
 * \code
@@ -599,7 +599,7 @@ char *make_string(char *s, ...)
 					break;
 			}
 		}
-		
+
 		str++;
 	}
 
@@ -628,13 +628,13 @@ char *strcat_ex(const char *str1, const char *str2)
 	len = strlen(str1) + strlen(str2);
 
 	new_str = (char *)malloc((len + 1) * sizeof(char*));
-	if (!new_str) 
+	if (!new_str)
 		libcgi_error(E_MEMORY, "%s, line %s", __FILE__, __LINE__);
 
 	sprintf(new_str, "%s%s", str1, str2);
 
 	new_str[len] = '\0';
-	
+
 	return new_str;
 }
 
