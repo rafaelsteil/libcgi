@@ -21,7 +21,7 @@ void libcgi_error(int error_code, const char *msg, ...)
 		return;
 
 	cgi_init_headers();
-	va_start(arguments, msg);	
+	va_start(arguments, msg);
 
 	printf("<b>%s</b>: ", libcgi_error_type[error_code]);
 	vprintf(msg, arguments);

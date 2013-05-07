@@ -26,7 +26,7 @@
  *****************************************************
 */
 
-/** 
+/**
 * @defgroup libcgi_session Session Handling
 *   One of the most diferencials of LibCGI is its support to sessions, a mechanism that permits
 *   the application to keep variables trough the user's session, when he is visiting your website.
@@ -35,9 +35,9 @@
 * <tr>
 * <td>
 * 	Session functions are easy to use and understand, and probably you'll want to take a closer
-* 	look at <i>cgi_session_save_path()</i> and <i>cgi_session_cookie_name()</i> functions. These functions, 
+* 	look at <i>cgi_session_save_path()</i> and <i>cgi_session_cookie_name()</i> functions. These functions,
 * 	let the programmer to set the directory where session files will
-* 	be saved in the hard disk and the cookie name to the session, respectively. 
+* 	be saved in the hard disk and the cookie name to the session, respectively.
 * 	<br><br>
 * 	As the CGI is running on the webserver which a common user, it have full access to its respective session
 * 	file. But the most big problem is that you may
@@ -102,7 +102,7 @@ const char *session_error_message[] = {
  	"Session variable not registered",
  	"Failed to open session file for manipulation"
 };
- 
+
 
 // cgi.c
 extern int headers_initialized;
@@ -142,9 +142,9 @@ void sess_generate_id()
 	sess_fname = (char *)malloc(save_path_len + SESS_ID_LEN + 1);
 	if (!sess_fname)
 		libcgi_error(E_MEMORY, "File %s, line %s", __FILE__, __LINE__);
-		
-	for (i = 0; i < SESS_ID_LEN; i++) 
-		sess_id[i] = table[rand()%len];	
+
+	for (i = 0; i < SESS_ID_LEN; i++)
+		sess_id[i] = table[rand()%len];
 	sess_id[SESS_ID_LEN] = '\0';
 
 	snprintf(sess_fname, (SESS_ID_LEN + save_path_len + 1), "%s%s%s", SESSION_SAVE_PATH, SESSION_FILE_PREFIX, sess_id);
@@ -155,10 +155,10 @@ int sess_create_file()
 {
 	// timeval, gettimeofday are used togheter with srand() function
 	struct timeval tv;
-	
+
 	gettimeofday(&tv, NULL);
 	srand(tv.tv_sec * tv.tv_usec * 100000);
-	
+
 	sess_generate_id();
 	sess_file = fopen(sess_fname, "w");
 	if (!sess_file) {
@@ -168,16 +168,16 @@ int sess_create_file()
 
 		return 0;
 	}
-	
+
 	// Changes file permission to 0600
 	chmod(sess_fname, S_IRUSR|S_IWUSR);
 	fclose(sess_file);
 
 	return 1;
-}	
+}
 
-/** 
-* Destroys the session. 
+/**
+* Destroys the session.
 * Destroys the current opened session, including all data.
 * After session_destroy() was called, is not more
 * possible to use session functions before an another
@@ -193,10 +193,10 @@ int cgi_session_destroy()
 		sess_finitialized = 0;
 		slist_free(&sess_list_start);
 
-		// hhhmmm.. 
-		if (headers_initialized) 
+		// hhhmmm..
+		if (headers_initialized)
 			libcgi_error(E_WARNING, "Headers alreay sent. session_destroy() can't fully unregister the session");
-		else 
+		else
 			cgi_add_cookie(SESSION_COOKIE_NAME, "", 0, 0, 0, 0);
 
 		return 1;
@@ -213,9 +213,9 @@ int cgi_session_destroy()
 int sess_file_rewrite()
 {
 	formvars *data;
-	
+
 	cgi_init_headers();
-	
+
 	// Rewrites all data to session file
 	sess_file = fopen(sess_fname, "w");
 
@@ -226,7 +226,7 @@ int sess_file_rewrite()
 
 		return 0;
 	}
-	
+
 	data = sess_list_start;
 
 	if (data != NULL) {
@@ -260,10 +260,10 @@ char *cgi_session_var(const char *var_name)
 
 /**
 * Defines the name of the cookie that LibCGI will use to store session's ID.
-* This function works like cgi_session_save_path(). 
-* This functionality let you to use  different names for each site, but remember, you cannot 
-* use multiple session for the same application yet. 
-* 
+* This function works like cgi_session_save_path().
+* This functionality let you to use  different names for each site, but remember, you cannot
+* use multiple session for the same application yet.
+*
 * @param cookie_name Name of the cookie to create
 * @see cgi_session_save_path()
 * @note This function must be called before cgi_session_start()
@@ -276,23 +276,23 @@ void cgi_session_cookie_name(const char *cookie_name)
 /**
 * Defines where session control files will be saved.
 * If in the your CGI you don't make a call to cgi_session_save_path(), LibCGI will
-* use the default value, which is "/tmp/". To see how to modify the value, see the following example. 
+* use the default value, which is "/tmp/". To see how to modify the value, see the following example.
 * <br>Just note you need to add '/' at the end of the directory name
 * \code
 * // your_cgi.c
-* // Set "session_files" directory under your CGI directory as the path 
+* // Set "session_files" directory under your CGI directory as the path
 * // which LibCGI will use to store session files.
-* 
+*
 * cgi_session_save_path("session_files/");
 *  \endcode
-*  
-*  Note that using this form, LibCGI will search for "session_files" directory using relative path 
+*
+*  Note that using this form, LibCGI will search for "session_files" directory using relative path
 *  to your cgi application. For example, if your CGI script is located at
 *  /usr/local/httpd/web/your_name/cgi-bin/ directory, and you use the above declaration, the files for the session will be
-* stored at  /usr/local/httpd/web/your_name/cgi-bin/session_files directory. 
+* stored at  /usr/local/httpd/web/your_name/cgi-bin/session_files directory.
 * Resuming, the path is relative to where your application resides. <br><br>And remember, LibCGI \b does \b not
-* create the directory for you. 
-* 
+* create the directory for you.
+*
 * @param path Path, relative or absolute
 * @see cgi_session_cookie_name
 * @note This function must be called before cgi_session_start()
@@ -313,12 +313,12 @@ void cgi_session_save_path(const char *path)
 int cgi_session_register_var(const char *name, const char *value)
 {
 	formvars *data;
-	
+
 	if (!sess_initialized) {
 		session_lasterror = SESS_NOT_INITIALIZED;
 
 		libcgi_error(E_WARNING, session_error_message[session_lasterror]);
-		
+
 		return 0;
 	}
 
@@ -328,14 +328,14 @@ int cgi_session_register_var(const char *name, const char *value)
 			session_lasterror = SESS_OPEN_FILE;
 
 			libcgi_error(E_WARNING, session_error_message[session_lasterror]);
-			
+
 			return 0;
 		}
-		
+
 		data = (formvars *)malloc(sizeof(formvars));
 		if (!data)
 			libcgi_error(E_MEMORY, "%s, line %s", __FILE__, __LINE__);
-		
+
 		data->name = (char *)malloc(strlen(name) + 1);
 		if (!data->name)
 			libcgi_error(E_MEMORY, "%s, line %s", __FILE__, __LINE__);
@@ -350,10 +350,10 @@ int cgi_session_register_var(const char *name, const char *value)
 
 		strncpy(data->name, name, strlen(name));
 		data->name[strlen(name)] = '\0';
-		
+
 		strncpy(data->value, value, strlen(value));
 		data->value[strlen(value)] = '\0';
-		
+
 		if (!sess_list_last)
 			fprintf(sess_file, "%s=%s", name, value);
 		else
@@ -381,12 +381,12 @@ int cgi_session_alter_var(const char *name, const char *new_value)
 {
 	register formvars *data;
 	unsigned int value_len;
-	
+
 	data = sess_list_start;
 	while (data) {
 		if (!strcmp(data->name, name)) {
 			value_len = strlen(new_value) + 1;
-			
+
 			if (value_len > strlen(data->value)) {
 				data->value = realloc(data->value, value_len+1);
 				if (!data->value)
@@ -396,7 +396,7 @@ int cgi_session_alter_var(const char *name, const char *new_value)
 
 			strncpy(data->value, new_value, value_len);
 			data->value[value_len] = '\0';
-			
+
 			sess_file_rewrite();
 
 			return 1;
@@ -404,9 +404,9 @@ int cgi_session_alter_var(const char *name, const char *new_value)
 
 		data = data->next;
 	}
-	
+
 	session_lasterror = SESS_VAR_NOT_REGISTERED;
-	
+
 	return 0;
 }
 
@@ -437,7 +437,7 @@ int cgi_session_unregister_var(char *name)
 		session_lasterror = SESS_NOT_INITIALIZED;
 
 		libcgi_error(E_WARNING, session_error_message[session_lasterror]);
-		
+
 		return 0;
 	}
 
@@ -449,7 +449,7 @@ int cgi_session_unregister_var(char *name)
 		return 0;
 	}
 
-	if (!sess_file_rewrite()) 
+	if (!sess_file_rewrite())
 		return 0;
 
 	return 1;
@@ -457,7 +457,7 @@ int cgi_session_unregister_var(char *name)
 
 /**
 * Starts a new session.
-* This function is responsible for starting and creating a new 
+* This function is responsible for starting and creating a new
 * session. It must be called before any other session function,
 * and every time before any HTML header has sent.
 * @see session_destroy()
@@ -472,13 +472,13 @@ int cgi_session_start()
 		session_lasterror = SESS_STARTED;
 
 		libcgi_error(E_WARNING, session_error_message[session_lasterror]);
-		
+
 		return 0;
 	}
-	
+
 	if (headers_initialized) {
 		session_lasterror = SESS_HEADERS_SENT;
-		
+
 		libcgi_error(E_WARNING, session_error_message[session_lasterror]);
 
 		return 0;
@@ -487,7 +487,7 @@ int cgi_session_start()
 	// Get the session ID
 	sid = cgi_cookie_value(SESSION_COOKIE_NAME);
 
-	// If there isn't a session ID, we need to create one 
+	// If there isn't a session ID, we need to create one
 	if (sid == NULL) {
 		if (sess_create_file()) {
 			cgi_add_cookie(SESSION_COOKIE_NAME, sess_id, 0, 0, 0, 0);
@@ -502,17 +502,17 @@ int cgi_session_start()
 	// Make sure the file exists
 	else {
 		save_path_len = strlen(SESSION_SAVE_PATH) + strlen(SESSION_FILE_PREFIX);
-		
+
 		sess_fname = (char *)malloc(save_path_len + SESS_ID_LEN + 1);
 		if (!sess_fname)
 			libcgi_error(E_MEMORY, "File %s, line %s", __FILE__, __LINE__);
-	
+
 		snprintf(sess_fname, (SESS_ID_LEN + save_path_len + 1), "%s%s%s", SESSION_SAVE_PATH, SESSION_FILE_PREFIX, sid);
 		sess_fname[SESS_ID_LEN + save_path_len] = '\0';
-		
-		errno = 0;		
+
+		errno = 0;
 		fp = fopen(sess_fname, "r");
-		if (errno == ENOENT) { 
+		if (errno == ENOENT) {
 			// The file doesn't exists. Create a new session
 			if (sess_create_file()) {
 				cgi_add_cookie(SESSION_COOKIE_NAME, sess_id, 0, 0, 0, 0);
@@ -532,15 +532,15 @@ int cgi_session_start()
 	sess_id[SESS_ID_LEN] = '\0';
 
 	// Now we need to read all the file contents
-	// This is a temporary solution, I'll try to 
+	// This is a temporary solution, I'll try to
 	// make a faster implementation
 	stat(sess_fname, &st);
 	buf = (char *)malloc(st.st_size + 2);
 	if (!buf)
 		libcgi_error(E_MEMORY, "File %s, line %s", __FILE__, __LINE__);
-		
+
 	fgets(buf, st.st_size+1, fp);
-		
+
 	if (buf != NULL && strlen(buf) > 1)
 		process_data(buf, &sess_list_start, &sess_list_last, '=', ';');
 
@@ -551,6 +551,6 @@ int cgi_session_start()
 	return 1;
 }
 
-/** 
+/**
 * @}
 */
