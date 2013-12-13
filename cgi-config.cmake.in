@@ -1,10 +1,10 @@
 #
-# Copyright 2013 Alexander Dahl <post@lespocky.de>
+# Copyright 2013,2016 Alexander Dahl <post@lespocky.de>
 #
 
 # paths
 @PACKAGE_INIT@
-set_and_check(CGI_INCLUDE_DIRS "@PACKAGE_CMAKE_INSTALL_INCLUDEDIR@/@PROJECT_NAME@")
+set_and_check(CGI_INCLUDE_DIRS "@PACKAGE_CMAKE_INSTALL_INCLUDEDIR@/lib@PROJECT_NAME@")
 
 # targets
 get_filename_component(_dir "${CMAKE_CURRENT_LIST_FILE}" PATH)
