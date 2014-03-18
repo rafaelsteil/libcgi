@@ -27,9 +27,7 @@
 #include "cgi.h"
 #include "error.h"
 
-// Whow... if hextable array has a length less than 256,
-// the cgi_unescape_special_chars function will fail.  And I don't know why
-static int hextable[256];
+static unsigned char hextable['f'+1];
 
 int headers_initialized = 0;
 
@@ -326,29 +324,32 @@ void cgi_redirect(char *url)
 // Original idea from cgic library
 void init_hex_table()
 {
-	memset(hextable, 0, 255);
+	memset(hextable, 0, 'f'+1);
 
-	hextable['1'] = 1;
-	hextable['2'] = 2;
-	hextable['3'] = 3;
-	hextable['4'] = 4;
-	hextable['5'] = 5;
-	hextable['6'] = 6;
-	hextable['7'] = 7;
-	hextable['8'] = 8;
-	hextable['9'] = 9;
-	hextable['a'] = 10;
-	hextable['b'] = 11;
-	hextable['c'] = 12;
-	hextable['d'] = 13;
-	hextable['e'] = 14;
-	hextable['f'] = 15;
-	hextable['A'] = 10;
-	hextable['B'] = 11;
-	hextable['C'] = 12;
-	hextable['D'] = 13;
-	hextable['E'] = 14;
-	hextable['F'] = 15;
+	hextable['0'] = 0x0;	/* 48 */
+	hextable['1'] = 0x1;	/* 49 */
+	hextable['2'] = 0x2;	/* 50 */
+	hextable['3'] = 0x3;	/* 51 */
+	hextable['4'] = 0x4;	/* 52 */
+	hextable['5'] = 0x5;	/* 53 */
+	hextable['6'] = 0x6;	/* 54 */
+	hextable['7'] = 0x7;	/* 55 */
+	hextable['8'] = 0x8;	/* 56 */
+	hextable['9'] = 0x9;	/* 57 */
+
+	hextable['A'] = 0xA;	/* 65 */
+	hextable['B'] = 0xB;	/* 66 */
+	hextable['C'] = 0xC;	/* 67 */
+	hextable['D'] = 0xD;	/* 68 */
+	hextable['E'] = 0xE;	/* 69 */
+	hextable['F'] = 0xF;	/* 70 */
+
+	hextable['a'] = 0xa;	/* 97 */
+	hextable['b'] = 0xb;	/* 98 */
+	hextable['c'] = 0xc;	/* 99 */
+	hextable['d'] = 0xd;	/* 100 */
+	hextable['e'] = 0xe;	/* 101 */
+	hextable['f'] = 0xf;	/* 102 */
 }
 
 /**
@@ -411,7 +412,7 @@ char *cgi_unescape_special_chars(char *str)
 		// hexa code. Converting a hexadecimal code to their decimal is easy:
 		// The first character needs to be multiplied by 16 ( << 4 ), and the another
 		// one we just get the value from hextable variable
-		if ((str[i] == '%') && isalnum(str[i+1]) && isalnum(str[i+2])) {
+		if ((str[i] == '%') && isxdigit(str[i+1]) && isxdigit(str[i+2])) {
 			tmp[pos] = (hextable[(unsigned char) str[i+1]] << 4) + hextable[(unsigned char) str[i+2]];
 			i += 2;
 		}
