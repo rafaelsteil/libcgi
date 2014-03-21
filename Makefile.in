@@ -5,7 +5,7 @@ INSTALL_DATA = @INSTALL_DATA@ -D
 prefix = @prefix@
 exec_prefix = @exec_prefix@
 
-SHAREDOPT = -shared -shared -fPIC,-Wl,-soname,libcgi.so.0
+SHAREDOPT = -shared -shared -fPIC -Wl,-soname,libcgi.so.0
 libdir = $(prefix)/lib
 incdir = $(prefix)/include/libcgi
 mandir	= $(prefix)/man/man3
