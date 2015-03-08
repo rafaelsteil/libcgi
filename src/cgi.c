@@ -400,36 +400,45 @@ void cgi_end()
 * @return The new string
 * @see cgi_escape_special_chars
 **/
-char *cgi_unescape_special_chars(char *str)
+char *cgi_unescape_special_chars(const char *str)
 {
-	char *tmp;
-	register int i, len, pos = 0;
+	char *write;
+	char val;
+	char hex[2];
 
-	len = strlen(str);
-	tmp = (char *)malloc(len + 1);
-	if (tmp == NULL)
+	write = (char *)malloc(strlen(str) + 1);
+	if (! write)
 		libcgi_error(E_MEMORY, "%s, line %s", __FILE__, __LINE__);
 
-	for (i = 0; i < len; i++) {
-		// If we found a '%' character, then the next two are the character
-		// hexa code. Converting a hexadecimal code to their decimal is easy:
-		// The first character needs to be multiplied by 16 ( << 4 ), and the another
-		// one we just get the value from hextable variable
-		if ((str[i] == '%') && isalnum(str[i+1]) && isalnum(str[i+2])) {
-			tmp[pos] = (hextable[str[i+1]] << 4) + hextable[str[i+2]];
-			i += 2;
-		}
-		else if (str[i] == '+')
-			tmp[pos] = ' ';
-		else
-			tmp[pos] = str[i];
+	for ( ; val; ++str, ++write)
+	{
+		val = *str;
 
-		pos++;
+		if (val == '+')
+			val = ' ';
+		else if (val == '%')
+		{
+			/* check first expected hex character isn't null to avoid reading
+			 * second hex character from beyond the string
+			 */
+			if (str[1])
+			{
+				hex[0] = hextable[str[1]];
+				hex[1] = hextable[str[2]];
+
+				/* valid hex characters? */
+				if (hex[0] != 0xFF && hex[1] != 0xFF)
+				{
+					val = (hex[0] << 4) | hex[1];
+					str += 2;
+				}
+			}
+		}
+
+		*write = val;
 	}
 
-	tmp[pos] = '\0';
-
-	return tmp;
+	return write;
 }
 
 /**
