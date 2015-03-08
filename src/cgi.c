@@ -402,21 +402,21 @@ void cgi_end()
 **/
 char *cgi_unescape_special_chars(const char *str)
 {
-	char *write;
-	char val;
+	char *new, *write;
+	char c = *str;
 	char hex[2];
 
-	write = (char *)malloc(strlen(str) + 1);
-	if (! write)
+	new = (char *)malloc(strlen(str) + 1);
+	if (! new)
 		libcgi_error(E_MEMORY, "%s, line %s", __FILE__, __LINE__);
 
-	for ( ; val; ++str, ++write)
+	for (write = new; c; ++str, ++write)
 	{
-		val = *str;
+		c = *str;
 
-		if (val == '+')
-			val = ' ';
-		else if (val == '%')
+		if (c == '+')
+			c = ' ';
+		else if (c == '%')
 		{
 			/* check first expected hex character isn't null to avoid reading
 			 * second hex character from beyond the string
@@ -429,16 +429,16 @@ char *cgi_unescape_special_chars(const char *str)
 				/* valid hex characters? */
 				if (hex[0] != 0xFF && hex[1] != 0xFF)
 				{
-					val = (hex[0] << 4) | hex[1];
+					c = (hex[0] << 4) | hex[1];
 					str += 2;
 				}
 			}
 		}
 
-		*write = val;
+		*write = c;
 	}
 
-	return write;
+	return new;
 }
 
 /**
