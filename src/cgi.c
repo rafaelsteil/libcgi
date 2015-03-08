@@ -434,37 +434,40 @@ char *cgi_unescape_special_chars(char *str)
 * @return The new string
 * @see cgi_unescape_special_chars
 **/
-char *cgi_escape_special_chars(char *str)
+char *cgi_escape_special_chars(const unsigned char *str)
 {
-	unsigned char hex[] = "0123456789ABCDEF";
-	register int i, j, len, tmp_len;
-	unsigned char *tmp;
+	static const unsigned char hex[] = "0123456789ABCDEF";
+	int i, len;
+	unsigned char *new;
 
 	len = strlen(str);
-	tmp_len = len;
-	tmp = (unsigned char*)malloc(len+1);
-	if (tmp == NULL)
+
+	// worst case scenario: every character would need to be escaped, requiring
+	// 3 times more memory than the original string.
+	new = (unsigned char*)malloc((len * 3) + 1);
+	if (! new)
 		libcgi_error(E_MEMORY, "%s, line %s", __FILE__, __LINE__);
 
-	for (i = 0, j = 0; i < len; i++, j++) {
-		tmp[j] = (unsigned char)str[i];
-		if (tmp[j] == ' ')
-			tmp[j] = '+';
-		else if (!isalnum(tmp[j]) && strchr("_-.", tmp[j]) == NULL) {
-			tmp_len += 3;
-			tmp = realloc(tmp, tmp_len);
-			if (!tmp)
-				libcgi_error(E_MEMORY, "%s, line %s", __FILE__, __LINE__);
-
-			tmp[j++] = '%';
-			tmp[j++] = hex[(unsigned char)str[i] >> 4];
-			tmp[j] = hex[(unsigned char)str[i] & 0x0F];
+	for (i = 0; *str; i++, str++)
+	{
+		if (*str == ' ')
+			new[i] = '+';
+		else if (! isalnum(*str) && ! strchr("_-.", *str))
+		{
+			new[i++] = '%';
+			new[i++] = hex[*str >> 4];
+			new[i]   = hex[*str & 0x0F];
 		}
+		else
+			new[i] = *str;
 	}
 
-	tmp[j] = '\0';
+	new[i] = '\0';
 
-	return tmp;
+	// free unused memory. no reason to fail.
+	new = realloc(new, i+1);
+
+	return new;
 }
 
 /**
