@@ -27,9 +27,43 @@
 #include "cgi.h"
 #include "error.h"
 
-// Whow... if hextable array has a length less than 256,
-// the cgi_unescape_special_chars function will fail.  And I don't know why
-static int hextable[256];
+// There's no reason to not have this initialised.
+static const char hextable[256] = {
+	0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF,
+	0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF,
+	0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF,
+	0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF,
+	0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF,
+	0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF,
+	0x00, 0X01, 0X02, 0X03,		0X04, 0X05, 0X06, 0X07,
+	0X08, 0X09, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF,
+	0xFF, 0X0A, 0X0B, 0X0C,		0X0D, 0X0E, 0X0F, 0xFF,
+	0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF,
+	0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF,
+	0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF,
+	0xFF, 0X0A, 0X0B, 0X0C,		0X0D, 0X0E, 0X0F, 0xFF,
+	0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF,
+	0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF,
+	0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF,
+	0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF,
+	0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF,
+	0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF,
+	0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF,
+	0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF,
+	0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF,
+	0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF,
+	0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF,
+	0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF,
+	0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF,
+	0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF,
+	0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF,
+	0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF,
+	0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF,
+	0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF,
+	0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF
+	};
+
+
 
 int headers_initialized = 0;
 
@@ -323,34 +357,6 @@ void cgi_redirect(char *url)
 	printf("Location: %s\r\n\r\n", url);
 }
 
-// Original idea from cgic library
-void init_hex_table()
-{
-	memset(hextable, 0, 255);
-
-	hextable['1'] = 1;
-	hextable['2'] = 2;
-	hextable['3'] = 3;
-	hextable['4'] = 4;
-	hextable['5'] = 5;
-	hextable['6'] = 6;
-	hextable['7'] = 7;
-	hextable['8'] = 8;
-	hextable['9'] = 9;
-	hextable['a'] = 10;
-	hextable['b'] = 11;
-	hextable['c'] = 12;
-	hextable['d'] = 13;
-	hextable['e'] = 14;
-	hextable['f'] = 15;
-	hextable['A'] = 10;
-	hextable['B'] = 11;
-	hextable['C'] = 12;
-	hextable['D'] = 13;
-	hextable['E'] = 14;
-	hextable['F'] = 15;
-}
-
 /**
 *  Main cgi function.
 *  Configures all (most?) we need to  get cgi library working correctly. It MUST be called before
@@ -359,8 +365,6 @@ void init_hex_table()
 **/
 int cgi_init()
 {
-	init_hex_table();
-
 	// Well... the reason I put cgi_get_cookies() here is to not
 	// cause problems with session's. Note that, when you want
 	// to use session within your program, you need  cgi_get_cookies()
@@ -396,36 +400,45 @@ void cgi_end()
 * @return The new string
 * @see cgi_escape_special_chars
 **/
-char *cgi_unescape_special_chars(char *str)
+char *cgi_unescape_special_chars(const char *str)
 {
-	char *tmp;
-	register int i, len, pos = 0;
+	char *new, *write;
+	char c = *str;
+	char hex[2];
 
-	len = strlen(str);
-	tmp = (char *)malloc(len + 1);
-	if (tmp == NULL)
+	new = (char *)malloc(strlen(str) + 1);
+	if (! new)
 		libcgi_error(E_MEMORY, "%s, line %s", __FILE__, __LINE__);
 
-	for (i = 0; i < len; i++) {
-		// If we found a '%' character, then the next two are the character
-		// hexa code. Converting a hexadecimal code to their decimal is easy:
-		// The first character needs to be multiplied by 16 ( << 4 ), and the another
-		// one we just get the value from hextable variable
-		if ((str[i] == '%') && isalnum(str[i+1]) && isalnum(str[i+2])) {
-			tmp[pos] = (hextable[(unsigned char) str[i+1]] << 4) + hextable[(unsigned char) str[i+2]];
-			i += 2;
-		}
-		else if (str[i] == '+')
-			tmp[pos] = ' ';
-		else
-			tmp[pos] = str[i];
+	for (write = new; c; ++str, ++write)
+	{
+		c = *str;
 
-		pos++;
+		if (c == '+')
+			c = ' ';
+		else if (c == '%')
+		{
+			/* check first expected hex character isn't null to avoid reading
+			 * second hex character from beyond the string
+			 */
+			if (str[1])
+			{
+				hex[0] = hextable[str[1]];
+				hex[1] = hextable[str[2]];
+
+				/* valid hex characters? */
+				if (hex[0] != 0xFF && hex[1] != 0xFF)
+				{
+					c = (hex[0] << 4) | hex[1];
+					str += 2;
+				}
+			}
+		}
+
+		*write = c;
 	}
 
-	tmp[pos] = '\0';
-
-	return tmp;
+	return new;
 }
 
 /**
@@ -434,37 +447,40 @@ char *cgi_unescape_special_chars(char *str)
 * @return The new string
 * @see cgi_unescape_special_chars
 **/
-char *cgi_escape_special_chars(char *str)
+char *cgi_escape_special_chars(const unsigned char *str)
 {
-	unsigned char hex[] = "0123456789ABCDEF";
-	register int i, j, len, tmp_len;
-	unsigned char *tmp;
+	static const unsigned char hex[] = "0123456789ABCDEF";
+	int i, len;
+	unsigned char *new;
 
 	len = strlen(str);
-	tmp_len = len;
-	tmp = (unsigned char*)malloc(len+1);
-	if (tmp == NULL)
+
+	// worst case scenario: every character would need to be escaped, requiring
+	// 3 times more memory than the original string.
+	new = (unsigned char*)malloc((len * 3) + 1);
+	if (! new)
 		libcgi_error(E_MEMORY, "%s, line %s", __FILE__, __LINE__);
 
-	for (i = 0, j = 0; i < len; i++, j++) {
-		tmp[j] = (unsigned char)str[i];
-		if (tmp[j] == ' ')
-			tmp[j] = '+';
-		else if (!isalnum(tmp[j]) && strchr("_-.", tmp[j]) == NULL) {
-			tmp_len += 3;
-			tmp = realloc(tmp, tmp_len);
-			if (!tmp)
-				libcgi_error(E_MEMORY, "%s, line %s", __FILE__, __LINE__);
-
-			tmp[j++] = '%';
-			tmp[j++] = hex[(unsigned char)str[i] >> 4];
-			tmp[j] = hex[(unsigned char)str[i] & 0x0F];
+	for (i = 0; *str; i++, str++)
+	{
+		if (*str == ' ')
+			new[i] = '+';
+		else if (! isalnum(*str) && ! strchr("_-.", *str))
+		{
+			new[i++] = '%';
+			new[i++] = hex[*str >> 4];
+			new[i]   = hex[*str & 0x0F];
 		}
+		else
+			new[i] = *str;
 	}
 
-	tmp[j] = '\0';
+	new[i] = '\0';
 
-	return tmp;
+	// free unused memory. no reason to fail.
+	new = realloc(new, i+1);
+
+	return new;
 }
 
 /**
