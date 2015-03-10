@@ -107,7 +107,7 @@ const char *session_error_message[] = {
 // cgi.c
 extern int headers_initialized;
 extern void libcgi_error(int error_code, const char *msg, ...);
-extern formvars *process_data(char *query, formvars **start, formvars **last,
+extern formvars *process_data(const char *query, formvars **start, formvars **last,
                               const char sep_value, const char sep_name);
 
 // Error types
