@@ -112,7 +112,7 @@ formvars *process_data(const char *query, formvars **start, formvars **last,
 		     ++equal);
 
 		name_len = equal - query;
-		value_len = amp - (equal + 1);
+		value_len = (*equal == sep_value) ? amp - (equal + 1) : 0;
 
 		/* add name and value to new formvar item */
 		item->name = strndup(query, name_len);
