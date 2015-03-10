@@ -97,11 +97,9 @@ formvars *process_data(const char *query, formvars **start, formvars **last,
 	while (*query)
 	{
 		/* allocate and initialise memory for new formvars */
-		item = (formvars *)malloc(sizeof(formvars));
+		item = (formvars *)calloc(1, sizeof(formvars));
 		if (!item)
 			libcgi_error(E_MEMORY, "%s, line %s", __FILE__, __LINE__);
-
-		memset(item, 0, sizeof(formvars));
 
 		/* find end of name and value pair (with or without value) */
 		for (amp = query; *amp != sep_name && *amp; ++amp);
