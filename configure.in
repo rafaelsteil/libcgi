@@ -4,6 +4,7 @@ AC_CONFIG_HEADER(src/config.h)
 dnl Searching for a compiler
 AC_PROG_CC
 AC_PROG_INSTALL
+AC_PROG_LN_S
 
 AC_DEFINE(HAVE_MD5)
 

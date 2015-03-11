@@ -1,11 +1,12 @@
 INSTALL = @INSTALL@ -D
+LN_S = @LN_S@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@ -D
 INSTALL_DATA = @INSTALL_DATA@ -D
 
 prefix = @prefix@
 exec_prefix = @exec_prefix@
 
-SHAREDOPT = -shared -shared -fPIC,-Wl,-soname,libcgi.so.0
+SHAREDOPT = -shared -shared -fPIC -Wl,-soname,libcgi.so.0
 libdir = $(prefix)/lib
 incdir = $(prefix)/include/libcgi
 mandir	= $(prefix)/man/man3
@@ -53,11 +54,12 @@ src/libcgi.a: $(OBJS)
 	$(AR) rc src/libcgi.a $(OBJS)
 
 src/libcgi.so: $(SHOBJS)
-	$(CC) $(SHAREDOPT) -o src/libcgi.so $(SHOBJS) $(EXTRA_LIBS)
+	$(CC) $(SHAREDOPT) -o src/libcgi.so.0 $(SHOBJS) $(EXTRA_LIBS)
 
 install:
 	$(INSTALL) -m 0644 src/libcgi.a $(DESTDIR)/$(libdir)/libcgi.a
-	$(INSTALL) -m 0644 src/libcgi.so $(DESTDIR)/$(libdir)/libcgi.so
+	$(INSTALL) -m 0644 src/libcgi.so.0 $(DESTDIR)/$(libdir)/libcgi.so.0
+	$(LN_S) libcgi.so.0 $(DESTDIR)/$(libdir)/libcgi.so
 	$(INSTALL) -m 0644 src/cgi.h $(DESTDIR)/$(incdir)/cgi.h
 	$(INSTALL) -m 0644 src/session.h $(DESTDIR)/$(incdir)/session.h
 
