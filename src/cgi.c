@@ -90,27 +90,32 @@ formvars *process_data(const char *query, formvars **start, formvars **last,
 	size_t name_len;
 	size_t value_len;
 	char *str_unesc;
+	const char *query_end = rawmemchr(query, '\0');
 
 	if (query == NULL)
 		return *start;
 
-	while (*query)
+	for ( ; query < query_end; query = amp + 1)
 	{
-		/* allocate and initialise memory for new formvars */
-		item = (formvars *)calloc(1, sizeof(formvars));
-		if (!item)
-			libcgi_error(E_MEMORY, "%s, line %s", __FILE__, __LINE__);
-
 		/* find end of name and value pair (with or without value) */
-		for (amp = query; *amp != sep_name && *amp; ++amp);
+		for (amp = query; (*amp != sep_name) && (*amp); ++amp);
 
-		/* find name and value sep_namearator (end of name) */
-		for (equal = query;
-		     *equal != sep_value && equal < amp && *equal;
-		     ++equal);
+		/* find name and value separator (end of name) */
+		for (equal = query; (*equal != sep_value) && (equal < amp); ++equal);
 
 		name_len = equal - query;
 		value_len = (*equal == sep_value) ? amp - (equal + 1) : 0;
+
+		/* name could be zero-length if '&' or '=' is the first character.
+		 * value is of no use without name.
+		 */
+		if (! name_len)
+			continue;
+
+		/* allocate and initialise memory for new formvars */
+		item = (formvars *)calloc(1, sizeof(formvars));
+		if (! item)
+			libcgi_error(E_MEMORY, "%s, line %s", __FILE__, __LINE__);
 
 		/* add name and value to new formvar item */
 		item->name = strndup(query, name_len);
@@ -129,11 +134,6 @@ formvars *process_data(const char *query, formvars **start, formvars **last,
 		}
 
 		slist_add(item, start, last);
-
-		/* move query beyond end of name and value pair separator */
-		query = amp;
-		if (*query)
-			++query;
 	}
 
 	return *start;
