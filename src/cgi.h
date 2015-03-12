@@ -53,7 +53,7 @@ extern char *cgi_unescape_special_chars(const char *str);
 extern char *cgi_escape_special_chars(const unsigned char *str);
 extern char *cgi_param_multiple(const char *name);
 extern char *htmlentities(const char *str);
-extern int cgi_include(const char *filename);
+extern int cgi_include(const char *path);
 extern formvars *cgi_process_form(void);
 extern int cgi_init(void);
 extern void cgi_end(void);
