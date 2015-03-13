@@ -50,7 +50,7 @@ extern void cgi_init_headers(void);
 extern void cgi_redirect(char *url);
 extern void cgi_fatal(const char *error);
 extern char *cgi_unescape_special_chars(const char *str);
-extern char *cgi_escape_special_chars(const unsigned char *str);
+extern char *cgi_escape_special_chars(const char *str);
 extern char *cgi_param_multiple(const char *name);
 extern char *htmlentities(const char *str);
 extern int cgi_include(const char *filename);

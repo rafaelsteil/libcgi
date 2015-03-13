@@ -423,8 +423,8 @@ char *cgi_unescape_special_chars(const char *str)
 			 */
 			if (str[1])
 			{
-				hex[0] = hextable[str[1]];
-				hex[1] = hextable[str[2]];
+				hex[0] = hextable[(unsigned char)str[1]];
+				hex[1] = hextable[(unsigned char)str[2]];
 
 				/* valid hex characters? */
 				if (hex[0] != 0xFF && hex[1] != 0xFF)
@@ -447,17 +447,16 @@ char *cgi_unescape_special_chars(const char *str)
 * @return The new string
 * @see cgi_unescape_special_chars
 **/
-char *cgi_escape_special_chars(const unsigned char *str)
+char *cgi_escape_special_chars(const char *str)
 {
-	static const unsigned char hex[] = "0123456789ABCDEF";
-	int i, len;
-	unsigned char *new;
-
-	len = strlen(str);
+	static const char hex[] = "0123456789ABCDEF";
+	char *new;
+	int i;
+	size_t len = strlen(str);
 
 	// worst case scenario: every character would need to be escaped, requiring
 	// 3 times more memory than the original string.
-	new = (unsigned char*)malloc((len * 3) + 1);
+	new = (char*)malloc((len * 3) + 1);
 	if (! new)
 		libcgi_error(E_MEMORY, "%s, line %s", __FILE__, __LINE__);
 
@@ -468,13 +467,12 @@ char *cgi_escape_special_chars(const unsigned char *str)
 		else if (! isalnum(*str) && ! strchr("_-.", *str))
 		{
 			new[i++] = '%';
-			new[i++] = hex[*str >> 4];
-			new[i]   = hex[*str & 0x0F];
+			new[i++] = hex[(unsigned char)*str >> 4];
+			new[i]   = hex[(unsigned char)*str & 0x0F];
 		}
 		else
 			new[i] = *str;
 	}
-
 	new[i] = '\0';
 
 	// free unused memory. no reason to fail.
