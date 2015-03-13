@@ -4,12 +4,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <unistd.h>
 
 #include "cgi.h"
 
 extern formvars *
 process_data(char *query, formvars **start, formvars **last,
              const char delim, const char sep);
+
+static int pipe_[2];
 
 static void
 test_cgi_escape_special_chars(void)
@@ -88,6 +91,26 @@ test_cgi_param_multiple(void)
 	cgi_end();
 }
 
+formvars *
+_post(const char *post_data)
+{
+	char length_str[20];
+	size_t length = strlen(post_data);
+
+	snprintf(length_str, sizeof(length_str),
+			 "%d", length);
+
+	assert(! putenv("REQUEST_METHOD=POST"));
+	assert(! setenv("CONTENT_LENGTH", length_str, 1));
+
+	write(pipe_[1], post_data, length);
+
+	assert(formvars_start == NULL);
+	assert(formvars_last == NULL);
+
+	return cgi_process_form();
+}
+
 void
 test_cgi_process_form(void)
 {
@@ -99,18 +122,31 @@ test_cgi_process_form(void)
 	assert(! cgi_process_form());
 
 	assert(! formvars_start && ! formvars_last);
+
 	cgi_end();
 
 	/* test query string */
 	assert(formvars_start == NULL);
 	assert(formvars_last == NULL);
 
-	assert(! putenv("QUERY_STRING=zero=0&one=one"));
+	assert(! putenv("QUERY_STRING=zero=0&one=test"));
 	assert(cgi_process_form());
 
 	assert(formvars_start && formvars_last);
 	assert(! strcmp(formvars_start->name, "zero"));
 	assert(! strcmp(formvars_start->value, "0"));
+	assert(! strcmp(cgi_param("one"), "test"));
+
+	cgi_end();
+
+	/* test post data */
+	assert(! putenv("QUERY_STRING"));
+	assert(_post("zero=0&one=test"));
+
+	assert(formvars_start && formvars_last);
+	assert(! strcmp(formvars_start->name, "zero"));
+	assert(! strcmp(formvars_start->value, "0"));
+	assert(! strcmp(cgi_param("one"), "test"));
 
 	cgi_end();
 }
@@ -119,9 +155,14 @@ test_cgi_process_form(void)
 
 /*****************************************************************************/
 
+
+
 int
 main(void)
 {
+	assert(! pipe(pipe_));
+	dup2(pipe_[0], STDIN_FILENO);
+
 	test_cgi_escape_special_chars();
 	test_process_data();
 	test_cgi_param_multiple();
