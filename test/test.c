@@ -7,6 +7,10 @@
 
 #include "cgi.h"
 
+extern formvars *
+process_data(char *query, formvars **start, formvars **last,
+             const char delim, const char sep);
+
 static void
 test_cgi_escape_special_chars(void)
 {
@@ -84,6 +88,34 @@ test_cgi_param_multiple(void)
 	cgi_end();
 }
 
+void
+test_cgi_process_form(void)
+{
+	/* test no data */
+	assert(formvars_start == NULL);
+	assert(formvars_last == NULL);
+
+	assert(! putenv("QUERY_STRING"));
+	assert(! cgi_process_form());
+
+	assert(! formvars_start && ! formvars_last);
+	cgi_end();
+
+	/* test query string */
+	assert(formvars_start == NULL);
+	assert(formvars_last == NULL);
+
+	assert(! putenv("QUERY_STRING=zero=0&one=one"));
+	assert(cgi_process_form());
+
+	assert(formvars_start && formvars_last);
+	assert(! strcmp(formvars_start->name, "zero"));
+	assert(! strcmp(formvars_start->value, "0"));
+
+	cgi_end();
+}
+
+
 
 /*****************************************************************************/
 
@@ -93,6 +125,7 @@ main(void)
 	test_cgi_escape_special_chars();
 	test_process_data();
 	test_cgi_param_multiple();
+	test_cgi_process_form();
 
 	puts("Tests passed.");
 	return 0;
