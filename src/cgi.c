@@ -176,46 +176,55 @@ formvars *process_data(char *query, formvars **start, formvars **last, const cha
 **/
 formvars *cgi_process_form()
 {
-	char *method;
+	formvars *ret = NULL;
+	char *method = getenv("REQUEST_METHOD");
 
-	method = getenv("REQUEST_METHOD");
+	/* When METHOD has no contents, the default action is to process it as
+	 * GET method
+	 */
+	if (! method || ! strcasecmp("GET", method))
+	{
+		char *q = getenv("QUERY_STRING");
 
-	// When METHOD has no contents, the default action is to process it as GET method
-	if (method == NULL || !strcasecmp("GET", method)) {
-		char *dados;
-		dados =	getenv("QUERY_STRING");
-
-		// Sometimes, GET comes with not any data
-		if (dados == NULL || strlen(dados) < 1)
-			return NULL;
-
-		return process_data(dados, &formvars_start, &formvars_last, '=', '&');
+		// Sometimes, GET comes without any data
+		if (q && *q)
+			ret = process_data(q, &formvars_start, &formvars_last, '=', '&');
 	}
-	else if (!strcasecmp("POST", method)) {
+	else if (! strcasecmp("POST", method))
+	{
 		char *post_data;
-		char *tmp_data;
-		int content_length;
-		formvars *ret;
+		char *length_str;
+		char *trailing;
+		unsigned long length;
+		/* no current support for file uploads, so limit upload data size
+		 * 1 MB should be overkill for text data
+		 */
+		const unsigned long content_max = 1024 * 1024;
 
-		tmp_data = getenv("CONTENT_LENGTH");
-		if (tmp_data == NULL)
+		length_str = getenv("CONTENT_LENGTH");
+		if (! length_str || ! *length_str)
 			return NULL;
 
-		content_length = atoi(tmp_data);
+		/* validate length. not checking for negative as is cast unsigned. */
+		length = strtoul(length_str, &trailing, 10);
+		if (*trailing != '\0' || ! length || length > content_max)
+			return NULL;
 
-		post_data = (char *)malloc(content_length + 1);
-		if (post_data == NULL)
+		post_data = (char *)malloc(length + 1);
+		if (! post_data)
 			libcgi_error(E_MEMORY, "%s, line %s", __FILE__, __LINE__);
 
-		fread(post_data, content_length, 1, stdin);
-		post_data[content_length] = '\0';
+		if (fread(post_data, sizeof(char), length, stdin) == length)
+		{
+			post_data[length] = '\0';
+			ret = process_data(post_data, &formvars_start, &formvars_last,
+			                   '=', '&');
+		}
 
-		ret = process_data(post_data, &formvars_start, &formvars_last, '=', '&');
 		free(post_data);
-		return ret;
 	}
 
-	return NULL;
+	return ret;
 }
 
 /**
