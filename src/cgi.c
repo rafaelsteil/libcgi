@@ -403,14 +403,14 @@ void cgi_end()
 char *cgi_unescape_special_chars(const char *str)
 {
 	char *new, *write;
-	char c = *str;
+	char c;
 	char hex[2];
 
 	new = (char *)malloc(strlen(str) + 1);
 	if (! new)
 		libcgi_error(E_MEMORY, "%s, line %s", __FILE__, __LINE__);
 
-	for (write = new; c; ++str, ++write)
+	for (write = new; *str; ++str, ++write)
 	{
 		c = *str;
 
@@ -437,6 +437,10 @@ char *cgi_unescape_special_chars(const char *str)
 
 		*write = c;
 	}
+	*write = '\0';
+
+	// free unused memory. no reason to fail.
+	new = realloc(new, strlen(new) + 1);
 
 	return new;
 }
