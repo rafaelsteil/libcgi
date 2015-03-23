@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <sys/stat.h> /* for cgi_include() */
 
 #include "cgi.h"
 #include "error.h"
@@ -249,25 +250,60 @@ void cgi_fatal(const char *msg)
 * cgi_include("top_bar.htm");
 * \endcode
 */
-int cgi_include(const char *filename)
+int cgi_include(const char *path)
+/* flow: path != NULL
+ *       get file stats (for file size)
+ *       allocate memory for file contents
+ *       open file stream
+ *       read whole file into memory - includes shouldn't be huge
+ *       write to stdout
+ *       return number of bytes written (0 == failure)
+ */
 {
-	FILE *inc;
-	char buffer[255];
+	struct stat fstats;
+	FILE *fp = NULL;
+	char *fcontents = NULL;
+	size_t nwritten = 0;
 
-	if (!(inc = fopen(filename, "r"))) {
-		cgi_init_headers();
+	if (! path)
+		goto err_input;
 
-		libcgi_error(E_WARNING, "Failed to open include file <b>%s</b>", filename);
+	if (stat (path, &fstats) == -1)
+		goto err_input;
 
-		return 0;
-	}
+	if (! (fcontents = malloc (fstats.st_size)))
+		goto err_memory;
 
- 	while (fgets(buffer, 255, inc))
-		printf("%s", buffer);
+	if (! (fp = fopen (path, "r")))
+		goto err_input;
 
-	fclose(inc);
+	if (fread (fcontents, sizeof(char), fstats.st_size, fp) != fstats.st_size)
+		goto err_input;
 
-	return 1;
+	nwritten = fwrite (fcontents, sizeof(char), fstats.st_size, stdout);
+	if (nwritten != fstats.st_size)
+		goto err_output;
+
+cleanup:
+	if (fp)
+		fclose (fp);
+	free (fcontents);
+
+	return nwritten;
+
+err_input:
+	libcgi_error(E_WARNING, "%s: file error: %s", __FUNCTION__, path);
+	goto cleanup;
+
+err_output:
+	libcgi_error(E_WARNING, "%s: written: %u of %u",
+	             __FUNCTION__, nwritten, fstats.st_size);
+	goto cleanup;
+
+err_memory:
+	/* exit(EXIT_FAILURE) */
+	libcgi_error(E_MEMORY, "%s: %s", __FILE__, __FUNCTION__);
+	goto cleanup; /* silence compiler warnings */
 }
 
 /**
