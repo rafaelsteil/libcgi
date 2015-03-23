@@ -349,27 +349,32 @@ void cgi_init_headers()
 **/
 char *cgi_param_multiple(const char *name)
 {
-	static unsigned int counter = 0;
-	unsigned int pos = 0;
-	formvars *begin;
+	/* DFrostByte: caching of 'name' would allow beginning new name search
+	* without having to fetch all occurrences of previous.
+	*
+	* taking a formvars * parameter would be more flexible. if return was also
+	* formvars *, the function would work in the same way without any
+	* need for static variables which may be problematic in a shared lib
+	*/
+	static formvars *iter = NULL;
+	char *value;
 
-	begin = formvars_start;
+	if (! iter)
+		iter = formvars_start;
 
-	while (begin) {
-		if ((!strcasecmp(begin->name, name)) && (++pos > counter)) {
-			counter++;
-
-			return (begin->value);
+	for (value = NULL; iter; iter = iter->next)
+	{
+		/* DFrostByte: shouldn't really be case-insensitive */
+		if (! strcasecmp(iter->name, name))
+		{
+			value = iter->value;
+			iter = iter->next;
+			break;
 		}
-
-		begin = begin->next;
 	}
-
-	counter = 0;
-
-	return NULL;
+	/* both iter and value will be NULL if no match was found */
+	return value;
 }
-
 /**
 *  Recirects to the specified url.
 * Remember that you cannot send any header before this function, or it will not work.
