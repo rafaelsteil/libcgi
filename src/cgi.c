@@ -83,79 +83,58 @@ extern formvars *cookie_end;
 
 // Separates *query in name=value pairs, then gets each piece of result of them, storing
 // the result in the linked list global variable
-formvars *process_data(char *query, formvars **start, formvars **last, const char delim, const char sep)
+formvars *process_data(const char *query, formvars **start, formvars **last,
+	                   const char sep_value, const char sep_name)
 {
-	register size_t position = 0, total_len = 0, i = 0;
-	char *aux, *str_unesc;
-	formvars *data;
+	formvars *item;
+	const char *equal, *amp;
+	size_t name_len;
+	size_t value_len;
+	char *str_unesc;
+	const char *query_end = rawmemchr(query, '\0');
 
 	if (query == NULL)
 		return *start;
 
-	total_len = strlen(query);
-	aux = query;
-	while (*query) {
-		position = 0;
+	for ( ; query < query_end; query = amp + 1)
+	{
+		/* find end of name and value pair (with or without value) */
+		for (amp = query; (*amp != sep_name) && (*amp); ++amp);
 
-		data = (formvars *)malloc(sizeof(formvars));
-		if (!data)
+		/* find name and value separator (end of name) */
+		for (equal = query; (*equal != sep_value) && (equal < amp); ++equal);
+
+		name_len = equal - query;
+		value_len = (*equal == sep_value) ? amp - (equal + 1) : 0;
+
+		/* name could be zero-length if '&' or '=' is the first character.
+		 * value is of no use without name.
+		 */
+		if (! name_len)
+			continue;
+
+		/* allocate and initialise memory for new formvars */
+		item = (formvars *)calloc(1, sizeof(formvars));
+		if (! item)
 			libcgi_error(E_MEMORY, "%s, line %s", __FILE__, __LINE__);
 
-		memset(data, 0, sizeof(formvars));
-
-		// Scans the string for the next 'delim' character
-		while (*aux && (*aux != delim)) {
-			position++;
-			aux++;
-			i++;
-		}
-
-		if (*aux) {
-			aux++;
-			i++;
-		}
-
-		data->name = (char *)malloc(position+1);
-		if (data->name == NULL)
+		/* add name and value to new formvar item */
+		item->name = strndup(query, name_len);
+		if (! item->name)
 			libcgi_error(E_MEMORY, "%s, line %s", __FILE__, __LINE__);
 
-		strncpy(data->name, query, position);
-		data->name[position] = '\0';
+		if (value_len)
+		{
+			item->value = strndup(equal + 1, value_len);
+			if (! item->value)
+				libcgi_error(E_MEMORY, "%s, line %s", __FILE__, __LINE__);
 
-		query = aux;
-		position = 0;
-		while (*aux && (*aux != sep)) {
-			if ((*aux == '%') && (i + 2 <= total_len)) {
-				if (isalnum(aux[1]) && isalnum(aux[2])) {
-					aux += 2;
-					i += 2;
-					position++;
-				}
-			}
-			else
-				position++;
-
-			aux++;
-			i++;
+			str_unesc = cgi_unescape_special_chars(item->value);
+			free(item->value);
+			item->value = str_unesc;
 		}
 
-		if (*aux) {
-			aux++;
-			i++;
-		}
-
-		data->value = (char *)malloc(position+1);
-		if (data->value == NULL)
-			libcgi_error(E_MEMORY, "%s, line %s", __FILE__, __LINE__);
-
-		str_unesc = cgi_unescape_special_chars(query);
-		strncpy(data->value, str_unesc, position);
-		data->value[position] = '\0';
-		free(str_unesc);
-
-		slist_add(data, start, last);
-
-		query = aux;
+		slist_add(item, start, last);
 	}
 
 	return *start;
