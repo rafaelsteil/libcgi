@@ -557,6 +557,22 @@ const char *cgi_version( void )
 	return CGI_VERSION;
 }
 
+void cgi_redirect_status( enum cgi_http_status_code status_code,
+		const char *uri )
+{
+	if ( headers_initialized )
+	{
+		libcgi_error( E_WARNING,
+				"<br><b>Cannot redirect. Headers already sent</b><br>" );
+		return;
+	}
+
+	printf( "Status: %i\r\n"
+			"Location: %s\r\n"
+			"\r\n",
+			status_code, uri );
+}
+
 /**
 * @}
 */
