@@ -1,6 +1,7 @@
 #include <stdio.h>
-#include <cgi.h>
-#include <session.h>
+
+#include <libcgi/cgi.h>
+#include <libcgi/session.h>
 
 int main(void)
 {
@@ -10,7 +11,7 @@ int main(void)
 
 	puts("<html><body>");
 	cgi_include("session_ex1_desc.html");
-	
+
 	puts(""
 	"<table width='70%%' align='center'>"
 	"<tr>"
@@ -19,7 +20,7 @@ int main(void)
 	"");
 
 	// The user is logged?
-	if (cgi_session_var_exists("logged")) 
+	if (cgi_session_var_exists("logged"))
 		puts(" - logged");
 	else
 		puts(" - not logged yet");

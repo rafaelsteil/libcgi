@@ -1,5 +1,6 @@
 #include <stdio.h>
-#include "cgi.h"
+
+#include <libcgi/cgi.h>
 
 int main(void)
 {
@@ -17,7 +18,7 @@ int main(void)
 	 "   <meta name='author' content='Rafael Steil'>"
 	  "    <title>LIBCGI Examples</title>"
 	   "   </head>"
-	   "  <body text='#000000' bgcolor='#ffffff' link='#0000ee' vlink='#551a8b' alink='#0000ee'>"		
+	   "  <body text='#000000' bgcolor='#ffffff' link='#0000ee' vlink='#551a8b' alink='#0000ee'>"
 	"");
 
 	// NAME
@@ -44,9 +45,9 @@ int main(void)
 	puts(""
 	"</body>"
 	"</html>"
-	"");	
+	"");
 
 	cgi_end();
-	
+
 	return 0;
 }

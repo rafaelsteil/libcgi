@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <time.h>
-#include <cgi.h>
+
+#include <libcgi/cgi.h>
 
 // File to write the messages
 #define GBOOK "/tmp/libcgi_gbook.html"
@@ -33,9 +34,9 @@ void example_description()
 }
 
 int main()
-{	
+{
 	cgi_init();
-	cgi_process_form();	
+	cgi_process_form();
 	cgi_init_headers();
 
 	example_description();
@@ -45,7 +46,7 @@ int main()
 		FILE *fp;
 
 		fp = fopen(GBOOK, "a");
-		if (!fp) 
+		if (!fp)
 			cgi_fatal("Failed to open guestbook file for appending");
 
 		fseek(fp, 0, SEEK_SET);
@@ -65,7 +66,7 @@ int main()
 	show_comments();
 
 	puts("</td></tr></table></body></html>");
-	
+
 	cgi_end();
 	return 0;
 }

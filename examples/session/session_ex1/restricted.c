@@ -1,11 +1,12 @@
 #include <stdio.h>
-#include <cgi.h>
-#include <session.h>
+
+#include <libcgi/cgi.h>
+#include <libcgi/session.h>
 
 int main(void)
 {
 	char *name, *value;
-	
+
 	cgi_init();
 	cgi_session_start();
 	cgi_process_form();

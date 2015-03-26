@@ -1,5 +1,6 @@
 #include <stdio.h>
-#include <cgi.h>
+
+#include <libcgi/cgi.h>
 
 char *example_description()
 {
@@ -7,20 +8,20 @@ char *example_description()
 	"LibCGI examples, htmltities() function demostration. <br>"
 	"Type an html code into textarea and then click OK"
 	"";
-	
+
 	return desc;
 }
 
 int main()
 {
 	char *q;
-	
+
 	cgi_init();
 	cgi_process_form();
 	cgi_init_headers();
-	
+
 	q = cgi_param("q");
-	
+
 	if (q)
 		puts(htmlentities(q));
 	else {
@@ -34,9 +35,9 @@ int main()
 		"</form>"
 		"</body>"
 		"</html>"
-		"", example_description());	
+		"", example_description());
 	}
-	
+
 	cgi_end();
 	return 0;
 }
