@@ -9,14 +9,16 @@
 #include "cgi.h"
 
 extern formvars *
-process_data(char *query, formvars **start, formvars **last,
-             const char delim, const char sep);
+process_data(const char *query, formvars **start, formvars **last,
+             const char sep_value, const char sep_name);
 
 static int pipe_[2];
 
 static void
 test_cgi_escape_special_chars(void)
 {
+    puts(__FUNCTION__);
+
 	const char *esc_valid = "%._-+0123456789"
 	                        "abcdefghijklmnopqrstuvwxyz"
 	                        "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -40,6 +42,8 @@ test_cgi_escape_special_chars(void)
 static void
 test_process_data(void)
 {
+    puts(__FUNCTION__);
+
 	formvars *fvp, *iter;
 	const char *data[] = {"1=one&second=%20.two-%30&33=three+three",
 	                      "&1=one&second=%20.two-%30&33=three+three",
@@ -79,6 +83,8 @@ test_process_data(void)
 void
 test_cgi_param_multiple(void)
 {
+    puts(__FUNCTION__);
+
 	const char *data = "zero=0&one=one&one=two&two=three&one=four&three=3";
 
 	process_data(data, &formvars_start, &formvars_last, '=', '&');
@@ -114,6 +120,8 @@ _post(const char *post_data)
 void
 test_cgi_process_form(void)
 {
+    puts(__FUNCTION__);
+
 	/* test no data */
 	assert(formvars_start == NULL);
 	assert(formvars_last == NULL);
@@ -151,6 +159,67 @@ test_cgi_process_form(void)
 	cgi_end();
 }
 
+static void
+_test_ltrim(void)
+{
+    puts(__FUNCTION__);
+
+    char before[][15] = {   "   test1",
+                            "",
+                            " ",
+                            "        test",
+                            "\nexample",
+                            "\r\nline"      };
+    char after[][15] =  {   "test1",
+                            "",
+                            "",
+                            "test",
+                            "example",
+                            "line"          };
+    size_t  n = sizeof(before) / 15;
+
+    char buf[30];
+    while (n)
+    {
+        --n;
+        strcpy(buf, before[n]);
+        cgi_ltrim(buf);
+        assert(! strcmp(buf, after[n]));
+    }
+}
+
+static void
+_test_rtrim(void)
+{
+    puts(__FUNCTION__);
+
+    char before[][10] = {   "test1",
+                            "",
+                            " ",
+                            "test    ",
+                            "example\n",
+                            "line\r\n"      };
+    char after[][10] =  {   "test1",
+                            "",
+                            "",
+                            "test",
+                            "example",
+                            "line"          };
+    size_t  n = sizeof(before) / 10;
+
+    char buf[30];
+    while (n)
+    {
+        --n;
+        strcpy(buf, before[n]);
+        cgi_rtrim(buf);
+        assert(! strcmp(buf, after[n]));
+
+        strcpy(buf, before[n]);
+        cgi_rtrim(buf);
+        assert(! strcmp(buf, after[n]));
+    }
+}
 
 
 /*****************************************************************************/
@@ -167,6 +236,9 @@ main(void)
 	test_process_data();
 	test_cgi_param_multiple();
 	test_cgi_process_form();
+
+	_test_ltrim();
+	_test_rtrim();
 
 	puts("Tests passed.");
 	return 0;
