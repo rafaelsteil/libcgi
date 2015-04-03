@@ -176,12 +176,18 @@ char *stripslashes(char *str)
 */
 void ltrim(char *str)
 {
-	char *s = str;
+    char *s = str;
 
-	while (isspace(*s))
-		s++;
+    /* nothing to do if str is NULL or zero-length */
+	if (! str || ! *str)
+		return;
 
-	while ((*str++ = *s++));
+    while (isspace(*s))
+        s++;
+
+    /* action only needs to be taken if space characters were found */
+    if (s > str)
+        while ((*str++ = *s++));
 }
 
 /**
@@ -201,12 +207,25 @@ void ltrim(char *str)
 void rtrim(char *str)
 {
 	char *s = str;
-	register int i;
 
-	for (i = strlen(s)-1; isspace(*(s+i)); i--)
-		*(s+i) = '\0';
+	/* nothing to do if str is NULL or zero-length */
+	if (! str || ! *str)
+		return;
 
-	while ((*str++ = *s++));
+	/* address of last character in @str */
+	s += strlen(str) - 1;
+
+	/* loop backwards through @str to find last non-space character */
+	while (! (s < str))
+	{
+		if (! isspace(*s))
+			break;
+		--s;
+	}
+	/* terminate @str after the last non-space character, or first character
+	 * if only spaces were found
+	 */
+	s[1] = 0;
 }
 
 /**
