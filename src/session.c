@@ -215,8 +215,6 @@ int sess_file_rewrite()
 {
 	formvars *data;
 
-	cgi_init_headers();
-
 	// Rewrites all data to session file
 	sess_file = fopen(sess_fname, "w");
 
