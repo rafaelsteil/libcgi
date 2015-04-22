@@ -186,10 +186,10 @@ char * cgi_ltrim(char *str)
 			s++;
 
 		/* if any space characters were found, remove them by copying from
-		 * beyond them to the source string
+		 * beyond them to the beginning of the source string
 		 */
 		if (s > str)
-			strcpy(str, s);
+			while ((*str++ = *s++));
 	}
 
 	return str;
