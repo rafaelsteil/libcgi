@@ -96,6 +96,8 @@ int slist_delete(char *name, formvars **start, formvars **last)
 		// the value of start variable, then it works correctly
 		prior = *start;
 
+		if ( !(*start)->next ) return 0;
+
 		// Critical section:
 		// the next item is the one to be deleted???
 		if (!strcasecmp((*start)->next->name, name)) {
