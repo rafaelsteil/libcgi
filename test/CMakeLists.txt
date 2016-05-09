@@ -16,3 +16,9 @@ target_link_libraries(cgi-test-slist
 add_test(slist_add
 	cgi-test-slist add
 )
+add_test(slist_delete_zero
+	cgi-test-slist deletezero
+)
+add_test(slist_delete_one
+	cgi-test-slist deleteone
+)
