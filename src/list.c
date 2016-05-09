@@ -68,6 +68,8 @@ int slist_delete(char *name, formvars **start, formvars **last)
 	// *prior will store the prior item relacted to actual in the loop
 	formvars *begin, *prior;
 
+	if ( !*start ) return 0;
+
 	// Before of all, is more simple to check if the item
 	// to delete is in the next item. If true, we don't need
 	// to enter in the loop
@@ -93,6 +95,8 @@ int slist_delete(char *name, formvars **start, formvars **last)
 		// Note that, in the loop, we're really changing
 		// the value of start variable, then it works correctly
 		prior = *start;
+
+		if ( !(*start)->next ) return 0;
 
 		// Critical section:
 		// the next item is the one to be deleted???
