@@ -20,6 +20,7 @@
 */
 
 #include <stdio.h>
+#include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -58,98 +59,42 @@ void slist_add(formvars *item, formvars **start, formvars **last)
 }
 
 // Delete from list the item pointed by name
-
-// This code is a bit complicated, and I needed some
-// long hours to terminate it. In a future release,
-// I will explain the algorithm better
 int slist_delete(char *name, formvars **start, formvars **last)
 {
-	// *begin will be used to store the start of the list,
-	// *prior will store the prior item relacted to actual in the loop
-	formvars *begin, *prior;
+	formvars *curr, *prev;
 
-	if ( !*start ) return 0;
+	if ( !name ) return 0;
 
-	// Before of all, is more simple to check if the item
-	// to delete is in the next item. If true, we don't need
-	// to enter in the loop
-	if (!strcasecmp((*start)->name, name)) {
-		// The start of the list will contains the next item
-		*start = (*start)->next;
-
-		// if start is null, then we haven't more itens
-		// in the list..
-		if (!*start)
-			*last = NULL;
-
-		return 1 ;
-	}
-
-	// Stores the start of the list
-	begin = *start;
-
-	// Stays in the loop while the item to be deleted
-	// is not found
-	while (*start) {
-		// Stores the prior item of the list
-		// Note that, in the loop, we're really changing
-		// the value of start variable, then it works correctly
-		prior = *start;
-
-		if ( !(*start)->next ) return 0;
-
-		// Critical section:
-		// the next item is the one to be deleted???
-		if (!strcasecmp((*start)->next->name, name)) {
-			// Before, check if the item that will be deleted
-			// is the last... if true, then the next item need to
-			// contain null ( the end of list ), and the actual
-			// value is changed with the value of the prior variable
-			if ((*start)->next == *last) {
-				(*start)->next = NULL;
-				*last = prior;
+	for ( prev = NULL, curr = *start;
+			curr;
+			prev = curr, curr = curr->next )
+	{
+		if ( !strcasecmp( curr->name, name ) )
+		{
+			if ( prev == NULL )
+			{
+				/*	first element matches	*/
+				*start = curr->next;
 			}
 			else
-				// otherwise... well
-				// the item that will be deleted is pointed
-				// by (*start)->next. So, the item after them
-				// is the new item in this position
-				// Note:
-				// ...
-				// [1] item one
-				// [2] item two <-- This one will be deleted (example)
-				// [3] item three
-				// [4] item four
-				// [5] item five
-				//
-				// So, now the list is
-				// [1] item one
-				// [3] item three
-				// [4] item four
-				// [5] item five
-				//
-				// but the above is only a simple example, because the
-				// position of the itens is changed too
-				// [1] item one
-				// [2] item three
-				// [3] item four
-				// [4] item five
-				//
-				// well.. the basic idea is it...
-				(*start)->next = (*start)->next->next;
+			{
+				/*	relink list aka skip the to be deleted element	*/
+				prev->next = curr->next;
+			}
 
-			// Restores the start of the list
-			*start = begin;
+			if ( curr->next == NULL )
+			{
+				*last = prev;
+			}
 
-			// finish
+			/*	deallocate current element	*/
+			free( curr->name );
+			free( curr->value );
+			free( curr );
+
 			return 1;
 		}
-
-		// Walk to the next item
-		*start = (*start)->next;
 	}
-
-	*start = begin;
 
 	return 0;
 }
