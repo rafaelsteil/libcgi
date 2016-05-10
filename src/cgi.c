@@ -91,7 +91,7 @@ formvars *process_data(const char *query, formvars **start, formvars **last,
 	size_t name_len;
 	size_t value_len;
 	char *str_unesc;
-	const char *query_end = rawmemchr(query, '\0');
+	const char *query_end = strchr(query, '\0');
 
 	if (query == NULL)
 		return *start;
