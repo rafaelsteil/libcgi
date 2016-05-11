@@ -12,3 +12,10 @@ if(NOT TARGET @PROJECT_NAME@-shared)
 	include("${_dir}/@PROJECT_NAME@-targets.cmake")
 endif(NOT TARGET @PROJECT_NAME@-shared)
 set(CGI_LIBRARIES @PROJECT_NAME@-shared)
+
+# feature summary
+include(FeatureSummary)
+set_package_properties(@PROJECT_NAME_UC@ PROPERTIES
+	DESCRIPTION "@CGI_DESCRIPTION@"
+	URL "@CGI_URL@"
+)
