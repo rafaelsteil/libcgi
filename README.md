@@ -6,10 +6,32 @@ It was my first Open Source project, somewhere back in the 2000s and somethings.
 
 Building
 --------
+
+### Autotools
+
 * Type _./configure_ and then _make_
 * To clean, type _make clean_
 * To remove library files, type _make uninstall_
 * At the _examples/_ directory you'll find some code to start with
+
+### CMake
+
+LibCGI can be built with [CMake](https://cmake.org/). One quick way:
+
+* create a build directory and change into it
+
+        mkdir build
+        cd build
+
+* call cmake
+    
+        cmake ..
+
+* build it
+    
+        make
+
+Of course every other way CMake provides would also work, see CMake documentation.
 
 TODO
 ----
