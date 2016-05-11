@@ -37,6 +37,21 @@ Well, I am keeping this TODO list here for historical (and funny) reasons. Nowad
 
 Changelog
 ---------
+__Version 1.1__
+_Thanks to Alexander Dahl, D Frost, Rafael Steil, Michael Olbrich, Robert Schwebel_
+
+After moving the source to GitHub in 2011 this release contains numerous changes from 2012 up to 2016, while still keeping the old API. Consider this a maintenance release which still has lots of flaws. This is a short summary of changes, for more details you can now use the Git history.
+
+* Applied bugfixes from [Debian](https://www.debian.org/) and [ptxdist](http://www.ptxdist.org/)
+* Added LICENSE file
+* Fixed several memory leaks
+* Optimized speed
+* Corrected declarations
+* Removed some compiler warnings
+* Fixed sessions when using redirects (#19)
+* Fixed possible segmentation faults in slist implementation (#24)
+* Switched build system to CMake (#27)
+
 __Version 1.0__
 _Thanks to James Marjie, Mitch, Tamas Sarlos, Luis Figueiredo, Oliver Schlag and Sverre H. Huseby_
 
