@@ -37,7 +37,22 @@ Well, I am keeping this TODO list here for historical (and funny) reasons. Nowad
 
 Changelog
 ---------
-__Vesion 1.0__
+__Version 1.1__
+_Thanks to Alexander Dahl, D Frost, Rafael Steil, Michael Olbrich, Robert Schwebel_
+
+After moving the source to GitHub in 2011 this release contains numerous changes from 2012 up to 2016, while still keeping the old API. Consider this a maintenance release which still has lots of flaws. This is a short summary of changes, for more details you can now use the Git history.
+
+* Applied bugfixes from [Debian](https://www.debian.org/) and [ptxdist](http://www.ptxdist.org/)
+* Added LICENSE file
+* Fixed several memory leaks
+* Optimized speed
+* Corrected declarations
+* Removed some compiler warnings
+* Fixed sessions when using redirects (#19)
+* Fixed possible segmentation faults in slist implementation (#24)
+* Switched build system to CMake (#27)
+
+__Version 1.0__
 _Thanks to James Marjie, Mitch, Tamas Sarlos, Luis Figueiredo, Oliver Schlag and Sverre H. Huseby_
 
 2003/06/03
@@ -50,7 +65,7 @@ _Thanks to James Marjie, Mitch, Tamas Sarlos, Luis Figueiredo, Oliver Schlag and
 
 2003/09/05
 
-* Renamed list_* functions to slist_* ( 's' of 'single' )
+* Renamed `list_*` functions to `slist_*` ( 's' of 'single' )
 
 2003/09/10
 
@@ -58,7 +73,7 @@ _Thanks to James Marjie, Mitch, Tamas Sarlos, Luis Figueiredo, Oliver Schlag and
 
 2003/12/05
 
-* Moved to va_copy() instead direct variable reference copy
+* Moved to `va_copy()` instead direct variable reference copy
 * Removed hard-coded program names from Makefile.in ( gcc and ar )
 
 2003/12/15
@@ -81,7 +96,7 @@ _Thanks to Oliver Schlag, Tommy, Diogo Gonzaga, Robert Csok_
 
 * Some changes in the documentation
 * New source tree
-* Added make_string function
+* Added `make_string` function
 
 2002/12/26
 
@@ -102,7 +117,7 @@ _Thanks to Hao Yu, Rainer Huobert, Zentara, Dennis Reichel, Tony Hansen, Jakub S
 
 2002/10/19
 
-* Rewritten process_data() function.
+* Rewritten `process_data()` function.
 
 2002/07/15
 
@@ -111,7 +126,7 @@ _Thanks to Hao Yu, Rainer Huobert, Zentara, Dennis Reichel, Tony Hansen, Jakub S
 2002/07/04
 
 * Fixed Makefile to correctly include error.o when compiling libcgi.a
-* Fixed process_data() function to prevent bad-formed %xx data
+* Fixed `process_data()` function to prevent bad-formed `%xx` data
 
 2002/09/21
 
@@ -125,13 +140,13 @@ _Thanks to Hao Yu, Rainer Huobert, Zentara, Dennis Reichel, Tony Hansen, Jakub S
 __Version 0.7.5__
 2002/06/29
 
-* Fixed a bug in cgi_session_start()
-* Added cgi_session_save_path() function
-* Added cgi_session_cookie_name() function
+* Fixed a bug in `cgi_session_start()`
+* Added `cgi_session_save_path()` function
+* Added `cgi_session_cookie_name()` function
 
 2002/06/14
 
-* Fixed cgi_cookie_add() to correctly handle cookie expiration times
+* Fixed `cgi_cookie_add()` to correctly handle cookie expiration times
 
 2002/06/13
 
@@ -151,13 +166,13 @@ __Version 0.7.5__
 2002/06/08
 
 * Updated htmlentities() function
-* Added str_base64_encode() and str_base64_decode() functions
+* Added `str_base64_encode()` and `str_base64_decode()` functions
 
 2002/06/06
 
-* Fixed a small bug in cgi_unescape_special_chars()
-* Fixed process_data() function to handle %xx ( hexa chars ) correctly
-* New cgi_include() function
+* Fixed a small bug in `cgi_unescape_special_chars()`
+* Fixed `process_data()` function to handle `%xx` ( hexa chars ) correctly
+* New `cgi_include()` function
 
 __Version 0.7.4__
 _Thanks to Andre 'pXd'_
@@ -165,7 +180,7 @@ _Thanks to Andre 'pXd'_
 2002/06/05
 
 * Release with know bugs
-* Fixed a memory leak at process_data() function
+* Fixed a memory leak at `process_data()` function
 * Fixed an incorrect parser when there was only one parameter in the URL
 * Droped redundante calls to sizeof() when using malloc()
 
@@ -180,14 +195,14 @@ __Version 0.7.3__
 
 * Code revision
 * header files rewritten
-* Added cgi_send_header() function
+* Added `cgi_send_header()` function
 
 __Version 0.7.2__
 _Special thanks to Erik Jansson and Robert Csok_
 
 2002/03/25
 
-* Due to a little bug, cgi_include() was dropped to its original version
+* Due to a little bug, `cgi_include()` was dropped to its original version
 
 2002/03/22
 
@@ -195,15 +210,15 @@ _Special thanks to Erik Jansson and Robert Csok_
 
 2002/03/21
 
-* Added str_nreplace() function
-* Changed replace() to str_replace()
+* Added `str_nreplace()` function
+* Changed replace() to `str_replace()`
 * Added stripnslashes() function
 * Documentation updated
 
 2002/03/20
 
 * New documentation
-* Added cgi_ to many function names
+* Added `cgi_` to many function names
 * Added addnslashes() function
 
 2002/03/13
@@ -212,20 +227,20 @@ _Special thanks to Erik Jansson and Robert Csok_
 
 2002/03/12
 
-* Fixed another bug at process_data() function that caused
+* Fixed another bug at `process_data()` function that caused
 more than necessary characters to be copied
 
 2002/03/11
 
-* Fixed a memory leak in cgi_process_form() function
-* Changed init_hex_table() function to use memset() insted for() loop to fill the array
+* Fixed a memory leak in `cgi_process_form()` function
+* Changed `init_hex_table()` function to use memset() insted for() loop to fill the array
 
 2002/03/10
 
-* Fixed a format bug in cgi_include() function
-* Fixed a bug in process_data() function that
+* Fixed a format bug in `cgi_include()` function
+* Fixed a bug in `process_data()` function that
 caused some characters to be incorrectly handled
-* Improved cgi_include() function performance
+* Improved `cgi_include()` function performance
 
 2002/03/04
 
@@ -234,7 +249,7 @@ caused some characters to be incorrectly handled
 __Version 0.7.1__
 2002/01
 
-* A bug in sess_file_rewrite() that caused application to crash was fixed
+* A bug in `sess_file_rewrite()` that caused application to crash was fixed
 
 __Version 0.7__
 _Special thanks to ZE bennyben_
@@ -244,7 +259,7 @@ _Special thanks to ZE bennyben_
 * Session support major updates
 * Some memory leaks and String manipulation bugs fixed
 * Removed debug() funciont and #define's relacted
-* Added libcgi_error() for internal error handling
+* Added `libcgi_error()` for internal error handling
 * Source code tree modified
 * Header files better written
 * More examples
@@ -255,7 +270,7 @@ _Special thanks to Marcio Kuchma_
 
 2001/12/17
 
-* pt_BR documentation, Makefile rewritten, minor improvements
+* `pt_BR` documentation, Makefile rewritten, minor improvements
 
 __Version 0.1 update 5__
 2001/11/14  
