@@ -18,6 +18,7 @@
 int add( void );
 int delete_from_empty_list( void );
 int delete_from_one_item_list( void );
+int delete_from_two_item_list( void );
 
 int main( int argc, char *argv[] )
 {
@@ -25,6 +26,7 @@ int main( int argc, char *argv[] )
 		{ "add",		add							},
 		{ "deletezero",	delete_from_empty_list		},
 		{ "deleteone",	delete_from_one_item_list	},
+		{ "deletetwo",	delete_from_two_item_list	},
 	};
 
 	/*	require at least one argument to select test	*/
@@ -103,16 +105,10 @@ int delete_from_one_item_list( void )
 	check( last == item, "last == first item" );
 	check( item->next == NULL, "first item next == null" );
 
-	/*	try deleting our item
-	 *
-	 *	NOTE	libcgi does not free the memory of deleted items	*/
+	/*	try deleting our item	*/
 	check( slist_delete( item_name, &start, &last ) == 1, "found" );
 	check( start == NULL, "start = null" );
 	check( last == NULL, "last = null" );
-
-	free( item->name );
-	free( item->value );
-	free( item );
 	item = NULL;
 
 	/*	the list should already be empty	*/
@@ -125,6 +121,107 @@ error:
 	if ( item->name ) free( item->name );
 	if ( item->value ) free( item->value );
 	if ( item ) free( item );
+	return EXIT_FAILURE;
+}
+
+int delete_from_two_item_list( void )
+{
+	int			i;
+	const char	*item_name[2] = { "item_one", "item_two" };
+	formvars	*item[2], *start = NULL, *last = NULL;
+
+	for ( i = 0; i < 2; i++ )
+	{
+		item[i] = NULL;
+	}
+
+	for ( i = 0; i < 2; i++ )
+	{
+		check( (item[i] = calloc( 1, sizeof(formvars) )) != NULL,
+				"calloc item %i", i );
+		check( (item[i]->name = strdup( item_name[i] )) != NULL,
+				"strdup name item %i", i );
+		check( (item[i]->value = strdup( "value" )) != NULL,
+				"strdup value item %i", i );
+		slist_add( item[i], &start, &last );
+	}
+
+	/*	try deleting not existing item and check list does not change	*/
+	check( slist_delete( "not in there", &start, &last ) == 0, "not found" );
+	check( start == item[0], "start == item[0]" );
+	check( last == item[1], "last == item[1]" );
+	check( item[0]->next == item[1], "first item next == second item" );
+	check( item[1]->next == NULL, "second item next == null" );
+
+	/*	empty list	*/
+	slist_free( &start );
+	check( start == NULL, "slist_free reset start" );
+
+	/*	start over	*/
+	for ( i = 0; i < 2; i++ )
+	{
+		item[i] = NULL;
+	}
+
+	for ( i = 0; i < 2; i++ )
+	{
+		check( (item[i] = calloc( 1, sizeof(formvars) )) != NULL,
+				"calloc item %i", i );
+		check( (item[i]->name = strdup( item_name[i] )) != NULL,
+				"strdup name item %i", i );
+		check( (item[i]->value = strdup( "value" )) != NULL,
+				"strdup value item %i", i );
+		slist_add( item[i], &start, &last );
+	}
+
+	/*	try deleting the first item	*/
+	check( slist_delete( item_name[0], &start, &last ) == 1,
+			"delete first item" );
+	check( start == item[1], "start == item[1]" );
+	check( last == item[1], "last == item[1]" );
+	check( item[1]->next == NULL, "last item next == null" );
+
+	/*	empty list	*/
+	slist_free( &start );
+	check( start == NULL, "slist_free reset start" );
+
+	/*	start over	*/
+	for ( i = 0; i < 2; i++ )
+	{
+		item[i] = NULL;
+	}
+
+	for ( i = 0; i < 2; i++ )
+	{
+		check( (item[i] = calloc( 1, sizeof(formvars) )) != NULL,
+				"calloc item %i", i );
+		check( (item[i]->name = strdup( item_name[i] )) != NULL,
+				"strdup name item %i", i );
+		check( (item[i]->value = strdup( "value" )) != NULL,
+				"strdup value item %i", i );
+		slist_add( item[i], &start, &last );
+	}
+
+	/*	try deleting the second item	*/
+	check( slist_delete( item_name[1], &start, &last ) == 1,
+			"delete second item" );
+	check( start == item[0], "start == item[0]" );
+	check( last == item[0], "last == item[0]" );
+	check( item[0]->next == NULL, "last item next == null" );
+
+	/*	empty list	*/
+	slist_free( &start );
+	check( start == NULL, "slist_free reset start" );
+
+	return EXIT_SUCCESS;
+
+error:
+	for ( i = 0; i < 2; i++ )
+	{
+		if ( item[i]->name ) free( item[i]->name );
+		if ( item[i]->value ) free( item[i]->value );
+		if ( item[i] ) free( item[i] );
+	}
 	return EXIT_FAILURE;
 }
 
