@@ -34,6 +34,10 @@ add_definitions(-Wall -Wextra -Wcast-align)
 # subdirectories
 add_subdirectory("src")
 
+# test
+enable_testing()
+add_subdirectory("test")
+
 # cmake package stuff
 configure_package_config_file(${PROJECT_NAME_LC}-config.cmake.in
 	"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME_LC}-config.cmake"
