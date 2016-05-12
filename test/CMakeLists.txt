@@ -25,3 +25,6 @@ add_test(slist_delete_one
 add_test(slist_delete_two
 	cgi-test-slist deletetwo
 )
+add_test(slist_delete_three
+	cgi-test-slist deletethree
+)

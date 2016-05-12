@@ -19,14 +19,16 @@ int add( void );
 int delete_from_empty_list( void );
 int delete_from_one_item_list( void );
 int delete_from_two_item_list( void );
+int delete_from_three_item_list( void );
 
 int main( int argc, char *argv[] )
 {
 	struct cgi_test_action	actions[] = {
-		{ "add",		add							},
-		{ "deletezero",	delete_from_empty_list		},
-		{ "deleteone",	delete_from_one_item_list	},
-		{ "deletetwo",	delete_from_two_item_list	},
+		{ "add",			add							},
+		{ "deletezero",		delete_from_empty_list		},
+		{ "deleteone",		delete_from_one_item_list	},
+		{ "deletetwo",		delete_from_two_item_list	},
+		{ "deletethree",	delete_from_three_item_list	},
 	};
 
 	/*	require at least one argument to select test	*/
@@ -217,6 +219,116 @@ int delete_from_two_item_list( void )
 
 error:
 	for ( i = 0; i < 2; i++ )
+	{
+		if ( item[i]->name ) free( item[i]->name );
+		if ( item[i]->value ) free( item[i]->value );
+		if ( item[i] ) free( item[i] );
+	}
+	return EXIT_FAILURE;
+}
+
+int delete_from_three_item_list( void )
+{
+	int			i;
+	const char	*item_name[3] = { "item_one", "item_two", "item_three" };
+	formvars	*item[3], *start = NULL, *last = NULL;
+
+	for ( i = 0; i < 3; i++ )
+	{
+		item[i] = NULL;
+	}
+
+	for ( i = 0; i < 3; i++ )
+	{
+		check( (item[i] = calloc( 1, sizeof(formvars) )) != NULL,
+				"calloc item %i", i );
+		check( (item[i]->name = strdup( item_name[i] )) != NULL,
+				"strdup name item %i", i );
+		check( (item[i]->value = strdup( "value" )) != NULL,
+				"strdup value item %i", i );
+		slist_add( item[i], &start, &last );
+	}
+
+	check( start == item[0], "start == item[0]" );
+	check( last == item[2], "last == item[2]" );
+	check( item[0]->next == item[1], "item[0]->next == item[1]" );
+	check( item[1]->next == item[2], "item[1]->next == item[2]" );
+	check( item[2]->next == NULL, "item[2]->next == NULL" );
+
+	/*	try deleting the first item	*/
+	check( slist_delete( item_name[0], &start, &last ) == 1,
+			"delete item[0]" );
+	check( start == item[1], "start == item[1]" );
+	check( last == item[2], "last == item[2]" );
+	check( item[1]->next == item[2], "item[1]->next == item[2]" );
+	check( item[2]->next == NULL, "item[2]->next == NULL" );
+
+	/*	empty list	*/
+	slist_free( &start );
+	check( start == NULL, "slist_free reset start" );
+
+	/*	start over	*/
+	for ( i = 0; i < 3; i++ )
+	{
+		item[i] = NULL;
+	}
+
+	for ( i = 0; i < 3; i++ )
+	{
+		check( (item[i] = calloc( 1, sizeof(formvars) )) != NULL,
+				"calloc item %i", i );
+		check( (item[i]->name = strdup( item_name[i] )) != NULL,
+				"strdup name item %i", i );
+		check( (item[i]->value = strdup( "value" )) != NULL,
+				"strdup value item %i", i );
+		slist_add( item[i], &start, &last );
+	}
+
+	/*	try deleting the middle item	*/
+	check( slist_delete( item_name[1], &start, &last ) == 1,
+			"delete item[1]" );
+	check( start == item[0], "start == item[0]" );
+	check( last == item[2], "last == item[2]" );
+	check( item[0]->next == item[2], "item[0]->next == item[2]" );
+	check( item[2]->next == NULL, "item[2]->next == NULL" );
+
+	/*	empty list	*/
+	slist_free( &start );
+	check( start == NULL, "slist_free reset start" );
+
+	/*	start over	*/
+	for ( i = 0; i < 3; i++ )
+	{
+		item[i] = NULL;
+	}
+
+	for ( i = 0; i < 3; i++ )
+	{
+		check( (item[i] = calloc( 1, sizeof(formvars) )) != NULL,
+				"calloc item %i", i );
+		check( (item[i]->name = strdup( item_name[i] )) != NULL,
+				"strdup name item %i", i );
+		check( (item[i]->value = strdup( "value" )) != NULL,
+				"strdup value item %i", i );
+		slist_add( item[i], &start, &last );
+	}
+
+	/*	try deleting the last item	*/
+	check( slist_delete( item_name[2], &start, &last ) == 1,
+			"delete item[2]" );
+	check( start == item[0], "start == item[0]" );
+	check( last == item[1], "last == item[1]" );
+	check( item[0]->next == item[1], "item[0]->next == item[1]" );
+	check( item[1]->next == NULL, "item[1]->next == NULL" );
+
+	/*	empty list	*/
+	slist_free( &start );
+	check( start == NULL, "slist_free reset start" );
+
+	return EXIT_SUCCESS;
+
+error:
+	for ( i = 0; i < 3; i++ )
 	{
 		if ( item[i]->name ) free( item[i]->name );
 		if ( item[i]->value ) free( item[i]->value );
