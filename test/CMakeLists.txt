@@ -28,3 +28,6 @@ add_test(slist_delete_two
 add_test(slist_delete_three
 	cgi-test-slist deletethree
 )
+add_test(slist_get_item
+	cgi-test-slist get
+)

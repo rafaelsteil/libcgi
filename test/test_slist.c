@@ -20,6 +20,7 @@ int delete_from_empty_list( void );
 int delete_from_one_item_list( void );
 int delete_from_two_item_list( void );
 int delete_from_three_item_list( void );
+int get_item( void );
 
 int main( int argc, char *argv[] )
 {
@@ -29,6 +30,7 @@ int main( int argc, char *argv[] )
 		{ "deleteone",		delete_from_one_item_list	},
 		{ "deletetwo",		delete_from_two_item_list	},
 		{ "deletethree",	delete_from_three_item_list	},
+		{ "get",			get_item					},
 	};
 
 	/*	require at least one argument to select test	*/
@@ -320,6 +322,71 @@ int delete_from_three_item_list( void )
 	check( last == item[1], "last == item[1]" );
 	check( item[0]->next == item[1], "item[0]->next == item[1]" );
 	check( item[1]->next == NULL, "item[1]->next == NULL" );
+
+	/*	empty list	*/
+	slist_free( &start );
+	check( start == NULL, "slist_free reset start" );
+
+	return EXIT_SUCCESS;
+
+error:
+	for ( i = 0; i < 3; i++ )
+	{
+		if ( item[i]->name ) free( item[i]->name );
+		if ( item[i]->value ) free( item[i]->value );
+		if ( item[i] ) free( item[i] );
+	}
+	return EXIT_FAILURE;
+}
+
+int get_item( void )
+{
+	char		*my_item;
+	int			i;
+	const char	*item_name[4] = { "item_one", "item_two", "item_three",
+						"item_four" };
+	formvars	*item[4], *start = NULL, *last = NULL;
+
+	for ( i = 0; i < 4; i++ )
+	{
+		item[i] = NULL;
+	}
+
+	/*	init three items and add all of them to our list	*/
+	for ( i = 0; i < 4; i++ )
+	{
+		check( (item[i] = calloc( 1, sizeof(formvars) )) != NULL,
+				"calloc item %i", i );
+		check( (item[i]->name = strdup( item_name[i] )) != NULL,
+				"strdup name item %i", i );
+		if ( i != 2 ) {
+			check( (item[i]->value = strdup( "value" )) != NULL,
+					"strdup value item %i", i );
+		} else {
+			/*	item[i]->value == NULL;	*/
+		}
+		slist_add( item[i], &start, &last );
+	}
+
+	/*	good case, try retrieving the actual items	*/
+	check( (my_item = slist_item( item_name[0], start ))
+			== item[0]->value, "get item[0]" );
+	check( (my_item = slist_item( item_name[1], start ))
+			== item[1]->value, "get item[1]" );
+	check( (my_item = slist_item( item_name[3], start ))
+			== item[3]->value, "get item[3]" );
+
+	/*	try getting a non existing item	*/
+	check( (my_item = slist_item( "not", start )) == NULL,
+			"not existing item" );
+
+	/*	try bad parameters	*/
+	check( (my_item = slist_item( "not", NULL )) == NULL, "start == NULL" );
+	check( (my_item = slist_item( NULL, start )) == NULL, "name == NULL" );
+
+	/*	try getting the item with the empty value	*/
+	check( (my_item = slist_item( item_name[2], start )) == NULL,
+			"value == NULL" );
 
 	/*	empty list	*/
 	slist_free( &start );
