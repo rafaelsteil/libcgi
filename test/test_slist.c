@@ -15,12 +15,18 @@
 
 #include "cgi.h"
 
-int add( void );
-int delete_from_empty_list( void );
-int delete_from_one_item_list( void );
-int delete_from_two_item_list( void );
-int delete_from_three_item_list( void );
-int get_item( void );
+/*	declarations for functions not declared in src	*/
+formvars *process_data(const char *query, formvars **start, formvars **last,
+	                   const char sep_value, const char sep_name);
+
+/*	local declarations	*/
+static int add( void );
+static int delete_from_empty_list( void );
+static int delete_from_one_item_list( void );
+static int delete_from_two_item_list( void );
+static int delete_from_three_item_list( void );
+static int get_item( void );
+static int test_process_data( void );
 
 int main( int argc, char *argv[] )
 {
@@ -31,6 +37,7 @@ int main( int argc, char *argv[] )
 		{ "deletetwo",		delete_from_two_item_list	},
 		{ "deletethree",	delete_from_three_item_list	},
 		{ "get",			get_item					},
+		{ "processdata",	test_process_data			},
 	};
 
 	/*	require at least one argument to select test	*/
@@ -401,6 +408,30 @@ error:
 		if ( item[i]->value ) free( item[i]->value );
 		if ( item[i] ) free( item[i] );
 	}
+	return EXIT_FAILURE;
+}
+
+int test_process_data( void )
+{
+	const char	query[] = "foo=bar&bar=baz";
+	char		*item;
+	formvars	*r, *start = NULL, *last = NULL;
+
+	/*	simple test for the good case	*/
+	check( (r = process_data( query, &start, &last, '=', '&' ))
+			== start, "return value: %p (start: %p)", r, start );
+	check( (item = slist_item( "foo", start )) != NULL, "get item foo" );
+	check( strcmp( item, "bar" ) == 0, "value item foo" );
+
+	/*	TODO	add more tests for corner cases, wrong input, and so on	*/
+
+	/*	empty list	*/
+	slist_free( &start );
+	check( start == NULL, "slist_free reset start" );
+
+	return EXIT_SUCCESS;
+
+error:
 	return EXIT_FAILURE;
 }
 

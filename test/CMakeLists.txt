@@ -31,3 +31,6 @@ add_test(slist_delete_three
 add_test(slist_get_item
 	cgi-test-slist get
 )
+add_test(slist_process_data
+	cgi-test-slist processdata
+)
