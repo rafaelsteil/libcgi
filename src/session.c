@@ -56,6 +56,7 @@
 * @{
 */
 
+#include <stddef.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/time.h>
@@ -76,7 +77,7 @@
 FILE *sess_file;
 
 static char sess_id[SESS_ID_LEN + 1];
-static char *sess_fname;
+static char *sess_fname = NULL;
 static unsigned int save_path_len;
 
 char SESSION_SAVE_PATH[255] = "/tmp/";
@@ -548,6 +549,12 @@ int cgi_session_start()
 	free(buf);
 
 	return 1;
+}
+
+void cgi_session_free( void )
+{
+	free( sess_fname );
+	sess_fname = NULL;
 }
 
 /**
