@@ -38,6 +38,14 @@ Well, I am keeping this TODO list here for historical (and funny) reasons. Nowad
 Changelog
 ---------
 
+__Version 1.2.0__
+
+_Thanks to Alexander Dahl_
+
+2017-02-16
+
+* Added API function to free session internals ([#25](https://github.com/rafaelsteil/libcgi/issues/25))
+
 __Version 1.1__
 
 _Thanks to Alexander Dahl, D Frost, Rafael Steil, Michael Olbrich, Robert Schwebel_
