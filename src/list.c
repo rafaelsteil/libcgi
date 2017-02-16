@@ -1,6 +1,7 @@
 /*
     LibCGI - A library to make CGI programs using C
     Copyright (C) 2001 Rafael Steil
+    Copyright 2016 Alexander Dahl <post@lespocky.de>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -102,14 +103,20 @@ int slist_delete(char *name, formvars **start, formvars **last)
 // Returns the value of the item pointed by name
 char *slist_item(const char *name, formvars *start)
 {
-	formvars *begin;
-	begin = start;
+	formvars *curr = start;
 
-	while (begin) {
-		if (!strcasecmp(begin->name, name))
-			return (!begin->value[0] ? NULL : begin->value);
+	if ( !name ) return NULL;
 
-		begin = begin->next;
+	while ( curr ) {
+		if ( !strcasecmp( curr->name, name ) ) {
+			if ( curr->value == NULL || curr->value[0] == '\0' ) {
+				return NULL;
+			} else {
+				return curr->value;
+			}
+		}
+
+		curr = curr->next;
 	}
 
 	return NULL;
