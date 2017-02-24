@@ -63,6 +63,25 @@ add_test(slist_process_data
 	cgi-test-slist processdata
 )
 
+# trim
+add_executable(cgi-test-trim
+	cgi_test.c
+	test_trim.c
+	trim.c
+)
+target_link_libraries(cgi-test-trim
+	"${PROJECT_NAME}-shared"
+)
+add_test(test_ltrim
+	cgi-test-trim ltrim
+)
+add_test(test_rtrim
+	cgi-test-trim rtrim
+)
+add_test(test_trim
+	cgi-test-trim trim
+)
+
 # additional tests with valgrind
 find_program(VALGRIND NAMES valgrind)
 if(NOT VALGRIND-NOTFOUND)
@@ -120,5 +139,18 @@ if(NOT VALGRIND-NOTFOUND)
 	add_test(NAME valgrind_slist_process_data
 		COMMAND ${VALGRIND} --leak-check=full --error-exitcode=1
 					$<TARGET_FILE:cgi-test-slist> processdata
+	)
+
+	add_test(NAME valgrind_test_ltrim
+		COMMAND ${VALGRIND} --leak-check=full --error-exitcode=1
+					$<TARGET_FILE:cgi-test-trim> ltrim
+	)
+	add_test(NAME valgrind_test_rtrim
+		COMMAND ${VALGRIND} --leak-check=full --error-exitcode=1
+					$<TARGET_FILE:cgi-test-trim> rtrim
+	)
+	add_test(NAME valgrind_test_trim
+		COMMAND ${VALGRIND} --leak-check=full --error-exitcode=1
+					$<TARGET_FILE:cgi-test-trim> trim
 	)
 endif(NOT VALGRIND-NOTFOUND)
