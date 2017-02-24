@@ -1,5 +1,5 @@
 #
-# Copyright 2016 Alexander Dahl <post@lespocky.de>
+# Copyright 2016,2017 Alexander Dahl <post@lespocky.de>
 #
 
 include_directories(
@@ -34,3 +34,38 @@ add_test(slist_get_item
 add_test(slist_process_data
 	cgi-test-slist processdata
 )
+
+# additional tests with valgrind
+find_program(VALGRIND NAMES valgrind)
+if(NOT VALGRIND-NOTFOUND)
+	message(STATUS "VALGRIND: ${VALGRIND}")
+
+	add_test(NAME valgrind_slist_add
+		COMMAND ${VALGRIND} --leak-check=full --error-exitcode=1
+					$<TARGET_FILE:cgi-test-slist> add
+	)
+	add_test(NAME valgrind_slist_delete_zero
+		COMMAND ${VALGRIND} --leak-check=full --error-exitcode=1
+					$<TARGET_FILE:cgi-test-slist> deletezero
+	)
+	add_test(NAME valgrind_slist_delete_one
+		COMMAND ${VALGRIND} --leak-check=full --error-exitcode=1
+					$<TARGET_FILE:cgi-test-slist> deleteone
+	)
+	add_test(NAME valgrind_slist_delete_two
+		COMMAND ${VALGRIND} --leak-check=full --error-exitcode=1
+					$<TARGET_FILE:cgi-test-slist> deletetwo
+	)
+	add_test(NAME valgrind_slist_delete_three
+		COMMAND ${VALGRIND} --leak-check=full --error-exitcode=1
+					$<TARGET_FILE:cgi-test-slist> deletethree
+	)
+	add_test(NAME valgrind_slist_get_item
+		COMMAND ${VALGRIND} --leak-check=full --error-exitcode=1
+					$<TARGET_FILE:cgi-test-slist> get
+	)
+	add_test(NAME valgrind_slist_process_data
+		COMMAND ${VALGRIND} --leak-check=full --error-exitcode=1
+					$<TARGET_FILE:cgi-test-slist> processdata
+	)
+endif(NOT VALGRIND-NOTFOUND)
