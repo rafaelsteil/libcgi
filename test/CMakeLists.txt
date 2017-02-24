@@ -6,6 +6,34 @@ include_directories(
 	"${PROJECT_SOURCE_DIR}/src"
 )
 
+# misc
+add_executable(cgi-test
+	cgi_test.c
+	test.c
+)
+target_link_libraries(cgi-test
+	"${PROJECT_NAME}-shared"
+)
+add_test(escape_special_chars
+	cgi-test escape_special_chars
+)
+add_test(process_data
+	cgi-test process_data
+)
+add_test(param_multiple
+	cgi-test param_multiple
+)
+add_test(process_form
+	cgi-test process_form
+)
+add_test(ltrim
+	cgi-test ltrim
+)
+add_test(rtrim
+	cgi-test rtrim
+)
+
+# slist
 add_executable(cgi-test-slist
 	cgi_test.c
 	test_slist.c
@@ -39,6 +67,31 @@ add_test(slist_process_data
 find_program(VALGRIND NAMES valgrind)
 if(NOT VALGRIND-NOTFOUND)
 	message(STATUS "VALGRIND: ${VALGRIND}")
+
+	add_test(NAME valgrind_escape_special_chars
+		COMMAND ${VALGRIND} --leak-check=full --error-exitcode=1
+					$<TARGET_FILE:cgi-test> escape_special_chars
+	)
+	add_test(NAME valgrind_process_data
+		COMMAND ${VALGRIND} --leak-check=full --error-exitcode=1
+					$<TARGET_FILE:cgi-test> process_data
+	)
+	add_test(NAME valgrind_param_multiple
+		COMMAND ${VALGRIND} --leak-check=full --error-exitcode=1
+					$<TARGET_FILE:cgi-test> param_multiple
+	)
+	add_test(NAME valgrind_process_form
+		COMMAND ${VALGRIND} --leak-check=full --error-exitcode=1
+					$<TARGET_FILE:cgi-test> process_form
+	)
+	add_test(NAME valgrind_ltrim
+		COMMAND ${VALGRIND} --leak-check=full --error-exitcode=1
+					$<TARGET_FILE:cgi-test> ltrim
+	)
+	add_test(NAME valgrind_rtrim
+		COMMAND ${VALGRIND} --leak-check=full --error-exitcode=1
+					$<TARGET_FILE:cgi-test> rtrim
+	)
 
 	add_test(NAME valgrind_slist_add
 		COMMAND ${VALGRIND} --leak-check=full --error-exitcode=1

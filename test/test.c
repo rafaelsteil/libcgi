@@ -6,6 +6,8 @@
 #include <assert.h>
 #include <unistd.h>
 
+#include "cgi_test.h"
+
 #include "cgi.h"
 
 extern formvars *
@@ -14,8 +16,37 @@ process_data(const char *query, formvars **start, formvars **last,
 
 static int pipe_[2];
 
-static void
-test_cgi_escape_special_chars(void)
+static formvars *_post( const char *post_data );
+
+static int test_cgi_escape_special_chars( void );
+static int test_process_data( void );
+static int test_cgi_param_multiple( void );
+static int test_cgi_process_form( void );
+static int _test_ltrim( void );
+static int _test_rtrim( void );
+
+int main( int argc, char *argv[] )
+{
+	struct cgi_test_action	actions[] = {
+		{ "escape_special_chars",	test_cgi_escape_special_chars	},
+		{ "process_data",			test_process_data				},
+		{ "param_multiple",			test_cgi_param_multiple			},
+		{ "process_form",			test_cgi_process_form			},
+		{ "ltrim",					_test_ltrim						},
+		{ "rtrim",					_test_rtrim						},
+	};
+
+	/*	require at least one argument to select test	*/
+	if ( argc < 2 ) return EXIT_FAILURE;
+
+	assert(! pipe(pipe_));
+	dup2(pipe_[0], STDIN_FILENO);
+
+	return run_action( argv[1], actions,
+			sizeof(actions)/sizeof(struct cgi_test_action) );
+}
+
+int test_cgi_escape_special_chars( void )
 {
     puts(__FUNCTION__);
 
@@ -30,17 +61,20 @@ test_cgi_escape_special_chars(void)
 		str[c] = (char) c + 1;
 	str[c] = 0;
 
-	assert(strlen(str) == 255);
+	check( strlen(str) == 255, "strlen" );
+	check( esc = cgi_escape_special_chars(str), "escape" );
+	check( unesc = cgi_unescape_special_chars(esc), "unescape" );
+	check( strcmp(esc, unesc), "strcmp esc unesc" );
+	check( !strcmp(str, unesc), "strcmp str unesc" );
+	check( strspn(esc, esc_valid) == strlen(esc), "strspn" );
 
-	assert(esc = cgi_escape_special_chars(str));
-	assert(unesc = cgi_unescape_special_chars(esc));
-	assert(strcmp(esc, unesc));
-	assert(! strcmp(str, unesc));
-	assert(strspn(esc, esc_valid) == strlen(esc));
+	return EXIT_SUCCESS;
+
+error:
+	return EXIT_FAILURE;
 }
 
-static void
-test_process_data(void)
+int test_process_data( void )
 {
     puts(__FUNCTION__);
 
@@ -54,34 +88,50 @@ test_process_data(void)
 
 	for (i = 0; data[i]; ++i)
 	{
-		assert(formvars_start == NULL);
-		assert(formvars_last == NULL);
+		check( formvars_start == NULL, "start == NULL" );
+		check( formvars_last == NULL, "last == NULL" );
 
 		fvp = process_data(data[i], &formvars_start, &formvars_last, '=', '&');
 
-		assert(formvars_start && formvars_last && fvp);
-		assert(fvp == formvars_start);
+		check( formvars_start && formvars_last && fvp,
+				"all pointers not NULL" );
+		check( fvp == formvars_start,
+				"fvp == start" );
 
-		assert(! strcmp(fvp->name, "1"));
-		assert(! strcmp(fvp->value, "one"));
-		assert(iter = fvp->next);
+		check( !strcmp(fvp->name, "1"),
+				"first element name" );
+		check( !strcmp(fvp->value, "one"),
+				"first element value" );
+		check( (iter = fvp->next),
+				"next pointer not NULL" );
 
-		assert(! strcmp(iter->name, "second"));
-		assert(! strcmp(iter->value, " .two-0"));
-		assert(iter = iter->next);
+		check( !strcmp(iter->name, "second"),
+				"second element name" );
+		check( !strcmp(iter->value, " .two-0"),
+				"second element value" );
+		check( (iter = iter->next),
+				"next pointer not NULL" );
 
-		assert(! strcmp(iter->name, "33"));
-		assert(! strcmp(iter->value, "three three"));
+		check( !strcmp(iter->name, "33"),
+				"third element name" );
+		check( !strcmp(iter->value, "three three"),
+				"third element value" );
 
-		assert(iter == formvars_last);
-		assert(! (iter = iter->next));
+		check( iter == formvars_last,
+				"next pointer to last" );
+		check( !(iter = iter->next),
+				"last pointer NULL" );
 
 		cgi_end();
 	}
+
+	return EXIT_SUCCESS;
+
+error:
+	return EXIT_FAILURE;
 }
 
-void
-test_cgi_param_multiple(void)
+int test_cgi_param_multiple( void )
 {
     puts(__FUNCTION__);
 
@@ -89,22 +139,26 @@ test_cgi_param_multiple(void)
 
 	process_data(data, &formvars_start, &formvars_last, '=', '&');
 
-	assert(! strcmp(cgi_param_multiple("one"), "one"));
-	assert(! strcmp(cgi_param_multiple("one"), "two"));
-	assert(! strcmp(cgi_param_multiple("one"), "four"));
-	assert(! cgi_param_multiple("one"));
+	check( !strcmp(cgi_param_multiple("one"), "one"),	"one" );
+	check( !strcmp(cgi_param_multiple("one"), "two"),	"two" );
+	check( !strcmp(cgi_param_multiple("one"), "four"),	"four" );
+	check( !cgi_param_multiple("one"),					"one again" );
 
 	cgi_end();
+
+	return EXIT_SUCCESS;
+
+error:
+	return EXIT_FAILURE;
 }
 
-formvars *
-_post(const char *post_data)
+formvars *_post( const char *post_data )
 {
 	char length_str[20];
 	size_t length = strlen(post_data);
 
 	snprintf(length_str, sizeof(length_str),
-			 "%d", length);
+			"%zd", length);
 
 	assert(! putenv("REQUEST_METHOD=POST"));
 	assert(! setenv("CONTENT_LENGTH", length_str, 1));
@@ -117,50 +171,72 @@ _post(const char *post_data)
 	return cgi_process_form();
 }
 
-void
-test_cgi_process_form(void)
+int test_cgi_process_form( void )
 {
     puts(__FUNCTION__);
 
 	/* test no data */
-	assert(formvars_start == NULL);
-	assert(formvars_last == NULL);
+	check( formvars_start == NULL,
+			"start == NULL" );
+	check( formvars_last == NULL,
+			"last == NULL" );
 
-	assert(! putenv("QUERY_STRING"));
-	assert(! cgi_process_form());
+	check( !putenv("QUERY_STRING"),
+			"putenv" );
+	check( !cgi_process_form(),
+			"process form returns NULL" );
 
-	assert(! formvars_start && ! formvars_last);
+	check( !formvars_start && !formvars_last,
+			"all pointers NULL" );
 
 	cgi_end();
 
 	/* test query string */
-	assert(formvars_start == NULL);
-	assert(formvars_last == NULL);
+	check( formvars_start == NULL,
+			"start == NULL" );
+	check( formvars_last == NULL,
+			"last == NULL" );
 
-	assert(! putenv("QUERY_STRING=zero=0&one=test"));
-	assert(cgi_process_form());
+	check( !putenv("QUERY_STRING=zero=0&one=test"),
+			"putenv" );
+	check( cgi_process_form(),
+			"process form returns valid pointer" );
 
-	assert(formvars_start && formvars_last);
-	assert(! strcmp(formvars_start->name, "zero"));
-	assert(! strcmp(formvars_start->value, "0"));
-	assert(! strcmp(cgi_param("one"), "test"));
+	check( formvars_start && formvars_last,
+			"all pointers not NULL" );
+	check( !strcmp(formvars_start->name, "zero"),
+			"first element name" );
+	check( !strcmp(formvars_start->value, "0"),
+			"first element value" );
+	check( !strcmp(cgi_param("one"), "test"),
+			"cgi param" );
 
 	cgi_end();
 
 	/* test post data */
-	assert(! putenv("QUERY_STRING"));
-	assert(_post("zero=0&one=test"));
+	check( !putenv("QUERY_STRING"),
+			"putenv" );
+	check( _post("zero=0&one=test"),
+			"POST" );
 
-	assert(formvars_start && formvars_last);
-	assert(! strcmp(formvars_start->name, "zero"));
-	assert(! strcmp(formvars_start->value, "0"));
-	assert(! strcmp(cgi_param("one"), "test"));
+	check( formvars_start && formvars_last,
+			"all pointers not NULL" );
+	check( !strcmp(formvars_start->name, "zero"),
+			"first element name" );
+	check( !strcmp(formvars_start->value, "0"),
+			"first element value" );
+	check( !strcmp(cgi_param("one"), "test"),
+			"cgi param" );
 
 	cgi_end();
+
+	return EXIT_SUCCESS;
+
+error:
+	return EXIT_FAILURE;
 }
 
-static void
-_test_ltrim(void)
+int _test_ltrim( void )
 {
     puts(__FUNCTION__);
 
@@ -184,12 +260,16 @@ _test_ltrim(void)
         --n;
         strcpy(buf, before[n]);
         cgi_ltrim(buf);
-        assert(! strcmp(buf, after[n]));
+        check( !strcmp(buf, after[n]), "strcmp" );
     }
+
+	return EXIT_SUCCESS;
+
+error:
+	return EXIT_FAILURE;
 }
 
-static void
-_test_rtrim(void)
+int _test_rtrim( void )
 {
     puts(__FUNCTION__);
 
@@ -213,34 +293,15 @@ _test_rtrim(void)
         --n;
         strcpy(buf, before[n]);
         cgi_rtrim(buf);
-        assert(! strcmp(buf, after[n]));
+        check( !strcmp(buf, after[n]),	"first strcmp" );
 
         strcpy(buf, before[n]);
         cgi_rtrim(buf);
-        assert(! strcmp(buf, after[n]));
+        check( !strcmp(buf, after[n]),	"second strcmp" );
     }
+
+	return EXIT_SUCCESS;
+
+error:
+	return EXIT_FAILURE;
 }
-
-
-/*****************************************************************************/
-
-
-
-int
-main(void)
-{
-	assert(! pipe(pipe_));
-	dup2(pipe_[0], STDIN_FILENO);
-
-	test_cgi_escape_special_chars();
-	test_process_data();
-	test_cgi_param_multiple();
-	test_cgi_process_form();
-
-	_test_ltrim();
-	_test_rtrim();
-
-	puts("Tests passed.");
-	return 0;
-}
-
