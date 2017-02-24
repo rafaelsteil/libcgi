@@ -54,7 +54,7 @@ int test_cgi_escape_special_chars( void )
 	                        "abcdefghijklmnopqrstuvwxyz"
 	                        "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	char str[256];
-	char *esc, *unesc;
+	char *esc = NULL, *unesc = NULL;
 	int c;
 
 	for (c = 0; c < 256; ++c)
@@ -68,6 +68,8 @@ int test_cgi_escape_special_chars( void )
 	check( !strcmp(str, unesc), "strcmp str unesc" );
 	check( strspn(esc, esc_valid) == strlen(esc), "strspn" );
 
+	free( esc );
+	free( unesc );
 	return EXIT_SUCCESS;
 
 error:
