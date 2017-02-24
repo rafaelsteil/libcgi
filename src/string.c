@@ -176,7 +176,9 @@ char *stripslashes(char *str)
 */
 char * cgi_ltrim(char *str)
 {
-    char *s = str;
+    char *r, *s;
+
+	r = s = str;
 
     /* nothing to do if str is NULL or zero-length */
 	if (str && *str)
@@ -188,8 +190,8 @@ char * cgi_ltrim(char *str)
 		/* if any space characters were found, remove them by copying from
 		 * beyond them to the beginning of the source string
 		 */
-		if (s > str)
-			while ((*str++ = *s++));
+		if (s > r)
+			while ((*r++ = *s++));
 	}
 
 	return str;
