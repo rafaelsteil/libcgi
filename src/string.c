@@ -174,14 +174,27 @@ char *stripslashes(char *str)
 * printf("_%s_\n", s);
 * \endcode
 */
-void ltrim(char *str)
+char * cgi_ltrim(char *str)
 {
-	char *s = str;
+    char *r, *s;
 
-	while (isspace(*s))
-		s++;
+	r = s = str;
 
-	while ((*str++ = *s++));
+    /* nothing to do if str is NULL or zero-length */
+	if (str && *str)
+	{
+		/* find first non-space character */
+		while (isspace(*s))
+			s++;
+
+		/* if any space characters were found, remove them by copying from
+		 * beyond them to the beginning of the source string
+		 */
+		if (s > r)
+			while ((*r++ = *s++));
+	}
+
+	return str;
 }
 
 /**
@@ -198,15 +211,28 @@ void ltrim(char *str)
 * printf("_%s_\n", s);
 * \endcode
 */
-void rtrim(char *str)
+char * cgi_rtrim(char *str)
 {
-	char *s = str;
-	register int i;
+	char *last;
 
-	for (i = strlen(s)-1; isspace(*(s+i)); i--)
-		*(s+i) = '\0';
+	/* nothing to do if str is NULL or zero-length */
+	if (str && *str)
+	{
+		last = strchr(str, 0) - 1;
 
-	while ((*str++ = *s++));
+		/* loop backwards through @str to find last non-space character */
+		for (; last >= str; --last)
+		{
+			if (! isspace(*last))
+				break;
+		}
+		/* terminate @str after the last non-space character, or first
+		 * character if only spaces were found
+		 */
+		last[1] = 0;
+	}
+
+	return str;
 }
 
 /**
@@ -223,10 +249,9 @@ void rtrim(char *str)
 * printf("_%s_\n", s);
 * \endcode
 */
-void trim(char *str)
+char * cgi_trim(char *str)
 {
-	ltrim(str);
-	rtrim(str);
+	return cgi_ltrim(cgi_rtrim(str));
 }
 
 /**

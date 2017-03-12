@@ -82,6 +82,9 @@ extern char *str_base64_encode(char *str);
 extern char *str_base64_decode(char *str);
 extern char *recvline(FILE *fp);
 extern char *md5(const char *str);
+extern char *cgi_ltrim(char *str);
+extern char *cgi_rtrim(char *str);
+extern char *cgi_trim(char *str);
 
 extern void slist_add(formvars *item, formvars **start, formvars **last);
 extern int slist_delete(char *name, formvars **start, formvars **last);
