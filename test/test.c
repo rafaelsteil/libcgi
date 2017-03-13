@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 #include <unistd.h>
 
 #include "cgi_test.h"
@@ -39,11 +38,14 @@ int main( int argc, char *argv[] )
 	/*	require at least one argument to select test	*/
 	if ( argc < 2 ) return EXIT_FAILURE;
 
-	assert(! pipe(pipe_));
-	dup2(pipe_[0], STDIN_FILENO);
+	check( !pipe(pipe_), "pipe" );
+	check( STDIN_FILENO == dup2(pipe_[0], STDIN_FILENO), "dup2" );
 
 	return run_action( argv[1], actions,
 			sizeof(actions)/sizeof(struct cgi_test_action) );
+
+error:
+	return EXIT_FAILURE;
 }
 
 int test_cgi_escape_special_chars( void )
@@ -162,15 +164,18 @@ formvars *_post( const char *post_data )
 	snprintf(length_str, sizeof(length_str),
 			"%zd", length);
 
-	assert(! putenv("REQUEST_METHOD=POST"));
-	assert(! setenv("CONTENT_LENGTH", length_str, 1));
+	check( !putenv("REQUEST_METHOD=POST"), "putenv REQUEST_METHOD" );
+	check( !setenv("CONTENT_LENGTH", length_str, 1), "CONTENT_LENGTH" );
 
 	write(pipe_[1], post_data, length);
 
-	assert(formvars_start == NULL);
-	assert(formvars_last == NULL);
+	check( formvars_start == NULL, "formvars_start" );
+	check( formvars_last == NULL, "formvars_last" );
 
 	return cgi_process_form();
+
+error:
+	return NULL;
 }
 
 int test_cgi_process_form( void )
