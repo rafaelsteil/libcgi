@@ -60,16 +60,75 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
+#ifdef _MSC_VER
+#include <WinSock2.h>
+#else
 #include <sys/time.h>
+#endif
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdlib.h>
+#ifdef _MSC_VER
+#include <io.h>
+#else
 #include <unistd.h>
+#endif
 #include <errno.h>
 
 #include "cgi.h"
 #include "session.h"
 #include "error.h"
+
+#ifdef _MSC_VER
+#include <time.h>
+#include <windows.h>
+
+struct timezone {
+	int tz_minuteswest;
+	int tz_dsttime;
+};
+
+#if defined(_MSC_VER) || defined(_MSC_EXTENSIONS)
+#define DELTA_EPOCH_IN_MICROSECS  11644473600000000Ui64
+#else
+#define DELTA_EPOCH_IN_MICROSECS  11644473600000000ULL
+#endif
+
+int gettimeofday(struct timeval *tv, struct timezone *tz)
+{
+	FILETIME ft;
+	unsigned __int64 tmpres = 0;
+	static int tzflag = 0;
+
+	if (tv != NULL) {
+		GetSystemTimeAsFileTime(&ft);
+
+		tmpres |= ft.dwHighDateTime;
+		tmpres <<= 32;
+		tmpres |= ft.dwLowDateTime;
+
+		tmpres /= 10;
+		tmpres -= DELTA_EPOCH_IN_MICROSECS;
+		tv->tv_sec = (long)(tmpres / 1000000UL);
+		tv->tv_usec = (long)(tmpres % 1000000UL);
+	}
+
+	if (tz != NULL) {
+		if (!tzflag) {
+			_tzset();
+			tzflag += 1;
+		}
+		long timezone;
+		_get_timezone(&timezone);
+		tz->tz_minuteswest = timezone / 60;
+		_get_daylight(&tz->tz_dsttime);
+	}
+
+	return 0;
+}
+
+#define unlink _unlink
+#endif
 
 // session id length
 #define SESS_ID_LEN 45
@@ -79,7 +138,7 @@ FILE *sess_file;
 
 static char sess_id[SESS_ID_LEN + 1];
 static char *sess_fname = NULL;
-static unsigned int save_path_len;
+static size_t save_path_len;
 
 char SESSION_SAVE_PATH[255] = "/tmp/";
 char SESSION_COOKIE_NAME[50] = "CGISID";
@@ -136,7 +195,7 @@ formvars *sess_list_last = NULL;
 void sess_generate_id()
 {
 	static char table[] = "123456789abcdefghijlmnopqrstuvxzwyABCDEFGHIJLMOPQRSTUVXZYW";
-	unsigned int len = strlen(table);
+	size_t len = strlen(table);
 	register int i;
 
  	save_path_len = strlen(SESSION_SAVE_PATH) + strlen(SESSION_FILE_PREFIX);
@@ -162,8 +221,12 @@ int sess_create_file()
 	srand(tv.tv_sec * tv.tv_usec * 100000);
 
 	sess_generate_id();
+#ifdef _MSC_VER
+	if (fopen_s(&sess_file, sess_fname, "w") != 0) {
+#else
 	sess_file = fopen(sess_fname, "w");
 	if (!sess_file) {
+#endif
 		session_lasterror = SESS_CREATE_FILE;
 
 		libcgi_error(E_WARNING, session_error_message[session_lasterror]);
@@ -172,7 +235,11 @@ int sess_create_file()
 	}
 
 	// Changes file permission to 0600
+#ifdef _MSC_VER
+	_chmod(sess_fname, _S_IREAD | _S_IWRITE);
+#else
 	chmod(sess_fname, S_IRUSR|S_IWUSR);
+#endif
 	fclose(sess_file);
 
 	return 1;
@@ -217,9 +284,13 @@ int sess_file_rewrite()
 	formvars *data;
 
 	// Rewrites all data to session file
+#ifdef _MSC_VER
+	if (fopen_s(&sess_file, sess_fname, "w") != 0) {
+#else
 	sess_file = fopen(sess_fname, "w");
 
 	if (!sess_file) {
+#endif
 		session_lasterror = SESS_OPEN_FILE;
 
 		libcgi_error(E_WARNING, session_error_message[session_lasterror]);
@@ -270,7 +341,11 @@ char *cgi_session_var(const char *var_name)
 **/
 void cgi_session_cookie_name(const char *cookie_name)
 {
+#ifdef _MSC_VER
+	strncpy_s(SESSION_COOKIE_NAME, sizeof SESSION_COOKIE_NAME, cookie_name, 49);
+#else
 	strncpy(SESSION_COOKIE_NAME, cookie_name, 49);
+#endif
 }
 
 /**
@@ -299,7 +374,11 @@ void cgi_session_cookie_name(const char *cookie_name)
 **/
 void cgi_session_save_path(const char *path)
 {
+#ifdef _MSC_VER
+	strncpy_s(SESSION_SAVE_PATH, sizeof SESSION_SAVE_PATH, path, 254);
+#else
 	strncpy(SESSION_SAVE_PATH, path, 254);
+#endif
 }
 
 /**
@@ -323,8 +402,12 @@ int cgi_session_register_var(const char *name, const char *value)
 	}
 
 	if (!cgi_session_var_exists(name)) {
+#ifdef _MSC_VER
+		if (fopen_s(&sess_file, sess_fname, "a") != 0) {
+#else
 		sess_file = fopen(sess_fname, "a");
 		if (!sess_file) {
+#endif
 			session_lasterror = SESS_OPEN_FILE;
 
 			libcgi_error(E_WARNING, session_error_message[session_lasterror]);
@@ -348,10 +431,18 @@ int cgi_session_register_var(const char *name, const char *value)
 			libcgi_error(E_MEMORY, "%s, line %s", __FILE__, __LINE__);
 		}
 
+#ifdef _MSC_VER
+		strncpy_s(data->name, strlen(name) + 1, name, strlen(name));
+#else
 		strncpy(data->name, name, strlen(name));
+#endif
 		data->name[strlen(name)] = '\0';
 
+#ifdef _MSC_VER
+		strncpy_s(data->value, strlen(value) + 1, value, strlen(value));
+#else
 		strncpy(data->value, value, strlen(value));
+#endif
 		data->value[strlen(value)] = '\0';
 
 		if (!sess_list_last)
@@ -380,7 +471,7 @@ int cgi_session_register_var(const char *name, const char *value)
 int cgi_session_alter_var(const char *name, const char *new_value)
 {
 	register formvars *data;
-	unsigned int value_len;
+	size_t value_len;
 
 	data = sess_list_start;
 	while (data) {
@@ -394,7 +485,11 @@ int cgi_session_alter_var(const char *name, const char *new_value)
 
 			}
 
+#ifdef _MSC_VER
+			strncpy_s(data->value, value_len + 1, new_value, value_len);
+#else
 			strncpy(data->value, new_value, value_len);
+#endif
 			data->value[value_len] = '\0';
 
 			sess_file_rewrite();
@@ -511,7 +606,11 @@ int cgi_session_start()
 		sess_fname[SESS_ID_LEN + save_path_len] = '\0';
 
 		errno = 0;
+#ifdef _MSC_VER
+		fopen_s(&fp, sess_fname, "r");
+#else
 		fp = fopen(sess_fname, "r");
+#endif
 		if (errno == ENOENT) {
 			// The file doesn't exists. Create a new session
 			if (sess_create_file()) {
@@ -528,7 +627,11 @@ int cgi_session_start()
 	}
 
 	// Well, at this point we've the session ID
+#ifdef _MSC_VER
+	strncpy_s(sess_id, sizeof sess_id, sid, SESS_ID_LEN);
+#else
 	strncpy(sess_id, sid, SESS_ID_LEN);
+#endif
 	sess_id[SESS_ID_LEN] = '\0';
 
 	// Now we need to read all the file contents

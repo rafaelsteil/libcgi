@@ -28,6 +28,22 @@
 #include "cgi.h"
 #include "error.h"
 
+#ifdef _MSC_VER
+#define strcasecmp _stricmp
+
+char *strndup(const char *s, size_t n)
+{
+	size_t len = strnlen(s, n);
+	char *new = (char *)malloc(len + 1);
+
+	if (new == NULL)
+		return NULL;
+
+	new[len] = '\0';
+	return (char *)memcpy(new, s, len);
+}
+#endif
+
 // There's no reason to not have this initialised.
 static const char hextable[256] = {
 	0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF,
@@ -157,18 +173,32 @@ formvars *process_data(const char *query, formvars **start, formvars **last,
 formvars *cgi_process_form()
 {
 	formvars *ret = NULL;
-	char *method = getenv("REQUEST_METHOD");
+	char *method;
+#ifdef _MSC_VER
+	size_t len;
+	_dupenv_s(&method, &len, "REQUEST_METHOD");
+#else
+	method = getenv("REQUEST_METHOD");
+#endif
 
 	/* When METHOD has no contents, the default action is to process it as
 	 * GET method
 	 */
 	if (! method || ! strcasecmp("GET", method))
 	{
-		char *q = getenv("QUERY_STRING");
+		char *q;
+#ifdef _MSC_VER
+		_dupenv_s(&q, &len, "QUERY_STRING");
+#else
+		q = getenv("QUERY_STRING");
+#endif
 
 		// Sometimes, GET comes without any data
 		if (q && *q)
 			ret = process_data(q, &formvars_start, &formvars_last, '=', '&');
+#ifdef _MSC_VER
+		free(q);
+#endif
 	}
 	else if (! strcasecmp("POST", method))
 	{
@@ -181,7 +211,11 @@ formvars *cgi_process_form()
 		 */
 		const unsigned long content_max = 1024UL * 1024UL;
 
+#ifdef _MSC_VER
+		_dupenv_s(&length_str, &len, "CONTENT_LENGTH");
+#else
 		length_str = getenv("CONTENT_LENGTH");
+#endif
 		if (! length_str || ! *length_str)
 			return NULL;
 
@@ -201,9 +235,15 @@ formvars *cgi_process_form()
 			                   '=', '&');
 		}
 
+#ifdef _MSC_VER
+		free(length_str);
+#endif
 		free(post_data);
 	}
 
+#ifdef _MSC_VER
+	free(method);
+#endif
 	return ret;
 }
 
@@ -259,10 +299,14 @@ int cgi_include(const char *path)
 	if (stat (path, &fstats) == -1)
 		goto err_input;
 
-	if (! (fcontents = malloc (fstats.st_size)))
+	if ((fcontents = malloc (fstats.st_size)) == NULL)
 		goto err_memory;
 
-	if (! (fp = fopen (path, "r")))
+#ifdef _MSC_VER
+	if (fopen_s(&fp, path, "r") != 0)
+#else
+	if ((fp = fopen (path, "r")) == NULL)
+#endif
 		goto err_input;
 
 	if (fread (fcontents, sizeof(char), fstats.st_size, fp) != fstats.st_size)
@@ -277,7 +321,7 @@ cleanup:
 		fclose (fp);
 	free (fcontents);
 
-	return nwritten;
+	return (int)nwritten;
 
 err_input:
 	libcgi_error(E_WARNING, "%s: file error: %s", __FUNCTION__, path);

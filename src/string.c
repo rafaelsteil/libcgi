@@ -53,7 +53,7 @@
 char *addnslashes(char *s, int n)
 {
 	char *tmp;
-	int len, j = 0;
+	size_t len, j = 0;
 
 	if (s == NULL)
 		return NULL;
@@ -100,7 +100,7 @@ char *addnslashes(char *s, int n)
 */
 char *addslashes(char *s)
 {
-	return addnslashes(s, strlen(s));
+	return addnslashes(s, (int)strlen(s));
 }
 
 /**
@@ -157,7 +157,7 @@ char *stripnslashes(char *s, int n)
 */
 char *stripslashes(char *str)
 {
-	return stripnslashes(str, strlen(str));
+	return stripnslashes(str, (int)strlen(str));
 }
 
 /**
@@ -176,11 +176,11 @@ char *stripslashes(char *str)
 */
 char * cgi_ltrim(char *str)
 {
-    char *r, *s;
+	char *r, *s;
 
 	r = s = str;
 
-    /* nothing to do if str is NULL or zero-length */
+	/* nothing to do if str is NULL or zero-length */
 	if (str && *str)
 	{
 		/* find first non-space character */
@@ -191,7 +191,7 @@ char * cgi_ltrim(char *str)
 		 * beyond them to the beginning of the source string
 		 */
 		if (s > r)
-			while ((*r++ = *s++));
+			while ((*r++ = *s++) != '\0');
 	}
 
 	return str;
@@ -278,7 +278,11 @@ char *substr(char *src, const int start, const int count)
 		return NULL;
 	}
 
+#ifdef _MSC_VER
+	strncpy_s(tmp, count + 1, src + start, count);
+#else
 	strncpy(tmp, src+start, count);
+#endif
 	tmp[count] = '\0';
 
 	return tmp;
@@ -308,7 +312,7 @@ char **explode(char *src, const char *token, int *total)
 {
 	char **str;
 	register int i, j, count, item, start;
-	int len;
+	size_t len;
 
 	if (!src || !token) {
 		*total = 0;
@@ -394,7 +398,7 @@ char **explode(char *src, const char *token, int *total)
 **/
 char *str_nreplace(char *src, const char *delim, const char *with, int n)
 {
-	unsigned int w_len, i, n_len, counter;
+	size_t w_len, i, n_len, counter;
 	char *buf;
 
 	// w_len -> width length
@@ -460,13 +464,13 @@ char *str_nreplace(char *src, const char *delim, const char *with, int n)
 **/
 char *str_replace(char *str, const char *delim, const char *with)
 {
-	return str_nreplace(str, delim, with, strlen(str));
+	return str_nreplace(str, delim, with, (int)strlen(str));
 }
 
 // Just for compatibility with older versions of LibCGI
 char *replace(char *str, const char *delim, const char *with)
 {
-	return str_nreplace(str, delim, with, strlen(str));
+	return str_nreplace(str, delim, with, (int)strlen(str));
 }
 
 /**
@@ -499,7 +503,7 @@ int strnpos(char *s, char *ch, unsigned int count)
 **/
 int strpos(char *s, char *ch)
 {
-	return strnpos(s, ch, strlen(s));
+	return strnpos(s, ch, (unsigned int)strlen(s));
 }
 
 /**
@@ -520,7 +524,7 @@ int strpos(char *s, char *ch)
 **/
 char *strdel(char *s, int start, int count)
 {
-	register int i, len, contador = 0;
+	register size_t i, len, contador = 0;
 	register char *tmp;
 
 	len = strlen(s);
@@ -564,7 +568,7 @@ char *recvline(FILE *s)
 		if (i == siz)
 			buf = realloc(buf, siz += BUFSIZ);
 
-		buf[i] = ch;
+		buf[i] = (char)ch;
 
 		if (buf[i] == '\n') {
 			buf[i] = '\0';
@@ -602,7 +606,7 @@ char *recvline(FILE *s)
 char *make_string(char *s, ...)
 {
 	va_list ptr, bkp;
-	unsigned int len;
+	size_t len;
 	char *str_return, *a, *str;
 
 	str = s;
@@ -632,7 +636,11 @@ char *make_string(char *s, ...)
 	if (!str_return)
 		libcgi_error(E_MEMORY, "%s, line %s", __FILE__, __LINE__);
 
+#ifdef _MSC_VER
+	vsprintf_s(str_return, len + 1, s, bkp);
+#else
 	vsprintf(str_return, s, bkp);
+#endif
 
 	va_end(ptr);
 	va_end(bkp);
@@ -645,18 +653,22 @@ char *make_string(char *s, ...)
 char *strcat_ex(const char *str1, const char *str2)
 {
 	char *new_str;
-	unsigned int len;
+	size_t len;
 
 	if (!str1 || !str2)
 		return NULL;
 
 	len = strlen(str1) + strlen(str2);
 
-	new_str = (char *)malloc((len + 1) * sizeof(char*));
+	new_str = (char *)malloc((len + 1) * sizeof(char));
 	if (!new_str)
 		libcgi_error(E_MEMORY, "%s, line %s", __FILE__, __LINE__);
 
+#ifdef _MSC_VER
+	sprintf_s(new_str, len + 1, "%s%s", str1, str2);
+#else
 	sprintf(new_str, "%s%s", str1, str2);
+#endif
 
 	new_str[len] = '\0';
 

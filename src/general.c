@@ -66,7 +66,7 @@ static int ncodes = sizeof(he) / sizeof(struct iso8859_15);
 char *htmlentities(const char *str)
 {
 	char *buf;
-	int siz, len, i = 0, j;
+	size_t siz, len, i = 0, j;
 
 	siz = strlen(str) + 1;
 
@@ -83,7 +83,11 @@ char *htmlentities(const char *str)
 				if (!buf)
 					libcgi_error(E_MEMORY, "Failed to alloc memory at htmlentities, cgi.c");
 
+#ifdef _MSC_VER
+				strcpy_s(buf + i, siz - i, he[j].html);
+#else
 				strcpy(buf + i, he[j].html);
+#endif
 				i += len;
 				break;
 			}
@@ -126,8 +130,12 @@ char **file(const char *filename, unsigned int *total)
 	unsigned int lines, columms, char_count, i;
 	char **str, *buf, ch;
 
+#ifdef _MSC_VER
+	if (fopen_s(&fp, filename, "r") != 0) {
+#else
 	fp = fopen(filename, "r");
 	if (fp == NULL) {
+#endif
 		*total = 0;
 
 		return NULL;
@@ -157,7 +165,7 @@ char **file(const char *filename, unsigned int *total)
 		libcgi_error(E_MEMORY, "%s, line %s", __FILE__, __LINE__);
 
 	while (!feof(fp)) {
-		ch = fgetc(fp);
+		ch = (char)fgetc(fp);
 
 		// The next while() loop is  to get all contents of actual line
 		while ((ch != '\n') && (ch != EOF)) {
@@ -172,7 +180,7 @@ char **file(const char *filename, unsigned int *total)
 			}
 			buf[i++] = ch;
 
-			ch = fgetc(fp);
+			ch = (char)fgetc(fp);
 		}
 
 		buf[i] = '\0';
@@ -184,7 +192,11 @@ char **file(const char *filename, unsigned int *total)
 			exit(EXIT_FAILURE);
 		}
 
+#ifdef _MSC_VER
+		strncpy_s(str[lines - 1], char_count + 1, buf, char_count);
+#else
 		strncpy(str[lines - 1], buf, char_count);
+#endif
 		memset(buf, 0, char_count);
 
 		lines++;
