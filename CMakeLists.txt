@@ -3,7 +3,7 @@
 #
 cmake_minimum_required(VERSION 2.8.8)
 
-project(cgi)
+project(cgi C)
 string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_UC)
 string(TOLOWER ${PROJECT_NAME} PROJECT_NAME_LC)
 set(LIBPREFIX ${PROJECT_NAME})
