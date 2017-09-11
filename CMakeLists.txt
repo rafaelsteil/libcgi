@@ -1,5 +1,5 @@
 #
-# Copyright 2013,2016 Alexander Dahl <post@lespocky.de>
+# Copyright 2013,2016,2017 Alexander Dahl <post@lespocky.de>
 #
 cmake_minimum_required(VERSION 2.8.8)
 
@@ -30,6 +30,12 @@ include(GNUInstallDirs)				# cmake 2.8.5
 
 # additional compiler flags
 add_definitions(-Wall -Wextra -Wcast-align)
+
+# options
+option(BUILD_SHARED_LIBS
+    "Global flag to cause add_library to create shared libraries if on."
+    ON
+)
 
 # subdirectories
 add_subdirectory("src")
