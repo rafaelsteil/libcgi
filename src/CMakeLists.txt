@@ -23,17 +23,18 @@ set(CGI_SRC
 )
 
 # create binary
-add_library(${PROJECT_NAME}-shared SHARED ${CGI_SRC})
-set_target_properties(${PROJECT_NAME}-shared PROPERTIES
+add_library(${PROJECT_NAME} ${CGI_SRC})
+set_target_properties(${PROJECT_NAME} PROPERTIES
 	OUTPUT_NAME	${PROJECT_NAME}
 	SOVERSION	${PROJECT_VERSION_MAJOR}
 	VERSION		${PROJECT_VERSION}
 )
 
 # install binary
-install(TARGETS ${PROJECT_NAME}-shared
+install(TARGETS ${PROJECT_NAME}
 	EXPORT ${PROJECT_NAME}-targets
 	LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+	ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
 )
 
 # install cmake targets
