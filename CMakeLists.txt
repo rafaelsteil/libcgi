@@ -1,24 +1,17 @@
 #
-# Copyright 2013,2016,2017 Alexander Dahl <post@lespocky.de>
+# Copyright 2013,2016–2018 Alexander Dahl <post@lespocky.de>
 #
-cmake_minimum_required(VERSION 2.8.8)
 
-project(cgi C)
+cmake_minimum_required(VERSION 3.1)
+
+project(cgi
+	VERSION 1.1.1
+	LANGUAGES C
+)
+message(STATUS "cgi_VERSION: ${cgi_VERSION}")
+
 string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_UC)
 string(TOLOWER ${PROJECT_NAME} PROJECT_NAME_LC)
-set(LIBPREFIX ${PROJECT_NAME})
-set(LIBPREFIX_LC ${PROJECT_NAME_LC})
-set(LIBPREFIX_UC ${PROJECT_NAME_UC})
-
-set(PROJECT_VERSION_MAJOR 1)
-set(PROJECT_VERSION_MINOR 1)
-set(PROJECT_VERSION_PATCH 0)
-if(PROJECT_VERSION_PATCH EQUAL 0)
-set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}")
-else(PROJECT_VERSION_PATCH EQUAL 0)
-set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
-endif(PROJECT_VERSION_PATCH EQUAL 0)
-message(STATUS "PROJECT_VERSION: ${PROJECT_VERSION}")
 
 set(CGI_DESCRIPTION "A C library to build CGI applications.")
 set(CGI_URL "https://github.com/rafaelsteil/libcgi")
