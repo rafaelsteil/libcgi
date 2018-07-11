@@ -21,9 +21,6 @@ include(CMakePackageConfigHelpers)	# cmake 2.8.8
 include(FeatureSummary)
 include(GNUInstallDirs)				# cmake 2.8.5
 
-# additional compiler flags
-add_definitions(-Wall -Wextra -Wcast-align)
-
 # options
 option(BUILD_SHARED_LIBS
     "Global flag to cause add_library to create shared libraries if on."
