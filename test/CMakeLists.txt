@@ -1,10 +1,6 @@
 #
-# Copyright 2016,2017 Alexander Dahl <post@lespocky.de>
+# Copyright 2016–2018 Alexander Dahl <post@lespocky.de>
 #
-
-include_directories(
-	"${PROJECT_SOURCE_DIR}/src"
-)
 
 # misc
 add_executable(cgi-test
@@ -12,7 +8,7 @@ add_executable(cgi-test
 	test.c
 )
 target_link_libraries(cgi-test
-	"${PROJECT_NAME}"
+	${PROJECT_NAME}
 )
 add_test(escape_special_chars
 	cgi-test escape_special_chars
@@ -39,7 +35,7 @@ add_executable(cgi-test-slist
 	test_slist.c
 )
 target_link_libraries(cgi-test-slist
-	"${PROJECT_NAME}"
+	${PROJECT_NAME}
 )
 add_test(slist_add
 	cgi-test-slist add
@@ -70,7 +66,7 @@ add_executable(cgi-test-trim
 	trim.c
 )
 target_link_libraries(cgi-test-trim
-	"${PROJECT_NAME}"
+	${PROJECT_NAME}
 )
 add_test(test_ltrim
 	cgi-test-trim ltrim

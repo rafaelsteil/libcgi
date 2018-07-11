@@ -1,13 +1,10 @@
 #
-# Copyright 2013,2016 Alexander Dahl <post@lespocky.de>
+# Copyright 2013,2016,2018 Alexander Dahl <post@lespocky.de>
 #
+
 configure_file(
 	"${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake.in"
 	"${CMAKE_CURRENT_BINARY_DIR}/config.h"
-)
-
-include_directories(
-	"${CMAKE_CURRENT_BINARY_DIR}"
 )
 
 set(CGI_SRC
@@ -28,6 +25,13 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 	OUTPUT_NAME	${PROJECT_NAME}
 	SOVERSION	${PROJECT_VERSION_MAJOR}
 	VERSION		${PROJECT_VERSION}
+)
+
+target_include_directories(${PROJECT_NAME}
+	PUBLIC
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+		$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
 # install binary
