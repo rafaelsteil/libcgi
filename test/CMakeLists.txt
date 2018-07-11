@@ -10,23 +10,23 @@ add_executable(cgi-test
 target_link_libraries(cgi-test
 	${PROJECT_NAME}
 )
-add_test(escape_special_chars
-	cgi-test escape_special_chars
+add_test(NAME cgi_escape_special_chars
+    COMMAND cgi-test escape_special_chars
 )
-add_test(process_data
-	cgi-test process_data
+add_test(NAME cgi_process_data
+    COMMAND cgi-test process_data
 )
-add_test(param_multiple
-	cgi-test param_multiple
+add_test(NAME cgi_param_multiple
+    COMMAND cgi-test param_multiple
 )
-add_test(process_form
-	cgi-test process_form
+add_test(NAME cgi_process_form
+    COMMAND cgi-test process_form
 )
-add_test(ltrim
-	cgi-test ltrim
+add_test(NAME cgi_ltrim
+    COMMAND cgi-test ltrim
 )
-add_test(rtrim
-	cgi-test rtrim
+add_test(NAME cgi_rtrim
+    COMMAND cgi-test rtrim
 )
 
 # slist
@@ -37,26 +37,26 @@ add_executable(cgi-test-slist
 target_link_libraries(cgi-test-slist
 	${PROJECT_NAME}
 )
-add_test(slist_add
-	cgi-test-slist add
+add_test(NAME cgi_slist_add
+    COMMAND cgi-test-slist add
 )
-add_test(slist_delete_zero
-	cgi-test-slist deletezero
+add_test(NAME cgi_slist_delete_zero
+    COMMAND cgi-test-slist deletezero
 )
-add_test(slist_delete_one
-	cgi-test-slist deleteone
+add_test(NAME cgi_slist_delete_one
+    COMMAND cgi-test-slist deleteone
 )
-add_test(slist_delete_two
-	cgi-test-slist deletetwo
+add_test(NAME cgi_slist_delete_two
+    COMMAND cgi-test-slist deletetwo
 )
-add_test(slist_delete_three
-	cgi-test-slist deletethree
+add_test(NAME cgi_slist_delete_three
+    COMMAND cgi-test-slist deletethree
 )
-add_test(slist_get_item
-	cgi-test-slist get
+add_test(NAME cgi_slist_get_item
+    COMMAND cgi-test-slist get
 )
-add_test(slist_process_data
-	cgi-test-slist processdata
+add_test(NAME cgi_slist_process_data
+    COMMAND cgi-test-slist processdata
 )
 
 # trim
@@ -68,14 +68,14 @@ add_executable(cgi-test-trim
 target_link_libraries(cgi-test-trim
 	${PROJECT_NAME}
 )
-add_test(test_ltrim
-	cgi-test-trim ltrim
+add_test(NAME cgi_trim_ltrim
+    COMMAND cgi-test-trim ltrim
 )
-add_test(test_rtrim
-	cgi-test-trim rtrim
+add_test(NAME cgi_trim_rtrim
+    COMMAND cgi-test-trim rtrim
 )
-add_test(test_trim
-	cgi-test-trim trim
+add_test(NAME cgi_trim_trim
+    COMMAND cgi-test-trim trim
 )
 
 # additional tests with valgrind
