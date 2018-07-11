@@ -23,8 +23,8 @@ include(GNUInstallDirs)				# cmake 2.8.5
 
 # options
 option(BUILD_SHARED_LIBS
-    "Global flag to cause add_library to create shared libraries if on."
-    ON
+	"Global flag to cause add_library to create shared libraries if on."
+	ON
 )
 
 # subdirectories
