@@ -59,6 +59,18 @@ add_test(NAME cgi_slist_process_data
     COMMAND cgi-test-slist processdata
 )
 
+# session
+add_executable(cgi-test-session
+	cgi_test.c
+	test_session.c
+)
+target_link_libraries(cgi-test-session
+	${PROJECT_NAME}
+)
+add_test(NAME cgi_session_cookie_name
+	COMMAND cgi-test-session cookie_name
+)
+
 # trim
 add_executable(cgi-test-trim
 	cgi_test.c

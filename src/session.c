@@ -56,6 +56,8 @@
 * @{
 */
 
+#include <stdbool.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/time.h>
@@ -76,14 +78,13 @@
 FILE *sess_file;
 
 static char sess_id[SESS_ID_LEN + 1];
-static char *sess_fname;
+static char *sess_fname = NULL;
 static unsigned int save_path_len;
 
 char SESSION_SAVE_PATH[255] = "/tmp/";
 char SESSION_COOKIE_NAME[50] = "CGISID";
 
-int sess_initialized = 0;; // true if the session has been initialized, otherwise false
-int sess_finitialized = 0; // true if the session file has been created, otherwirte false
+bool sess_initialized = false;
 int session_lasterror = 0;
 
 // We can use this variable to get the error message from a ( possible ) session error
@@ -191,7 +192,7 @@ int cgi_session_destroy()
 {
 	// Remember: unlink() returns 0 if success :)
 	if (!unlink(sess_fname)) {
-		sess_finitialized = 0;
+		sess_initialized = false;
 		slist_free(&sess_list_start);
 
 		// hhhmmm..
@@ -491,7 +492,7 @@ int cgi_session_start()
 		if (sess_create_file()) {
 			cgi_add_cookie(SESSION_COOKIE_NAME, sess_id, 0, 0, 0, 0);
 
-			sess_initialized = 1;
+			sess_initialized = true;
 
 			return 1;
 		}
@@ -517,7 +518,7 @@ int cgi_session_start()
 				cgi_add_cookie(SESSION_COOKIE_NAME, sess_id, 0, 0, 0, 0);
 
 				libcgi_error(E_WARNING, "Session Cookie exists, but file don't. A new one was created.");
-				sess_initialized = 1;
+				sess_initialized = true;
 
 				return 1;
 			}
@@ -544,10 +545,17 @@ int cgi_session_start()
 		process_data(buf, &sess_list_start, &sess_list_last, '=', ';');
 
 	fclose(fp);
-	sess_initialized = 1;
+	sess_initialized = true;
 	free(buf);
 
 	return 1;
+}
+
+void cgi_session_free( void )
+{
+	free( sess_fname );
+	sess_fname = NULL;
+	sess_initialized = false;
 }
 
 /**

@@ -115,6 +115,17 @@ extern void cgi_session_cookie_name(const char *cookie_name);
 extern char *cgi_session_var(const char *name);
 extern void cgi_session_save_path(const char *path);
 
+/**
+ *	Free all remaining things explicitly or implicitly allocated by a
+ *	session.
+ *
+ *	@note	This is some kind of workaround, you still have to call
+ *			cgi_end(), but maybe not cgi_destroy() … :-/
+ *
+ *	@see	https://github.com/rafaelsteil/libcgi/issues/25
+ */
+void cgi_session_free( void );
+
 #ifdef __cplusplus
 }
 #endif
