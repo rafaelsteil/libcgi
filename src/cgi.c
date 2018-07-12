@@ -179,7 +179,7 @@ formvars *cgi_process_form()
 		/* no current support for file uploads, so limit upload data size
 		 * 1 MB should be overkill for text data
 		 */
-		const unsigned long content_max = 1024 * 1024;
+		const unsigned long content_max = 1024UL * 1024UL;
 
 		length_str = getenv("CONTENT_LENGTH");
 		if (! length_str || ! *length_str)
