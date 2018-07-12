@@ -1,15 +1,16 @@
 #include <stdio.h>
-#include <cgi.h>
+
+#include <libcgi/cgi.h>
 
 int main(void)
 {
 	// formvars is a structure type used to manage session and cgi
-	// linked lists. It have 'name' and 'value' properties. 
+	// linked lists. It have 'name' and 'value' properties.
 	formvars *sess_vars;
 	char *data;
-	
+
 	cgi_init();
-	cgi_session_start();	
+	cgi_session_start();
 	cgi_process_form();
 
 	// The user is trying to unregister some variables?
@@ -44,10 +45,10 @@ int main(void)
 	}
 	else {
 		// show the registered session variables to user
-		// sess_list_start is a global variable that contains 
+		// sess_list_start is a global variable that contains
 		// all session variables information, such name and value
 		sess_vars = sess_list_start;
-		
+
 		puts("<form action='show_vars.cgi' method='post'>");
 
 		while (sess_vars) {

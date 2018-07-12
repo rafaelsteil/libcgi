@@ -1,5 +1,6 @@
 #include <stdio.h>
-#include "cgi.h"
+
+#include <libcgi/cgi.h>
 
 void example_description()
 {
@@ -33,7 +34,7 @@ int main(void)
 	      "  <tbody>"
 	"	  <tr>"
 	"");
-	
+
 	cgi_include("top.inc");
 	cgi_include("left.inc");
 	cgi_include("main.inc");
@@ -45,7 +46,7 @@ int main(void)
 	   "</body>"
 	   "</html>"
 	"");
-	
+
 	cgi_end();
 
 	return 0;

@@ -1,13 +1,14 @@
 #include <stdio.h>
-#include <cgi.h>
-#include <session.h>
+
+#include <libcgi/cgi.h>
+#include <libcgi/session.h>
 
 int main(void)
 {
 	cgi_init();
 	cgi_session_start();
 	cgi_process_form();
-	
+
 	// The user is trying to logon?
 	if (cgi_param("action")) {
 		// yeah!
@@ -18,7 +19,7 @@ int main(void)
 		// Sends the user to main page
 		cgi_redirect("session.cgi");
 		cgi_end();
-		
+
 		return 0;
 	}
 
@@ -38,7 +39,7 @@ int main(void)
 	"<tr>"
 	"<td>"
 	"");
-	
+
 	if (!cgi_session_var_exists("logged")) {
 		puts(""
 		"<form action='login.cgi' method='get'>"

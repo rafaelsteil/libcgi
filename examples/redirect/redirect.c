@@ -1,6 +1,6 @@
-
 #include <stdio.h>
-#include "cgi.h"
+
+#include <libcgi/cgi.h>
 
 void example_description()
 {
@@ -16,7 +16,7 @@ int main()
 
 	if (cgi_param("url"))
 		cgi_redirect(cgi_param("url"));
-	
+
 	cgi_init_headers();
 
 	example_description();
@@ -31,7 +31,7 @@ int main()
 	"</form>"
 	"</body>"
 	"</html>");
-	
+
 	cgi_end();
 
 	return 0;

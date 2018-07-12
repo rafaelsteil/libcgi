@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <cgi.h>
+
+#include <libcgi/cgi.h>
 
 char *example_description()
 {
@@ -10,34 +11,34 @@ char *example_description()
 	"like to use, and then click the submit button to split the<br>"
 	"string in pieces."
 	"";
-	
+
 	return desc;
 }
 
 int main()
 {
 	char *str, *delim, **e;
-	
+
 	unsigned int total, i;
-	
+
 	cgi_init();
 	cgi_process_form();
 	cgi_init_headers();
-	
+
 	// The form was submited??
 	if (cgi_param("action")) {
 		str = cgi_param("str");
 		delim = cgi_param("delim");
-		
+
 		e = explode(str, delim, &total);
-		
+
 		if (total < 1)
 			puts("explode() returned 0 items.");
 		else {
 			for (i = 0; i < total; i++)
 				printf("Item offset [%d]: %s<br>", i, e[i]);
 		}
-		
+
 		free(str);
 		free(delim);
 	}
@@ -55,8 +56,8 @@ int main()
 		"</html>"
 		"", example_description());
 	}
-	
+
 	cgi_end();
 	return 0;
 }
-	
+

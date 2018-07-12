@@ -1,5 +1,6 @@
 #include <stdio.h>
-#include <cgi.h>
+
+#include <libcgi/cgi.h>
 
 void example_description()
 {
@@ -12,7 +13,7 @@ void example_description()
 int main(void)
 {
 	char *data;
-		
+
 	cgi_init();
 	cgi_init_headers();
 	cgi_process_form();
@@ -23,7 +24,7 @@ int main(void)
 		while ((data = cgi_param_multiple("check")) != NULL)
 			printf("%s<br>", data);
 	}
-	else 
+	else
 		cgi_include("form.html");
 
 	cgi_end();

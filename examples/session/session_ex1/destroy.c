@@ -1,7 +1,8 @@
 #include <stdio.h>
-#include <cgi.h>
-#include <session.h>
 #include <string.h>
+
+#include <libcgi/cgi.h>
+#include <libcgi/session.h>
 
 int main(void)
 {
@@ -12,7 +13,7 @@ int main(void)
 	// Is to destroy the session?
 	if (cgi_param("confirm") && !strcmp(cgi_param("confirm"), "yes")) {
 		cgi_session_destroy();
-		cgi_end();		
+		cgi_end();
 		cgi_redirect("session.cgi");
 		return 0;
 	}
@@ -27,7 +28,7 @@ int main(void)
 	"");
 
 	cgi_include("session_ex1_desc.html");
-	
+
 	puts(""
 	"<table width='70%%' align='center'>"
 	"<tr>"
@@ -58,4 +59,4 @@ int main(void)
 
 	return 0;
 }
-		
+

@@ -2,13 +2,13 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include <cgi.h>
-#include <session.h>
+#include <libcgi/cgi.h>
+#include <libcgi/session.h>
 
 int main()
 {
 	char *action;
-	
+
 	cgi_init();
 	cgi_process_form();
 
@@ -38,11 +38,11 @@ int main()
 
 	// includes the description for this example
 	cgi_include("session_ex2_desc.html");
-  	
+
 	// The user is logged?
 	if (cgi_session_var_exists("str")) {
 		// yep, let's show him some things
-		
+
 		printf(""
 		"<br><b>Congratulations, you've logged</b><br>"
 		"If you want to finish the session, <a href='session_ex2.cgi?action=logoff'>click here</a>!"
@@ -59,7 +59,7 @@ int main()
 			"	<input type='hidden' name='action' value='login'>"
 			"</form>"
 		"");
-	}		
+	}
 
 	// Print session configuration directives
 	printf("Session configuration options: <br>"
