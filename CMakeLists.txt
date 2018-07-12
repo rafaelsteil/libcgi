@@ -32,6 +32,7 @@ add_subdirectory("src")
 
 # test
 enable_testing()
+include(CTest)
 add_subdirectory("test")
 
 # cmake package stuff
