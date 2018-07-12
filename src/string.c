@@ -439,8 +439,8 @@ char *str_nreplace(char *src, const char *delim, const char *with, int n)
 /**
 * Replace characteres in a string.
 *  Replace all occourences of *delim on *src with characteres pointed by *with.
-*  The problem with the folowing code is that the function only searches for the
-*  first caracter of *delim, ingoring the rest. Other problem is speed relacioned:
+*  The problem with the following code is that the function only searches for the
+*  first character of *delim, ingoring the rest. Other problem is speed relacioned:
 *  note that the function ever compare the length of *with to do the correct action.
 *  @param src String to parse
 *  @param delim Character to search that will be replaced
@@ -547,7 +547,7 @@ char *strdel(char *s, int start, int count)
 /**
 * Reads an entire line.
 * Reads a line from the file specified by the file pointer passed
-* as parameter. This function is intead to replace the non-portable
+* as parameter. This function is instead to replace the non-portable
 * GNU getline() function.
 *
 * @param s File pointer to the file to read from.

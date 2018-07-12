@@ -33,7 +33,7 @@ void slist_add(formvars *item, formvars **start, formvars **last)
 {
 	// if *start is empty, then our list is also empty. So, the only
 	// task to do is fill the variables *start and *last with the data pointed by item
-	// *start contains the firts item in the list, and we need *last to know the
+	// *start contains the first item in the list, and we need *last to know the
 	// end of the list
 	if (!*start) {
 		// item->next needs to be NULL, otherwise we never will
@@ -55,7 +55,7 @@ void slist_add(formvars *item, formvars **start, formvars **last)
 	// NULL, or in other words, it will be the end ;0
 	item->next = NULL;
 
-	// Finaly, the actual end of list will contain the new item
+	// Finally, the actual end of list will contain the new item
 	*last = item;
 }
 

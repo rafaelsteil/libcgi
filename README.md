@@ -32,7 +32,7 @@ Well, I am keeping this TODO list here for historical (and funny) reasons. Nowad
 - Encrypted session
 - Memory Management functions
 - Code speed ups
-- Other miscelaneous functions
+- Other miscellaneous functions
 - Win32 port? ( who wants it? )
 
 Changelog

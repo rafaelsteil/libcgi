@@ -5,7 +5,7 @@
 char *example_description()
 {
 	char *desc = ""
-	"LibCGI examples, htmltities() function demostration. <br>"
+	"LibCGI examples, htmltities() function demonstration. <br>"
 	"Type an html code into textarea and then click OK"
 	"";
 

@@ -6,7 +6,7 @@
 
 char *example_description()
 {
-	char *desc = "LibCGI examples, md5 function demostration. <br>";
+	char *desc = "LibCGI examples, md5 function demonstration. <br>";
 
 	return desc;
 }

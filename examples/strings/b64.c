@@ -6,7 +6,7 @@
 
 char *example_description()
 {
-	char *desc = "LibCGI examples, str_base64_* functions demostration. <br>";
+	char *desc = "LibCGI examples, str_base64_* functions demonstration. <br>";
 
 	return desc;
 }

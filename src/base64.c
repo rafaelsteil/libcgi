@@ -1,5 +1,5 @@
 /*
-	LibCGI base64 manipulation functions is extremly based on the work of Bob Tower,
+	LibCGI base64 manipulation functions is extremely based on the work of Bob Tower,
 	from its projec http://base64.sourceforge.net. The functions were a bit modicated.
 	Above is the MIT license from b64.c original code:
 

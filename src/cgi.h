@@ -28,7 +28,7 @@ extern "C" {
 #endif
 
 
-// general purpose linked list. Actualy isn't very portable
+// general purpose linked list. Actually isn't very portable
 // because uses only 'name' and 'value' variables to store data.
 // Problably, in a future release, this will be replaced by
 // another type of struct
