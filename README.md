@@ -40,11 +40,36 @@ Changelog
 
 __Version 1.2.0__
 
-_Thanks to Alexander Dahl_
+_Thanks to Alexander Dahl, D Frost, Thomas Petazzoni_
+
+2015-04-23
+
+* Improvements to `ltrim()` and `rtrim()`
+
+2016-05-12
+
+* Introduce unit tests with CTest
+
+2016-05-18
+
+* Fix possible segfaults in list implementation ([#31](https://github.com/rafaelsteil/libcgi/issues/31))
 
 2017-02-16
 
 * Added API function to free session internals ([#25](https://github.com/rafaelsteil/libcgi/issues/25))
+* Reset session initialized flag ([#33](https://github.com/rafaelsteil/libcgi/issues/33))
+
+2017-09-03
+
+* Fixes on CMake to build as C only project and as shared or static lib, contributed by [Buildroot](https://buildroot.org/)
+
+2018-07-11
+
+* More fixes on CMake build, modern approach
+
+2018-07-12
+
+* Fix include paths in examples
 
 __Version 1.1__
 
