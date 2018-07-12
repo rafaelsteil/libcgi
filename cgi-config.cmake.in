@@ -1,5 +1,5 @@
 #
-# Copyright 2013,2016,2017 Alexander Dahl <post@lespocky.de>
+# Copyright 2013,2016–2018 Alexander Dahl <post@lespocky.de>
 #
 
 # paths
@@ -8,10 +8,10 @@ set_and_check(CGI_INCLUDE_DIRS "@PACKAGE_CMAKE_INSTALL_INCLUDEDIR@/lib@PROJECT_N
 
 # targets
 get_filename_component(_dir "${CMAKE_CURRENT_LIST_FILE}" PATH)
-if(NOT TARGET @PROJECT_NAME@)
+if(NOT TARGET @PROJECT_NAME@::@PROJECT_NAME@)
 	include("${_dir}/@PROJECT_NAME@-targets.cmake")
-endif(NOT TARGET @PROJECT_NAME@)
-set(CGI_LIBRARIES @PROJECT_NAME@)
+endif(NOT TARGET @PROJECT_NAME@::@PROJECT_NAME@)
+set(CGI_LIBRARIES @PROJECT_NAME@::@PROJECT_NAME@)
 
 # feature summary
 include(FeatureSummary)
