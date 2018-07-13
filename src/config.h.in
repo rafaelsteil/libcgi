@@ -1,0 +1,16 @@
+/*******************************************************************//**
+ *	@file		config.h
+ *
+ *	@brief		Stuff set by the build system.
+ *
+ *	@author		Alexander Dahl <post@lespocky.de>
+ *
+ *	SPDX-License-Identifier: LGPL-2.1-or-later
+ *	License-Filename: COPYING
+ *
+ *	@copyright	2018 Alexander Dahl and libcgi contributors
+ **********************************************************************/
+
+#pragma once
+
+#define CGI_VERSION					"v@PROJECT_VERSION@"

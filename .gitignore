@@ -8,5 +8,4 @@ libcgi.a
 libcgi.so
 autom4te.cache
 configure
-src/config.h
 *swp

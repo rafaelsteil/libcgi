@@ -8,6 +8,7 @@
 #include "cgi_test.h"
 
 #include "cgi.h"
+#include "config.h"
 
 extern formvars *
 process_data(const char *query, formvars **start, formvars **last,
@@ -23,6 +24,7 @@ static int test_cgi_param_multiple( void );
 static int test_cgi_process_form( void );
 static int _test_ltrim( void );
 static int _test_rtrim( void );
+static int version( void );
 
 int main( int argc, char *argv[] )
 {
@@ -33,6 +35,7 @@ int main( int argc, char *argv[] )
 		{ "process_form",			test_cgi_process_form			},
 		{ "ltrim",					_test_ltrim						},
 		{ "rtrim",					_test_rtrim						},
+		{ "version",				version							},
 	};
 
 	/*	require at least one argument to select test	*/
@@ -309,6 +312,16 @@ int _test_rtrim( void )
 
 	return EXIT_SUCCESS;
 
+error:
+	return EXIT_FAILURE;
+}
+
+int version( void )
+{
+	check( 0 == strcmp( CGI_VERSION, cgi_version() ),
+			"strcmp( '%s', '%s' )", CGI_VERSION, cgi_version() );
+
+	return EXIT_SUCCESS;
 error:
 	return EXIT_FAILURE;
 }

@@ -28,6 +28,9 @@ add_test(NAME cgi_ltrim
 add_test(NAME cgi_rtrim
     COMMAND cgi-test rtrim
 )
+add_test(NAME cgi_version
+	COMMAND cgi-test version
+)
 
 # slist
 add_executable(cgi-test-slist

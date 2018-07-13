@@ -136,6 +136,13 @@ extern void cgi_session_save_path(const char *path);
  */
 void cgi_session_free( void );
 
+/**
+ *	The version of this library.
+ *
+ *	@return	Version string.
+ */
+const char *cgi_version( void );
+
 #ifdef __cplusplus
 }
 #endif

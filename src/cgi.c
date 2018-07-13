@@ -26,6 +26,7 @@
 #include <sys/stat.h> /* for cgi_include() */
 
 #include "cgi.h"
+#include "config.h"
 #include "error.h"
 
 // There's no reason to not have this initialised.
@@ -551,6 +552,10 @@ void cgi_send_header(const char *header)
 	printf("%s\r\n", header);
 }
 
+const char *cgi_version( void )
+{
+	return CGI_VERSION;
+}
 
 /**
 * @}
