@@ -23,10 +23,20 @@
 
 #include <stdio.h>
 
+#if defined(__GNUC__)
+#define CGI_DEPRECATED __attribute__ ((deprecated))
+#elif defined(_MSC_VER)
+#define CGI_DEPRECATED __declspec(deprecated)
+#elif defined(__clang__)
+#define CGI_DEPRECATED __deprecated
+#else
+#pragma message("WARNING: You need to implement CGI_DEPRECATED for this compiler")
+#define CGI_DEPRECATED
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 
 // general purpose linked list. Actually isn't very portable
 // because uses only 'name' and 'value' variables to store data.
@@ -81,7 +91,7 @@ extern char *stripslashes(char *str);
 extern char *str_base64_encode(char *str);
 extern char *str_base64_decode(char *str);
 extern char *recvline(FILE *fp);
-extern char *md5(const char *str);
+CGI_DEPRECATED char *md5(const char *str);
 extern char *cgi_ltrim(char *str);
 extern char *cgi_rtrim(char *str);
 extern char *cgi_trim(char *str);

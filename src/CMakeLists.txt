@@ -2,11 +2,6 @@
 # Copyright 2013,2016,2018 Alexander Dahl <post@lespocky.de>
 #
 
-configure_file(
-	"${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake.in"
-	"${CMAKE_CURRENT_BINARY_DIR}/config.h"
-)
-
 set(CGI_SRC
 	base64.c
 	cgi.c
@@ -14,7 +9,7 @@ set(CGI_SRC
 	error.c
 	general.c
 	list.c
-	#	md5.c
+	md5.c
 	session.c
 	string.c
 )
