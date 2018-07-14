@@ -3,7 +3,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef _MSC_VER
+#include <io.h>
+#define STDIN_FILENO _fileno(stdin)
+#else
 #include <unistd.h>
+#endif
 
 #include "cgi_test.h"
 
@@ -38,7 +43,11 @@ int main( int argc, char *argv[] )
 	/*	require at least one argument to select test	*/
 	if ( argc < 2 ) return EXIT_FAILURE;
 
+#ifdef _MSC_VER
+    check( !_pipe(pipe_, 1024, 0), "_pipe" );
+#else
 	check( !pipe(pipe_), "pipe" );
+#endif
 	check( STDIN_FILENO == dup2(pipe_[0], STDIN_FILENO), "dup2" );
 
 	return run_action( argv[1], actions,
@@ -165,7 +174,9 @@ formvars *_post( const char *post_data )
 			"%zd", length);
 
 	check( !putenv("REQUEST_METHOD=POST"), "putenv REQUEST_METHOD" );
+#ifndef _WIN32
 	check( !setenv("CONTENT_LENGTH", length_str, 1), "CONTENT_LENGTH" );
+#endif
 
 	write(pipe_[1], post_data, length);
 

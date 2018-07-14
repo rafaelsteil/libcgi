@@ -28,6 +28,10 @@
 #include "error.h"
 #include "cgi.h"
 
+#ifdef _MSC_VER
+#define strcasecmp _stricmp
+#endif
+
 // Add a new item to the list
 void slist_add(formvars *item, formvars **start, formvars **last)
 {

@@ -85,7 +85,13 @@ formvars *cgi_get_cookies()
 	register size_t position;
 	char *cookies, *aux, *str_unesc;
 
+#ifdef _MSC_VER
+	size_t len;
+	_dupenv_s(&cookies, &len, "HTTP_COOKIE");
+	if (cookies == NULL)
+#else
 	if ((cookies = getenv("HTTP_COOKIE")) == NULL)
+#endif
 		return NULL;
 
 	str_unesc = cgi_unescape_special_chars(cookies);
@@ -108,7 +114,11 @@ formvars *cgi_get_cookies()
 			exit(EXIT_FAILURE);
 		}
 
+#ifdef _MSC_VER
+		strncpy_s(data->name, position + 1, cookies, position);
+#else
 		strncpy(data->name, cookies, position);
+#endif
 		data->name[position] = '\0';
 
 		position = 0;
@@ -129,7 +139,11 @@ formvars *cgi_get_cookies()
 			exit(-1);
 		}
 
+#ifdef _MSC_VER
+		strncpy_s(data->value, position + 1, cookies, position);
+#else
 		strncpy(data->value, cookies, position);
+#endif
 		data->value[position] = '\0';
 
 		slist_add(data, &cookies_start, &cookies_last);

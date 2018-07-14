@@ -66,7 +66,8 @@ void decodeblock( unsigned char in[4], unsigned char out[3] )
 char *str_base64_encode(char *str)
 {
 	unsigned char in[3], out[4];
-	unsigned int i, len, blocksout = 0, linesize = strlen(str);
+	unsigned int i, len, blocksout = 0;
+	size_t linesize = strlen(str);
 	char *tmp = str;
 	char *result = (char *)malloc((linesize + 3 - linesize % 3) * 4 / 3 + 1);
 
