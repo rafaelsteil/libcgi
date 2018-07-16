@@ -25,9 +25,9 @@
 #include <ctype.h>
 #include <sys/stat.h> /* for cgi_include() */
 
-#include "cgi.h"
-#include "config.h"
-#include "error.h"
+#include "libcgi/cgi.h"
+#include "libcgi/config.h"
+#include "libcgi/error.h"
 
 // There's no reason to not have this initialised.
 static const char hextable[256] = {

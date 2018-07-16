@@ -2,8 +2,8 @@
 #include <stdarg.h>
 #include <stdlib.h>
 
-#include "error.h"
-#include "cgi.h"
+#include "libcgi/cgi.h"
+#include "libcgi/error.h"
 
 const char *libcgi_error_type[] = {
 	"LibCGI Warning",

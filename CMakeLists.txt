@@ -28,6 +28,7 @@ option(BUILD_SHARED_LIBS
 )
 
 # subdirectories
+add_subdirectory("include/libcgi")
 add_subdirectory("src")
 
 # test

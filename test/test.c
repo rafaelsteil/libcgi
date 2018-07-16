@@ -7,8 +7,8 @@
 
 #include "cgi_test.h"
 
-#include "cgi.h"
-#include "config.h"
+#include "libcgi/cgi.h"
+#include "libcgi/config.h"
 
 extern formvars *
 process_data(const char *query, formvars **start, formvars **last,

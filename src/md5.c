@@ -23,8 +23,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "error.h"
-#include "cgi.h"
+#include "libcgi/cgi.h"
+#include "libcgi/error.h"
 
 /** @ingroup libcgi_general
 * @{

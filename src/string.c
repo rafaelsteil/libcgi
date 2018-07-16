@@ -25,8 +25,8 @@
 #include <stdarg.h>
 #include <ctype.h>
 
-#include "cgi.h"
-#include "error.h"
+#include "libcgi/cgi.h"
+#include "libcgi/error.h"
 
 /*********************************************************
 * 					STRING GROUP
