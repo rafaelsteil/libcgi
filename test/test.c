@@ -64,7 +64,6 @@ int test_cgi_escape_special_chars( void )
 
 	for (c = 0; c < 256; ++c)
 		str[c] = (char) c + 1;
-	str[c] = 0;
 
 	check( strlen(str) == 255, "strlen" );
 	check( esc = cgi_escape_special_chars(str), "escape" );
