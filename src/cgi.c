@@ -436,7 +436,9 @@ char *cgi_unescape_special_chars(const char *str)
 	char c;
 	char hex[2];
 
-	new = (char *)malloc(strlen(str) + 1);
+	if ( !str ) return NULL;
+
+	new = (char *) calloc( strlen(str) + 1, 1 );
 	if (! new)
 		libcgi_error(E_MEMORY, "%s, line %s", __FILE__, __LINE__);
 
