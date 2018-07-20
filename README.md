@@ -42,6 +42,10 @@ __Version 1.2.0__
 
 _Thanks to Alexander Dahl, D Frost, Thomas Petazzoni_
 
+2015-03-26
+
+* Add new API function `cgi_redirect_status()` and deprecate old one
+
 2015-04-23
 
 * Improvements to `ltrim()` and `rtrim()`
@@ -70,6 +74,22 @@ _Thanks to Alexander Dahl, D Frost, Thomas Petazzoni_
 2018-07-12
 
 * Fix include paths in examples
+
+2018-07-13
+
+* Mark function `md5()` as deprecated and compile `md5.c` again (#15)
+
+2018-07-14
+
+* Add new API function `cgi_version()`
+
+2018-07-16
+
+* Move header files to separate directory
+
+2018-07-20
+
+* Fix possible segfault in `cgi_unescape_special_chars()`
 
 __Version 1.1__
 
