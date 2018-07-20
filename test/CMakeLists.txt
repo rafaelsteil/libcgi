@@ -36,6 +36,9 @@ add_test(NAME cgi_rtrim
 add_test(NAME cgi_version
 	COMMAND cgi-test version
 )
+add_test(NAME cgi_unescape_special_chars
+	COMMAND cgi-test unescape_special_chars
+)
 
 # slist
 add_executable(cgi-test-slist

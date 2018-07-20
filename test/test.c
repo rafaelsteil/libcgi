@@ -25,6 +25,7 @@ static int test_cgi_process_form( void );
 static int _test_ltrim( void );
 static int _test_rtrim( void );
 static int version( void );
+static int unescape_special_chars( void );
 
 int main( int argc, char *argv[] )
 {
@@ -36,6 +37,7 @@ int main( int argc, char *argv[] )
 		{ "ltrim",					_test_ltrim						},
 		{ "rtrim",					_test_rtrim						},
 		{ "version",				version							},
+		{ "unescape_special_chars",	unescape_special_chars			},
 	};
 
 	/*	require at least one argument to select test	*/
@@ -319,6 +321,15 @@ int version( void )
 {
 	check( 0 == strcmp( CGI_VERSION, cgi_version() ),
 			"strcmp( '%s', '%s' )", CGI_VERSION, cgi_version() );
+
+	return EXIT_SUCCESS;
+error:
+	return EXIT_FAILURE;
+}
+
+int unescape_special_chars( void )
+{
+	check( NULL == cgi_unescape_special_chars( NULL ), "null" );
 
 	return EXIT_SUCCESS;
 error:
