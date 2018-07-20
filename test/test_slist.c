@@ -13,7 +13,7 @@
 
 #include "cgi_test.h"
 
-#include "cgi.h"
+#include "libcgi/cgi.h"
 
 /*	declarations for functions not declared in src	*/
 formvars *process_data(const char *query, formvars **start, formvars **last,

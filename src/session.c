@@ -67,9 +67,9 @@
 #include <unistd.h>
 #include <errno.h>
 
-#include "cgi.h"
-#include "session.h"
-#include "error.h"
+#include "libcgi/cgi.h"
+#include "libcgi/error.h"
+#include "libcgi/session.h"
 
 // session id length
 #define SESS_ID_LEN 45

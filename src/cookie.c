@@ -23,8 +23,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "error.h"
-#include "cgi.h"
+#include "libcgi/cgi.h"
+#include "libcgi/error.h"
 
 formvars *cookies_start = NULL;
 formvars *cookies_last = NULL;

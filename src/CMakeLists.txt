@@ -2,11 +2,6 @@
 # Copyright 2013,2016,2018 Alexander Dahl <post@lespocky.de>
 #
 
-configure_file(
-	"${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake.in"
-	"${CMAKE_CURRENT_BINARY_DIR}/config.h"
-)
-
 set(CGI_SRC
 	base64.c
 	cgi.c
@@ -14,7 +9,7 @@ set(CGI_SRC
 	error.c
 	general.c
 	list.c
-	#	md5.c
+	md5.c
 	session.c
 	string.c
 )
@@ -32,8 +27,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 
 target_include_directories(${PROJECT_NAME}
 	PUBLIC
-		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-		$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+		$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+		$<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
 		$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
@@ -48,12 +43,4 @@ install(TARGETS ${PROJECT_NAME}
 install(EXPORT ${PROJECT_NAME}-targets
 	NAMESPACE ${PROJECT_NAME}::
 	DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
-)
-
-# install headers
-install(FILES
-	cgi.h
-	error.h
-	session.h
-	DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/lib${PROJECT_NAME}"
 )

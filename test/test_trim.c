@@ -13,7 +13,7 @@
 
 #include "cgi_test.h"
 
-#include "cgi.h"
+#include "libcgi/cgi.h"
 
 /*	trim.c	*/
 char* ltrim(char* s);

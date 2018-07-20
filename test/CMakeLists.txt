@@ -7,6 +7,11 @@ add_executable(cgi-test
 	cgi_test.c
 	test.c
 )
+target_compile_definitions(cgi-test
+	PRIVATE
+		_POSIX_C_SOURCE=200112L
+		_XOPEN_SOURCE
+)
 target_link_libraries(cgi-test
 	${PROJECT_NAME}
 )
@@ -27,6 +32,9 @@ add_test(NAME cgi_ltrim
 )
 add_test(NAME cgi_rtrim
     COMMAND cgi-test rtrim
+)
+add_test(NAME cgi_version
+	COMMAND cgi-test version
 )
 
 # slist

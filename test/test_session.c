@@ -14,7 +14,7 @@
 
 #include "cgi_test.h"
 
-#include "cgi.h"
+#include "libcgi/cgi.h"
 
 #define CGI_TEST_SHRT_COOKIE_NAME	"cgi_sess"
 #define CGI_TEST_COOKIE_NAME_49		"_______ten____twenty____thirty____fourty_____fift"

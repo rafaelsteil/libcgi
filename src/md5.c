@@ -23,15 +23,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "config.h"
-#include "error.h"
-#include "cgi.h"
+#include "libcgi/cgi.h"
+#include "libcgi/error.h"
 
 /** @ingroup libcgi_general
 * @{
 */
-
-#if HAVE_MD5
 
 #ifndef MD5_H
 #define MD5_H
@@ -95,7 +92,6 @@ char *md5(const char *str)
 	// returning a encrypted string
 	return tmp;
 }
-#endif
 
 /*=======================================================================*/
 
