@@ -20,7 +20,7 @@
 */
 
 /*****************************************************
- * The varibles/functions beginning with sess_ are
+ * The variables/functions beginning with sess_ are
  * for manipulation internly only. You can use
  * the session_ like functions/variables
  *****************************************************
@@ -197,7 +197,7 @@ int cgi_session_destroy()
 
 		// hhhmmm..
 		if (headers_initialized)
-			libcgi_error(E_WARNING, "Headers alreay sent. session_destroy() can't fully unregister the session");
+			libcgi_error(E_WARNING, "Headers already sent. session_destroy() can't fully unregister the session");
 		else
 			cgi_add_cookie(SESSION_COOKIE_NAME, "", 0, 0, 0, 0);
 

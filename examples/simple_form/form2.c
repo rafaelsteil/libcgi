@@ -31,7 +31,7 @@ int main(void)
 	if (cgi_param("age"))
 		printf("Age: %s<br>", cgi_param("age"));
 	else
-		puts("Age: Emtpy<br>");
+		puts("Age: Empty<br>");
 
 	// GENDER
 	printf("Gender: %s<br>", cgi_param("gender"));

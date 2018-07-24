@@ -57,7 +57,7 @@ void decodeblock( unsigned char in[4], unsigned char out[3] )
 */
 
 /**
-* Encodes a given tring to its base64 form.
+* Encodes a given string to its base64 form.
 *
 * @param *str String to convert
 * @return Base64 encoded String

@@ -25,7 +25,7 @@ int main()
 	cgi_process_form();
 	cgi_init_headers();
 
-	// The form was submited??
+	// The form was submitted??
 	if (cgi_param("action")) {
 		str = cgi_param("str");
 		delim = cgi_param("delim");

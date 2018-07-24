@@ -32,7 +32,7 @@ int main(void)
 	"	"
 	"<tr>"
 	"<td><font face='arial, verdana' size='2' color='#0000ff'>"
-	"This is the main page of LibCGI session suport test. Please choose one of the options"
+	"This is the main page of LibCGI session support test. Please choose one of the options"
 	"in the navigation bar.</font>"
 	"</td>"
 	"</tr>"

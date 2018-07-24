@@ -92,7 +92,7 @@ extern "C" {
 
 // general purpose linked list. Actually isn't very portable
 // because uses only 'name' and 'value' variables to store data.
-// Problably, in a future release, this will be replaced by
+// Probably, in a future release, this will be replaced by
 // another type of struct
 typedef struct formvarsA {
         char *name;

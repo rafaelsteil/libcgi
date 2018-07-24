@@ -138,7 +138,7 @@ char **file(const char *filename, unsigned int *total)
 	// initial line length
 	columms = 100;
 
-	// How many characteres in the line
+	// How many characters in the line
 	char_count = 1;
 
 	i = 0;

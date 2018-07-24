@@ -151,7 +151,7 @@ formvars *process_data(const char *query, formvars **start, formvars **last,
 
 /**
 * Process HTML form or URL data.
-* Used to retrieve GET or POST data. It handles automaticaly the correct REQUEST_METHOD, so you don't need to afraid about it.
+* Used to retrieve GET or POST data. It handles automatically the correct REQUEST_METHOD, so you don't need to afraid about it.
 * @return Returns the contents of URL or FORM into a formvars variable, or NULL if FALSE. Most of time, you
 * don't need any variable to store the form data, because is used an internal variable to manipulate the contents.
 * @see cgi_init, cgi_init_headers
@@ -226,7 +226,7 @@ void cgi_fatal(const char *msg)
 
 /**
 * Include static files.
-* Function used to include static data ( normaly html files ).
+* Function used to include static data ( normally html files ).
 * File contents will never be processed.
 * Note that I don't scan for any special character. The reason
 * I did it is, if the you are using this library, you have a shell
@@ -546,7 +546,7 @@ char *cgi_param(const char *var_name)
 /**
 * Sends a specific header.
 * Sends a specific HTTP header. You won't need to add '\\n\\n' chars.
-* @param header HTTP header to send, without new line characteres
+* @param header HTTP header to send, without new line characters
 * @return True
 * @see cgi_init_headers
 **/

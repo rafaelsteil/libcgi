@@ -85,7 +85,7 @@ char *addnslashes(char *s, int n)
 * Add slashes to a string when necessary.
 * Adds a '\' in every quote ( " ), apostrophe ( ' ) or  backslash ( \ )
 * It's useful when working with databases, for example, because
-* someone can try insert this caracters to try hack the application...
+* someone can try insert this characters to try hack the application...
 * @param *s String to parse
 * @return The new string, with slashes
 * @see stripslashes, addnslashes
@@ -292,7 +292,7 @@ char *substr(char *src, const int start, const int count)
 * @param token Character delimiter to search.
 * @param total An integer variable passed as reference, which stores the total of
 * itens of the array
-* @return The array, where each item is one separeted by token
+* @return The array, where each item is one separated by token
 *
 * \code
 *
@@ -372,8 +372,8 @@ char **explode(char *src, const char *token, int *total)
 }
 
 /**
-* Replace characteres in a string, but not more than 'n'.
-*  Replace all occourences of *delim on *src with characteres pointed by *with,
+* Replace characters in a string, but not more than 'n'.
+*  Replace all occourences of *delim on *src with characters pointed by *with,
 *  stopping after 'n' char.
 *  @param *src String to parse
 *  @param *delim Character to search that will be replaced
@@ -422,7 +422,7 @@ char *str_nreplace(char *src, const char *delim, const char *with, int n)
 				for (i = 0; i < w_len; i++)
 					buf[counter++] = with[i];
 			}
-			// otherwise, only do a simple character subtitution
+			// otherwise, only do a simple character substitution
 			buf[counter++] = *with;
 		}
 		else
@@ -437,10 +437,10 @@ char *str_nreplace(char *src, const char *delim, const char *with, int n)
 }
 
 /**
-* Replace characteres in a string.
-*  Replace all occourences of *delim on *src with characteres pointed by *with.
+* Replace characters in a string.
+*  Replace all occourences of *delim on *src with characters pointed by *with.
 *  The problem with the following code is that the function only searches for the
-*  first character of *delim, ingoring the rest. Other problem is speed relacioned:
+*  first character of *delim, ignoring the rest. Other problem is speed relacioned:
 *  note that the function ever compare the length of *with to do the correct action.
 *  @param src String to parse
 *  @param delim Character to search that will be replaced
@@ -507,7 +507,7 @@ int strpos(char *s, char *ch)
 *  Delete count characters of s, starting in start
 *  @param s String to search
 *  @param start Initial offset to begin search
-*  @param count Number of characteres to delete
+*  @param count Number of characters to delete
 *  @return The new string
 *  @see strndel()
 *

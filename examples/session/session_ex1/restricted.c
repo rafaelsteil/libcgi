@@ -52,7 +52,7 @@ int main(void)
 	else {
 		puts(""
 		"<font face='arial, verdana' size='2' color='#ff0000'>In this page you can register"
-		"any session variable you want. Here is a good place to test session suport, and "
+		"any session variable you want. Here is a good place to test session support, and "
 		"<a href='show_vars.cgi'>here</a> you can see all already registered variables!!!|"
 		"</font>"
 		"<br>"
