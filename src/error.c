@@ -7,8 +7,8 @@
  * License-Filename: LICENSES/LGPL-2.1.txt
  */
 
-#include <stdio.h>
 #include <stdarg.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "libcgi/cgi.h"

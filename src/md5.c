@@ -19,11 +19,11 @@
     You can contact the author by e-mail: rafael@insanecorp.com
 */
 
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "libcgi/cgi.h"
 #include "libcgi/error.h"
 
 /** @ingroup libcgi_general
