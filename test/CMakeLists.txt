@@ -1,6 +1,9 @@
 #
 # Copyright 2016–2018 Alexander Dahl <post@lespocky.de>
 #
+# SPDX-License-Identifier: LGPL-2.1+
+# License-Filename: LICENSES/LGPL-2.1.txt
+#
 
 # misc
 add_executable(cgi-test

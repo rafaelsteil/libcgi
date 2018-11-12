@@ -1,3 +1,12 @@
+/*
+ * LibCGI - A library to make CGI programs using C
+ *
+ * Copyright 2001 Rafael Steil <rafael@insanecorp.com>
+ *
+ * SPDX-License-Identifier: LGPL-2.1+
+ * License-Filename: LICENSES/LGPL-2.1.txt
+ */
+
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
