@@ -1,11 +1,14 @@
 /*******************************************************************//**
- *	@file	test_slist.c
+ *	@file		test_slist.c
  *
  *	Test cgi slist implementation.
  *
- *	@author	Alexander Dahl <post@lespocky.de>
+ *	@author		Alexander Dahl <post@lespocky.de>
  *
- *	Copyright 2016 Alexander Dahl
+ *	SPDX-License-Identifier: LGPL-2.1+
+ *	License-Filename: LICENSES/LGPL-2.1.txt
+ *
+ *	@copyright	2016 Alexander Dahl <post@lespocky.de>
  **********************************************************************/
 
 #include <stddef.h>

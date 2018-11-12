@@ -1,11 +1,14 @@
 /*******************************************************************//**
- *	@file	cgi_test.c
+ *	@file		cgi_test.c
  *
  *	Actual test routines checking stuff we want to check in unit tests.
  *
- *	@author	Alexander Dahl <post@lespocky.de>
+ *	@author		Alexander Dahl <post@lespocky.de>
  *
- *	Copyright 2016 Alexander Dahl
+ *	SPDX-License-Identifier: LGPL-2.1+
+ *	License-Filename: LICENSES/LGPL-2.1.txt
+ *
+ *	@copyright	2016 Alexander Dahl <post@lespocky.de>
  **********************************************************************/
 
 #include "cgi_test.h"

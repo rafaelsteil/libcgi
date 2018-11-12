@@ -1,4 +1,12 @@
-/* test cases for module "cgi.c" */
+/*******************************************************************//**
+ *	test cases for module "cgi.c"
+ *
+ *	SPDX-License-Identifier: LGPL-2.1+
+ *	License-Filename: LICENSES/LGPL-2.1.txt
+ *
+ *	@copyright	2015 D Frost
+ *	@copyright	2017,2018 Alexander Dahl <post@lespocky.de>
+ **********************************************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -335,3 +343,5 @@ int unescape_special_chars( void )
 error:
 	return EXIT_FAILURE;
 }
+
+/* vim: set noet sts=0 ts=4 sw=4 sr: */

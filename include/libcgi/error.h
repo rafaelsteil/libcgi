@@ -1,3 +1,10 @@
+/*
+ * Copyright 2001 Rafael Steil <rafael@insanecorp.com>
+ *
+ * SPDX-License-Identifier: LGPL-2.1+
+ * License-Filename: LICENSES/LGPL-2.1.txt
+ */
+
 #ifndef _ERROR_H
 #define _ERROR_H	1
 

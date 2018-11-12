@@ -1,13 +1,16 @@
 /*******************************************************************//**
- *	@file	cgi_test.h
+ *	@file		cgi_test.h
  *
  *	Macros for test routines, inspired by »Learn C The Hard Way« …
  *
- *	@see	http://c.learncodethehardway.org/
+ *	@see		http://c.learncodethehardway.org/
  *
- *	@author	Alexander Dahl <post@lespocky.de>
+ *	@author		Alexander Dahl <post@lespocky.de>
  *
- *	Copyright 2015,2016 Alexander Dahl
+ *	SPDX-License-Identifier: LGPL-2.1+
+ *	License-Filename: LICENSES/LGPL-2.1.txt
+ *
+ *	@copyright	2015,2016 Alexander Dahl <post@lespocky.de>
  **********************************************************************/
 
 #ifndef CGI_TEST_H

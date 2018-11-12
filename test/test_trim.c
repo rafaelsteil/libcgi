@@ -1,11 +1,14 @@
 /*******************************************************************//**
- *	@file	test_trim.c
+ *	@file		test_trim.c
  *
  *	Test different trim implementations.
  *
- *	@author	Alexander Dahl <post@lespocky.de>
+ *	@author		Alexander Dahl <post@lespocky.de>
  *
- *	Copyright 2017 Alexander Dahl
+ *	SPDX-License-Identifier: LGPL-2.1+
+ *	License-Filename: LICENSES/LGPL-2.1.txt
+ *
+ *	@copyright	2017 Alexander Dahl <post@lespocky.de>
  **********************************************************************/
 
 #include <stddef.h>

@@ -5,7 +5,10 @@
  *
  *	@author		Alexander Dahl <post@lespocky.de>
  *
- *	@copyright	2017 Alexander Dahl
+ *	SPDX-License-Identifier: LGPL-2.1+
+ *	License-Filename: LICENSES/LGPL-2.1.txt
+ *
+ *	@copyright	2017 Alexander Dahl <post@lespocky.de>
  **********************************************************************/
 
 #include <stddef.h>
