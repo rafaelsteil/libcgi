@@ -57,6 +57,7 @@
 #include <unistd.h>
 
 #include "libcgi/cgi.h"
+#include "libcgi/cgi_types.h"
 #include "libcgi/error.h"
 
 // session id length
