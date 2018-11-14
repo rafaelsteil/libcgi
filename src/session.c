@@ -444,12 +444,16 @@ int cgi_session_unregister_var(char *name)
 }
 
 /**
-* Starts a new session.
-* This function is responsible for starting and creating a new
-* session. It must be called before any other session function,
-* and every time before any HTML header has sent.
-* @see session_destroy()
-*/
+ *	Starts a new session.
+ *
+ *	This function is responsible for starting and creating a new
+ *	session. It must be called before any other session function, and
+ *	every time before any HTML header has sent.
+ *
+ *	@see	session_destroy()
+ *
+ *	@return	True aka 1 in case of success, false aka 0 otherwise.
+ */
 int cgi_session_start()
 {
 	char *buf = NULL, *sid = NULL;
@@ -461,7 +465,7 @@ int cgi_session_start()
 
 		libcgi_error(E_WARNING, session_error_message[session_lasterror]);
 
-		return 0;
+		return false;
 	}
 
 	if (headers_initialized) {
@@ -469,7 +473,7 @@ int cgi_session_start()
 
 		libcgi_error(E_WARNING, session_error_message[session_lasterror]);
 
-		return 0;
+		return false;
 	}
 
 	// Get the session ID
@@ -482,10 +486,10 @@ int cgi_session_start()
 
 			sess_initialized = true;
 
-			return 1;
+			return true;
 		}
 
-		return 0;
+		return false;
 	}
 	// Make sure the file exists
 	else {
@@ -508,10 +512,10 @@ int cgi_session_start()
 				libcgi_error(E_WARNING, "Session Cookie exists, but file don't. A new one was created.");
 				sess_initialized = true;
 
-				return 1;
+				return true;
 			}
 
-			return 0;
+			return false;
 		}
 	}
 
@@ -536,7 +540,7 @@ int cgi_session_start()
 	sess_initialized = true;
 	free(buf);
 
-	return 1;
+	return true;
 }
 
 void cgi_session_free( void )
