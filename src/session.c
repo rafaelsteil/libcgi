@@ -168,16 +168,20 @@ int sess_create_file()
 }
 
 /**
-* Destroys the session.
-* Destroys the current opened session, including all data.
-* After session_destroy() was called, is not more
-* possible to use session functions before an another
-* call to session_start()
-* @return 1 if no errors, 0 if.
-* @see cgi_session_start
-* @see cgi_session_error_message
-*/
-int cgi_session_destroy()
+ *	Destroys the session.
+ *
+ *	Destroys the current opened session, including all data.
+ *
+ *	@note	After session_destroy() was called, it is no more possible
+ *			to use session functions before another call to
+ *			session_start() …
+ *
+ *	@see	cgi_session_start()
+ *	@see	cgi_session_error_message()
+ *
+ *	@return	True in case of success, false in case of errors.
+ */
+int cgi_session_destroy( void )
 {
 	// Remember: unlink() returns 0 if success :)
 	if (!unlink(sess_fname)) {
@@ -190,14 +194,14 @@ int cgi_session_destroy()
 		else
 			cgi_add_cookie(SESSION_COOKIE_NAME, "", 0, 0, 0, 0);
 
-		return 1;
+		return true;
 	}
 	else {
 		session_lasterror = SESS_DESTROY;
 
 		libcgi_error(E_WARNING, session_error_message[session_lasterror]);
 
-		return 0;
+		return false;
 	}
 }
 
