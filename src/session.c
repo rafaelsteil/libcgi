@@ -414,19 +414,22 @@ int cgi_session_alter_var(const char *name, const char *new_value)
 }
 
 /**
-* Searches for determined session variable.
-* @param name Session variable name to search
-* @return 1 if variable is registered, 0 if not
-* @see cgi_session_var()
-*/
+ *	Searches for determined session variable.
+ *
+ *	@see	cgi_session_var()
+ *
+ *	@param[in]	name	Session variable name to search
+ *
+ *	@return	1 (true) if variable is registered, 0 (false) if not
+ */
 int cgi_session_var_exists(const char *name)
 {
 	if (!slist_item(name, sess_list_start)) {
 		session_lasterror = SESS_VAR_NOT_REGISTERED;
-		return 0;
+		return false;
 	}
 
-	return 1;
+	return true;
 }
 
 /**
