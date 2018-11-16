@@ -296,13 +296,18 @@ void cgi_session_save_path(const char *path)
 }
 
 /**
-* Register a variable in the current opened session.
-* Note that we are opening and closing the session file
-* every time this function is called... ( I/O ^ 1000000 :-/ )
-* @param name Variable name
-* @param value Variable value
-* @see cgi_session_alter_var(), cgi_session_unregister_var()
-*/
+ *	Register a variable in the current opened session.
+ *
+ *	@note	We are opening and closing the session file every time this
+ *			function is called... ( I/O ^ 1000000 :-/ )
+ *
+ *	@param[in]	name	Variable name
+ *	@param[in]	value	Variable value
+ *
+ *	@see	cgi_session_alter_var(), cgi_session_unregister_var()
+ *
+ *	@return	True in case of success, false on error.
+ */
 int cgi_session_register_var(const char *name, const char *value)
 {
 	formvars *data;
@@ -312,7 +317,7 @@ int cgi_session_register_var(const char *name, const char *value)
 
 		libcgi_error(E_WARNING, session_error_message[session_lasterror]);
 
-		return 0;
+		return false;
 	}
 
 	if (!cgi_session_var_exists(name)) {
@@ -322,7 +327,7 @@ int cgi_session_register_var(const char *name, const char *value)
 
 			libcgi_error(E_WARNING, session_error_message[session_lasterror]);
 
-			return 0;
+			return false;
 		}
 
 		data = (formvars *)malloc(sizeof(formvars));
@@ -355,12 +360,12 @@ int cgi_session_register_var(const char *name, const char *value)
 		slist_add(data, &sess_list_start, &sess_list_last);
 
 		fclose(sess_file);
-		return 1;
+		return true;
 	}
 
 	session_lasterror = SESS_VAR_REGISTERED;
 
-	return 0;
+	return false;
 }
 
 /**
