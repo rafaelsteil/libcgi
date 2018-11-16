@@ -369,12 +369,17 @@ int cgi_session_register_var(const char *name, const char *value)
 }
 
 /**
-* Alter session variable value.
-* Change session variable 'name' value to data pointer by 'new_value'
-* @param name Session variable name to change
-* @param new_value New session variable value
-* @see cgi_session_register_var(), cgi_session_unregister_var()
-*/
+ *	Alter session variable value.
+ *
+ *	Change session variable 'name' value to data pointer by 'new_value'.
+ *
+ *	@param[in]	name		Session variable name to change
+ *	@param[in]	new_value	New session variable value
+ *
+ *	@see	cgi_session_register_var(), cgi_session_unregister_var()
+ *
+ *	@return	True in case of success, false on error.
+ */
 int cgi_session_alter_var(const char *name, const char *new_value)
 {
 	register formvars *data;
@@ -397,7 +402,7 @@ int cgi_session_alter_var(const char *name, const char *new_value)
 
 			sess_file_rewrite();
 
-			return 1;
+			return true;
 		}
 
 		data = data->next;
@@ -405,7 +410,7 @@ int cgi_session_alter_var(const char *name, const char *new_value)
 
 	session_lasterror = SESS_VAR_NOT_REGISTERED;
 
-	return 0;
+	return false;
 }
 
 /**
