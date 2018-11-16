@@ -8,13 +8,12 @@
  * License-Filename: LICENSES/LGPL-2.1.txt
  */
 
-#include <stdio.h>
 #include <stddef.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "libcgi/cgi.h"
-#include "libcgi/error.h"
 
 // Add a new item to the list
 void slist_add(formvars *item, formvars **start, formvars **last)

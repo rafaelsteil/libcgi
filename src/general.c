@@ -11,7 +11,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "libcgi/cgi.h"
 #include "libcgi/error.h"
 
 struct iso8859_15 {

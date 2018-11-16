@@ -7,14 +7,16 @@
  * License-Filename: LICENSES/LGPL-2.1.txt
  */
 
+#include "libcgi/cgi.h"
+
+
+#include <ctype.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
-#include <sys/stat.h> /* for cgi_include() */
+#include <sys/stat.h>
 
-#include "libcgi/cgi.h"
 #include "libcgi/config.h"
 #include "libcgi/error.h"
 

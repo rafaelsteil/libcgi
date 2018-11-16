@@ -44,20 +44,20 @@
 * @{
 */
 
+#include "libcgi/session.h"
+
+#include <errno.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
-#include <string.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/time.h>
 #include <unistd.h>
-#include <errno.h>
 
 #include "libcgi/cgi.h"
 #include "libcgi/error.h"
-#include "libcgi/session.h"
 
 // session id length
 #define SESS_ID_LEN 45
