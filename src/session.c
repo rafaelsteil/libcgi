@@ -90,7 +90,8 @@ const char *session_error_message[] = {
  	"Failed to remove session value from list",
  	"Session variable already registered",
  	"Session variable not registered",
- 	"Failed to open session file for manipulation"
+ 	"Failed to open session file for manipulation",
+ 	"Invalid argument"
 };
 
 
@@ -112,7 +113,8 @@ typedef enum SESS_ERROR {
 	SESS_REMOVE_FROM_LIST,
 	SESS_VAR_REGISTERED,
 	SESS_VAR_NOT_REGISTERED,
-	SESS_OPEN_FILE
+	SESS_OPEN_FILE,
+	SESS_EINVAL
 } sess_error;
 
 // This variables are used to control the linked list of all
@@ -312,6 +314,11 @@ int cgi_session_register_var(const char *name, const char *value)
 {
 	formvars *data;
 
+	if (!name) {
+		session_lasterror = SESS_EINVAL;
+		return false;
+	}
+
 	if (!sess_initialized) {
 		session_lasterror = SESS_NOT_INITIALIZED;
 
@@ -384,6 +391,11 @@ int cgi_session_alter_var(const char *name, const char *new_value)
 {
 	register formvars *data;
 	unsigned int value_len;
+
+	if (!name || !new_value) {
+		session_lasterror = SESS_EINVAL;
+		return false;
+	}
 
 	data = sess_list_start;
 	while (data) {
