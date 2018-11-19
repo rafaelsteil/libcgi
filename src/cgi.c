@@ -9,7 +9,6 @@
 
 #include "libcgi/cgi.h"
 
-
 #include <ctype.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -17,6 +16,7 @@
 #include <string.h>
 #include <sys/stat.h>
 
+#include "libcgi/cgi_types.h"
 #include "libcgi/config.h"
 #include "libcgi/error.h"
 

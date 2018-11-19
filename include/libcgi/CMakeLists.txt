@@ -12,6 +12,7 @@ configure_file(
 
 install(FILES
 	cgi.h
+	cgi_types.h
 	error.h
 	session.h
 	DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/libcgi"

@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "libcgi/cgi.h"
+#include "libcgi/cgi_types.h"
 
 // Add a new item to the list
 void slist_add(formvars *item, formvars **start, formvars **last)

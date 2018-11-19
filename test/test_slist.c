@@ -18,6 +18,7 @@
 #include "cgi_test.h"
 
 #include "libcgi/cgi.h"
+#include "libcgi/cgi_types.h"
 
 /*	declarations for functions not declared in src	*/
 formvars *process_data(const char *query, formvars **start, formvars **last,

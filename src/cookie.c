@@ -13,6 +13,7 @@
 #include <string.h>
 
 #include "libcgi/cgi.h"
+#include "libcgi/cgi_types.h"
 #include "libcgi/error.h"
 
 formvars *cookies_start = NULL;
