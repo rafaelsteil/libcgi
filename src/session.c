@@ -90,7 +90,8 @@ const char *session_error_message[] = {
  	"Failed to remove session value from list",
  	"Session variable already registered",
  	"Session variable not registered",
- 	"Failed to open session file for manipulation"
+ 	"Failed to open session file for manipulation",
+ 	"Invalid argument"
 };
 
 
@@ -112,7 +113,8 @@ typedef enum SESS_ERROR {
 	SESS_REMOVE_FROM_LIST,
 	SESS_VAR_REGISTERED,
 	SESS_VAR_NOT_REGISTERED,
-	SESS_OPEN_FILE
+	SESS_OPEN_FILE,
+	SESS_EINVAL
 } sess_error;
 
 // This variables are used to control the linked list of all
@@ -168,16 +170,20 @@ int sess_create_file()
 }
 
 /**
-* Destroys the session.
-* Destroys the current opened session, including all data.
-* After session_destroy() was called, is not more
-* possible to use session functions before an another
-* call to session_start()
-* @return 1 if no errors, 0 if.
-* @see cgi_session_start
-* @see cgi_session_error_message
-*/
-int cgi_session_destroy()
+ *	Destroys the session.
+ *
+ *	Destroys the current opened session, including all data.
+ *
+ *	@note	After session_destroy() was called, it is no more possible
+ *			to use session functions before another call to
+ *			session_start() …
+ *
+ *	@see	cgi_session_start()
+ *	@see	cgi_session_error_message()
+ *
+ *	@return	True in case of success, false in case of errors.
+ */
+int cgi_session_destroy( void )
 {
 	// Remember: unlink() returns 0 if success :)
 	if (!unlink(sess_fname)) {
@@ -190,14 +196,14 @@ int cgi_session_destroy()
 		else
 			cgi_add_cookie(SESSION_COOKIE_NAME, "", 0, 0, 0, 0);
 
-		return 1;
+		return true;
 	}
 	else {
 		session_lasterror = SESS_DESTROY;
 
 		libcgi_error(E_WARNING, session_error_message[session_lasterror]);
 
-		return 0;
+		return false;
 	}
 }
 
@@ -292,23 +298,33 @@ void cgi_session_save_path(const char *path)
 }
 
 /**
-* Register a variable in the current opened session.
-* Note that we are opening and closing the session file
-* every time this function is called... ( I/O ^ 1000000 :-/ )
-* @param name Variable name
-* @param value Variable value
-* @see cgi_session_alter_var(), cgi_session_unregister_var()
-*/
+ *	Register a variable in the current opened session.
+ *
+ *	@note	We are opening and closing the session file every time this
+ *			function is called... ( I/O ^ 1000000 :-/ )
+ *
+ *	@param[in]	name	Variable name
+ *	@param[in]	value	Variable value
+ *
+ *	@see	cgi_session_alter_var(), cgi_session_unregister_var()
+ *
+ *	@return	True in case of success, false on error.
+ */
 int cgi_session_register_var(const char *name, const char *value)
 {
 	formvars *data;
+
+	if (!name) {
+		session_lasterror = SESS_EINVAL;
+		return false;
+	}
 
 	if (!sess_initialized) {
 		session_lasterror = SESS_NOT_INITIALIZED;
 
 		libcgi_error(E_WARNING, session_error_message[session_lasterror]);
 
-		return 0;
+		return false;
 	}
 
 	if (!cgi_session_var_exists(name)) {
@@ -318,7 +334,7 @@ int cgi_session_register_var(const char *name, const char *value)
 
 			libcgi_error(E_WARNING, session_error_message[session_lasterror]);
 
-			return 0;
+			return false;
 		}
 
 		data = (formvars *)malloc(sizeof(formvars));
@@ -351,25 +367,35 @@ int cgi_session_register_var(const char *name, const char *value)
 		slist_add(data, &sess_list_start, &sess_list_last);
 
 		fclose(sess_file);
-		return 1;
+		return true;
 	}
 
 	session_lasterror = SESS_VAR_REGISTERED;
 
-	return 0;
+	return false;
 }
 
 /**
-* Alter session variable value.
-* Change session variable 'name' value to data pointer by 'new_value'
-* @param name Session variable name to change
-* @param new_value New session variable value
-* @see cgi_session_register_var(), cgi_session_unregister_var()
-*/
+ *	Alter session variable value.
+ *
+ *	Change session variable 'name' value to data pointer by 'new_value'.
+ *
+ *	@param[in]	name		Session variable name to change
+ *	@param[in]	new_value	New session variable value
+ *
+ *	@see	cgi_session_register_var(), cgi_session_unregister_var()
+ *
+ *	@return	True in case of success, false on error.
+ */
 int cgi_session_alter_var(const char *name, const char *new_value)
 {
 	register formvars *data;
 	unsigned int value_len;
+
+	if (!name || !new_value) {
+		session_lasterror = SESS_EINVAL;
+		return false;
+	}
 
 	data = sess_list_start;
 	while (data) {
@@ -388,7 +414,7 @@ int cgi_session_alter_var(const char *name, const char *new_value)
 
 			sess_file_rewrite();
 
-			return 1;
+			return true;
 		}
 
 		data = data->next;
@@ -396,23 +422,26 @@ int cgi_session_alter_var(const char *name, const char *new_value)
 
 	session_lasterror = SESS_VAR_NOT_REGISTERED;
 
-	return 0;
+	return false;
 }
 
 /**
-* Searches for determined session variable.
-* @param name Session variable name to search
-* @return 1 if variable is registered, 0 if not
-* @see cgi_session_var()
-*/
+ *	Searches for determined session variable.
+ *
+ *	@see	cgi_session_var()
+ *
+ *	@param[in]	name	Session variable name to search
+ *
+ *	@return	1 (true) if variable is registered, 0 (false) if not
+ */
 int cgi_session_var_exists(const char *name)
 {
 	if (!slist_item(name, sess_list_start)) {
 		session_lasterror = SESS_VAR_NOT_REGISTERED;
-		return 0;
+		return false;
 	}
 
-	return 1;
+	return true;
 }
 
 /**
