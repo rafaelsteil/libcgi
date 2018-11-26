@@ -46,7 +46,7 @@ __Version 1.3.0__
 
 2018-11-12
 
-* Introduce SPDX license identifiers, see [https://reuse.software/](REUSE Initiative) for reasoning
+* Introduce SPDX license identifiers, see [REUSE Initiative](https://reuse.software/) for reasoning
 
 2018-11-13
 
