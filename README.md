@@ -38,6 +38,25 @@ Well, I am keeping this TODO list here for historical (and funny) reasons. Nowad
 Changelog
 ---------
 
+__Version 1.3.0__
+
+2018-07-24
+
+* Fix spelling mistakes all over the code
+
+2018-11-12
+
+* Introduce SPDX license identifiers, see [https://reuse.software/](REUSE Initiative) for reasoning
+
+2018-11-13
+
+* Move type definitions to separate header file
+
+2018-11-16
+
+* Improve documentation of several session related functions
+* Introduce new session error code and use to test on invalid parameters passed to functions
+
 __Version 1.2.0__
 
 _Thanks to Alexander Dahl, D Frost, Thomas Petazzoni_
