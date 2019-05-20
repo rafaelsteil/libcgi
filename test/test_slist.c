@@ -83,10 +83,17 @@ int add( void )
 	return EXIT_SUCCESS;
 
 error:
-	for ( i = 0; i < 2; i++ ) {
-		if ( item[i]->name ) free( item[i]->name );
-		if ( item[i]->value ) free( item[i]->value );
-		if ( item[i] ) free( item[i] );
+	for ( i = 0; i < 2; i++ )
+	{
+		if ( item[i] )
+		{
+			free( item[i]->name );
+			item[i]->name = NULL;
+			free( item[i]->value );
+			item[i]->value = NULL;
+			free( item[i] );
+			item[i] = NULL;
+		}
 	}
 	return EXIT_FAILURE;
 }
@@ -134,9 +141,15 @@ int delete_from_one_item_list( void )
 	return EXIT_SUCCESS;
 
 error:
-	if ( item->name ) free( item->name );
-	if ( item->value ) free( item->value );
-	if ( item ) free( item );
+	if ( item )
+	{
+		free( item->name );
+		item->name = NULL;
+		free( item->value );
+		item->value = NULL;
+		free( item );
+		item = NULL;
+	}
 	return EXIT_FAILURE;
 }
 
@@ -234,9 +247,15 @@ int delete_from_two_item_list( void )
 error:
 	for ( i = 0; i < 2; i++ )
 	{
-		if ( item[i]->name ) free( item[i]->name );
-		if ( item[i]->value ) free( item[i]->value );
-		if ( item[i] ) free( item[i] );
+		if ( item[i] )
+		{
+			free( item[i]->name );
+			item[i]->name = NULL;
+			free( item[i]->value );
+			item[i]->value = NULL;
+			free( item[i] );
+			item[i] = NULL;
+		}
 	}
 	return EXIT_FAILURE;
 }
@@ -344,9 +363,15 @@ int delete_from_three_item_list( void )
 error:
 	for ( i = 0; i < 3; i++ )
 	{
-		if ( item[i]->name ) free( item[i]->name );
-		if ( item[i]->value ) free( item[i]->value );
-		if ( item[i] ) free( item[i] );
+		if ( item[i] )
+		{
+			free( item[i]->name );
+			item[i]->name = NULL;
+			free( item[i]->value );
+			item[i]->value = NULL;
+			free( item[i] );
+			item[i] = NULL;
+		}
 	}
 	return EXIT_FAILURE;
 }
@@ -407,11 +432,17 @@ int get_item( void )
 	return EXIT_SUCCESS;
 
 error:
-	for ( i = 0; i < 3; i++ )
+	for ( i = 0; i < 4; i++ )
 	{
-		if ( item[i]->name ) free( item[i]->name );
-		if ( item[i]->value ) free( item[i]->value );
-		if ( item[i] ) free( item[i] );
+		if ( item[i] )
+		{
+			free( item[i]->name );
+			item[i]->name = NULL;
+			free( item[i]->value );
+			item[i]->value = NULL;
+			free( item[i] );
+			item[i] = NULL;
+		}
 	}
 	return EXIT_FAILURE;
 }
