@@ -22,28 +22,6 @@ formvars *cookies_last = NULL;
 extern int headers_initialized;
 extern int cgi_display_errors;
 
-
-/***********************************************************
-				COOKIE GROUP
-***********************************************************/
-/** @defgroup libcgi_cookie Cookies
-* @{
-*/
-
-/**
-* Send a cookie to the client.
-* @param name Cookie name
-* @param value Cookie value
-* @param max_age  Cookie time life, in seconds. A value equal to 0 ( zero ) means to discard the cookie when the session is done.
-* @param path Cookie path at the server
-* @param domain Domain where cookie will work :)
-* @param secure Secure or not
-* @see cgi_cookie_value
-*
-* \code
-* cgi_add_cookie("mycookie", "mycookie value", 0, 0, 0, 0);
-* \endcode
-**/
 int cgi_add_cookie(const char *name,
 	const char *value,
 	const char *max_age,
@@ -131,18 +109,7 @@ formvars *cgi_get_cookies()
 	return cookies_start;
 }
 
-/**
-* Gets cookie value.
-* Like cgi_param(), cgi_cookie_value() returns the data contained in cookie_name cookie
-* @param cookie_name Cookie name to get the value
-* @return The cookie value
-**/
 char *cgi_cookie_value(const char *cookie_name)
 {
 	return slist_item(cookie_name, cookies_start);
 }
-
-/**
-* @}
-*/
-

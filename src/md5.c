@@ -26,10 +26,6 @@
 
 #include "libcgi/error.h"
 
-/** @ingroup libcgi_general
-* @{
-*/
-
 #ifndef MD5_H
 #define MD5_H
 
@@ -53,13 +49,6 @@ typedef struct MD5Context MD5_CTX;
 
 #endif /* !MD5_H */
 
-
-/**
-* Converts a string to MD5 format.
-*
-* @param str String to convert to MD5 hash
-* @return MD5 hash code
-**/
 char *md5(const char *str)
 {
 	char *tmp, buf[32];
@@ -350,7 +339,3 @@ MD5Transform(uint32 buf[4], uint32 const in[16])
 	buf[3] += d;
 }
 #endif
-
-/**
-* @}
-*/

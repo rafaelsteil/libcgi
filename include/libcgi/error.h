@@ -12,6 +12,13 @@
 extern "C" {
 #endif
 
+/*****************************************************
+ *					ERROR GROUP
+ *****************************************************/
+
+/** @defgroup libcgi_error Error handling
+ * @{
+ */
 
 #define E_WARNING	0
 #define E_FATAL		1
@@ -19,8 +26,19 @@ extern "C" {
 #define E_INFORMATION 	3
 #define E_MEMORY	4
 
+/**
+ * ToDo: Add documentation
+ * @param error_code
+ * @param msg
+ * @param ...
+ */
 extern void libcgi_error(int error_code, const char *msg, ...);
+
 extern const char *libcgi_error_type[];
+
+/**
+* @}
+*/
 
 #ifdef __cplusplus
 }

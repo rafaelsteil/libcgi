@@ -15,7 +15,6 @@
 
 #include "libcgi/cgi_types.h"
 
-// Add a new item to the list
 void slist_add(formvars *item, formvars **start, formvars **last)
 {
 	// if *start is empty, then our list is also empty. So, the only
@@ -46,7 +45,6 @@ void slist_add(formvars *item, formvars **start, formvars **last)
 	*last = item;
 }
 
-// Delete from list the item pointed by name
 int slist_delete(char *name, formvars **start, formvars **last)
 {
 	formvars *curr, *prev;
@@ -87,7 +85,6 @@ int slist_delete(char *name, formvars **start, formvars **last)
 	return 0;
 }
 
-// Returns the value of the item pointed by name
 char *slist_item(const char *name, formvars *start)
 {
 	formvars *curr = start;
@@ -109,7 +106,6 @@ char *slist_item(const char *name, formvars *start)
 	return NULL;
 }
 
-// Free linked list allocated memory
 void slist_free(formvars **start)
 {
 	while (*start) {

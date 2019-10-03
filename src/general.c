@@ -33,21 +33,6 @@ struct iso8859_15 {
 
 static int ncodes = sizeof(he) / sizeof(struct iso8859_15);
 
-
-/**************************************************************
-						GENERAL GROUP
-***************************************************************/
-/** @defgroup libcgi_general General purpose
-* @{
-*/
-/**
-* Transforms HTML special chars.
-* Transforms chars like '<', '>' and others in HTML form,
-* like '&lt' and '&gt'
-* @param str String containing code to parse
-* @return The new string
-* @author Robert Csok <rcsok@gmx.de>
-*/
 // This one needs the struct and ncodes above.
 // ncodes is the number of elements in the struct.
 char *htmlentities(const char *str)
@@ -85,28 +70,28 @@ char *htmlentities(const char *str)
 }
 
 /**
-* Reads entire file into an array.
-* @param filename Filename to open
-* @param total Integer variable passed as reference, which will store the total of items
-* @return Returns the file in an array. Each element of the array corresponds to a line in the file.
-*
-* \code
-* char **lines;
-* unsigned int total, i;
-*
-* lines = file("filename.ext", &total);
-*
-* printf("Total of lines: %u\n", total);
-*
-* for (i = 0; i < total; i++)
-*	printf("[%u] %s\n", i, lines[i]);
-*
-* for (i = 0; i < total; i++) {
-* 	if (lines[i])
-*		 free(lines[i]);
-* }
-* \endcode
-*/
+ * Reads entire file into an array.
+ * @param filename Filename to open
+ * @param total Integer variable passed as reference, which will store the total of items
+ * @return Returns the file in an array. Each element of the array corresponds to a line in the file.
+ *
+ * \code
+ * char **lines;
+ * unsigned int total, i;
+ *
+ * lines = file("filename.ext", &total);
+ *
+ * printf("Total of lines: %u\n", total);
+ *
+ * for (i = 0; i < total; i++)
+ *     printf("[%u] %s\n", i, lines[i]);
+ *
+ * for (i = 0; i < total; i++) {
+ *     if (lines[i])
+ *         free(lines[i]);
+ * }
+ * \endcode
+ */
 char **file(const char *filename, unsigned int *total)
 {
 	FILE *fp;
@@ -190,8 +175,3 @@ char **file(const char *filename, unsigned int *total)
 	*total = lines - 1;
 	return str;
 }
-
-/**
-* @}
-*/
-/******************** GENERAL END ************************/

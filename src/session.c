@@ -14,36 +14,6 @@
  *****************************************************
 */
 
-/**
-* @defgroup libcgi_session Session Handling
-*   One of the most diferencials of LibCGI is its support to sessions, a mechanism that permits
-*   the application to keep variables trough the user's session, when he is visiting your website.
-*   \htmlonly
-* <table width='90%' align='center' border='0' bgcolor='#cccccc'>
-* <tr>
-* <td>
-* 	Session functions are easy to use and understand, and probably you'll want to take a closer
-* 	look at <i>cgi_session_save_path()</i> and <i>cgi_session_cookie_name()</i> functions. These functions,
-* 	let the programmer to set the directory where session files will
-* 	be saved in the hard disk and the cookie name to the session, respectively.
-* 	<br><br>
-* 	As the CGI is running on the webserver which a common user, it have full access to its respective session
-* 	file. But the most big problem is that you may
-* 	have full access to all other session files as well, even from other sites. Yes, that's a big problem, and still
-* 	other large used scripting languages like PHP does have this kind of problem (using the default installation).
-* 	So, LibCGI is trying to
-* 	make a bit harder to a potential attacker to stole session data or even destroy it.
-* 	Now is possible to store session files in different locations, specified
-* 	by the programmer ( using <i>cgi_session_save_path()</i> function ), as described in this doc ). <br>
-* 	And yes, I ( me, LibCGI's author ) knows that there are problems yet, so your opinion is very important.
-* 	You will find some useful examples under "examples/sessions" directory.
-* </td>
-* </tr>
-* </table>
-* \endhtmlonly
-* @{
-*/
-
 #include "libcgi/session.h"
 
 #include <errno.h>
@@ -169,20 +139,6 @@ int sess_create_file()
 	return 1;
 }
 
-/**
- *	Destroys the session.
- *
- *	Destroys the current opened session, including all data.
- *
- *	@note	After session_destroy() was called, it is no more possible
- *			to use session functions before another call to
- *			session_start() …
- *
- *	@see	cgi_session_start()
- *	@see	cgi_session_error_message()
- *
- *	@return	True in case of success, false in case of errors.
- */
 int cgi_session_destroy( void )
 {
 	// Remember: unlink() returns 0 if success :)
@@ -241,75 +197,21 @@ int sess_file_rewrite()
 	return 1;
 }
 
-
-/**
-* Gets session variable's value.
-* @param name Session variable name to get the value
-* @return Variable contents if found, NULL if not.
-* @see cgi_session_var_exists()
-*/
 char *cgi_session_var(const char *var_name)
 {
 	return slist_item(var_name, sess_list_start);
 }
 
-/**
-* Defines the name of the cookie that LibCGI will use to store session's ID.
-* This function works like cgi_session_save_path().
-* This functionality let you to use  different names for each site, but remember, you cannot
-* use multiple session for the same application yet.
-*
-* @param cookie_name Name of the cookie to create
-* @see cgi_session_save_path()
-* @note This function must be called before cgi_session_start()
-**/
 void cgi_session_cookie_name(const char *cookie_name)
 {
 	strncpy(SESSION_COOKIE_NAME, cookie_name, 49);
 }
 
-/**
-* Defines where session control files will be saved.
-* If in the your CGI you don't make a call to cgi_session_save_path(), LibCGI will
-* use the default value, which is "/tmp/". To see how to modify the value, see the following example.
-* <br>Just note you need to add '/' at the end of the directory name
-* \code
-* // your_cgi.c
-* // Set "session_files" directory under your CGI directory as the path
-* // which LibCGI will use to store session files.
-*
-* cgi_session_save_path("session_files/");
-*  \endcode
-*
-*  Note that using this form, LibCGI will search for "session_files" directory using relative path
-*  to your cgi application. For example, if your CGI script is located at
-*  /usr/local/httpd/web/your_name/cgi-bin/ directory, and you use the above declaration, the files for the session will be
-* stored at  /usr/local/httpd/web/your_name/cgi-bin/session_files directory.
-* Resuming, the path is relative to where your application resides. <br><br>And remember, LibCGI \b does \b not
-* create the directory for you.
-*
-* @param path Path, relative or absolute
-* @see cgi_session_cookie_name
-* @note This function must be called before cgi_session_start()
-**/
 void cgi_session_save_path(const char *path)
 {
 	strncpy(SESSION_SAVE_PATH, path, 254);
 }
 
-/**
- *	Register a variable in the current opened session.
- *
- *	@note	We are opening and closing the session file every time this
- *			function is called... ( I/O ^ 1000000 :-/ )
- *
- *	@param[in]	name	Variable name
- *	@param[in]	value	Variable value
- *
- *	@see	cgi_session_alter_var(), cgi_session_unregister_var()
- *
- *	@return	True in case of success, false on error.
- */
 int cgi_session_register_var(const char *name, const char *value)
 {
 	formvars *data;
@@ -375,18 +277,6 @@ int cgi_session_register_var(const char *name, const char *value)
 	return false;
 }
 
-/**
- *	Alter session variable value.
- *
- *	Change session variable 'name' value to data pointer by 'new_value'.
- *
- *	@param[in]	name		Session variable name to change
- *	@param[in]	new_value	New session variable value
- *
- *	@see	cgi_session_register_var(), cgi_session_unregister_var()
- *
- *	@return	True in case of success, false on error.
- */
 int cgi_session_alter_var(const char *name, const char *new_value)
 {
 	register formvars *data;
@@ -425,15 +315,6 @@ int cgi_session_alter_var(const char *name, const char *new_value)
 	return false;
 }
 
-/**
- *	Searches for determined session variable.
- *
- *	@see	cgi_session_var()
- *
- *	@param[in]	name	Session variable name to search
- *
- *	@return	1 (true) if variable is registered, 0 (false) if not
- */
 int cgi_session_var_exists(const char *name)
 {
 	if (!slist_item(name, sess_list_start)) {
@@ -444,11 +325,6 @@ int cgi_session_var_exists(const char *name)
 	return true;
 }
 
-/**
-* Unregister some session variable.
-* @param name Session variable name to unregister
-* @see cgi_session_var_exists(), cgi_session_register_var()
-*/
 int cgi_session_unregister_var(char *name)
 {
 	if (!sess_initialized) {
@@ -473,17 +349,6 @@ int cgi_session_unregister_var(char *name)
 	return 1;
 }
 
-/**
- *	Starts a new session.
- *
- *	This function is responsible for starting and creating a new
- *	session. It must be called before any other session function, and
- *	every time before any HTML header has sent.
- *
- *	@see	session_destroy()
- *
- *	@return	True aka 1 in case of success, false aka 0 otherwise.
- */
 int cgi_session_start()
 {
 	char *buf = NULL, *sid = NULL;
@@ -579,7 +444,3 @@ void cgi_session_free( void )
 	sess_fname = NULL;
 	sess_initialized = false;
 }
-
-/**
-* @}
-*/

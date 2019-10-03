@@ -16,28 +16,6 @@
 
 #include "libcgi/error.h"
 
-/*********************************************************
-* 					STRING GROUP
-*********************************************************/
-/**
-* @defgroup libcgi_string Strings
-* General string manipulation and utilities functions
-* @{
-*/
-
-/**
-* Same to addslashes(), except that this one only do the action while 'n' is great than 0.
-* @param s String to parse
-* @param n Number of characters to work with.
-* @see addslashes()
-* \code
-* char *name = "My test string is called \"foobar\"";
-* puts(name); // will display My test string is called "foobar"
-*
-* name = addnslashes(name, 31);
-* puts(name); // will display My test string is called \"foobar"
-* \endcode
-*/
 char *addnslashes(char *s, int n)
 {
 	char *tmp;
@@ -69,43 +47,11 @@ char *addnslashes(char *s, int n)
 	return tmp;
 }
 
-/**
-* Add slashes to a string when necessary.
-* Adds a '\' in every quote ( " ), apostrophe ( ' ) or  backslash ( \ )
-* It's useful when working with databases, for example, because
-* someone can try insert this characters to try hack the application...
-* @param *s String to parse
-* @return The new string, with slashes
-* @see stripslashes, addnslashes
-*
-* \code
-* char *name = "My test string is called \"foobar\"";
-* puts(name); // will display My test string is called "foobar"
-*
-* name = addslashes(name);
-* puts(name); // will display My test string is called \"foobar\"
-* \endcode
-*/
 char *addslashes(char *s)
 {
 	return addnslashes(s, strlen(s));
 }
 
-/**
-* Strip no more than 'n' slashes from a string.
-* Strip the backslash character ( \ ) from a string, stopping after 'n' char
-* @param s String to parse
-* @param n Maximum number of chars to parse
-* @return The new string, without slashes
-* @see addslashes, stripslashes
-*
-* \code
-* char *name = "My another string is called \\\"blablabla\\\"";
-* puts(name); // will display My another string is called \"blablabla\"
-* name = stripslashes(name, 33);
-* puts(name); // will display My another string is called "blablabla\"
-* \endcode
-*/
 char *stripnslashes(char *s, int n)
 {
 	int j = 0;
@@ -129,40 +75,12 @@ char *stripnslashes(char *s, int n)
 	return tmp;
 }
 
-/**
-* Strip slashes from a string.
-* Strip the backslash character ( \ ) from a string
-* @param s String to parse
-* @return The new string, without slashes
-* @see addslashes, stripnslashes
-*
-* \code
-* char *name = "My another string is called \\\"blablabla\\\"";
-* puts(name); // will display My another string is called \"blablabla\"
-* name = stripslashes(name);
-* puts(name); // will display My another string is called "blablabla"
-* \endcode
-*/
 char *stripslashes(char *str)
 {
 	return stripnslashes(str, strlen(str));
 }
 
-/**
-* Strip left white spaces from a string.
-* @param str String to parse
-* @return The new string, without left spaces
-* @author Original code was contribuition by Erik Jansson
-* @see rtrim,  trim
-*
-* \code
-* char *s = "     String with spaces    ";
-* printf("_%s_\n", s);
-* s = ltrim(s);
-* printf("_%s_\n", s);
-* \endcode
-*/
-char * cgi_ltrim(char *str)
+char *cgi_ltrim(char *str)
 {
     char *r, *s;
 
@@ -185,21 +103,7 @@ char * cgi_ltrim(char *str)
 	return str;
 }
 
-/**
-* Strip right white spaces from a string.
-* @param str String to parse
-* @return The new string, without left spaces
-* @author Original code was contribuition by Erik Jansson
-* @see ltrim,  trim
-*
-* \code
-* char *s = "     String with spaces    ";
-* printf("_%s_\n", s);
-* s = rtrim(s);
-* printf("_%s_\n", s);
-* \endcode
-*/
-char * cgi_rtrim(char *str)
+char *cgi_rtrim(char *str)
 {
 	char *last;
 
@@ -223,39 +127,11 @@ char * cgi_rtrim(char *str)
 	return str;
 }
 
-/**
-* Strip both left and right white spaces from a string.
-* @param str String to parse
-* @return The new string, without left spaces
-* @author Original code was contribuition by Erik Jansson
-* @see ltrim,  trim
-*
-* \code
-* char *s = "     String with spaces    ";
-* printf("_%s_\n", s);
-* s = trim(s);
-* printf("_%s_\n", s);
-* \endcode
-*/
-char * cgi_trim(char *str)
+char *cgi_trim(char *str)
 {
 	return cgi_ltrim(cgi_rtrim(str));
 }
 
-/**
-* Copy part of a string.
-* Copy  count characters from src, starting from start
-* @param src String to copy from
-* @param start Initial offset
-* @param count Number of chars to copy
-* @return The new string
-*
-* \code
-* char *part, *str = "Test one, test two";
-* part = substr(str, 1, 5);
-* puts(part); // -> est o
-* \endcode
-**/
 char *substr(char *src, const int start, const int count)
 {
 	char *tmp;
@@ -272,26 +148,6 @@ char *substr(char *src, const int start, const int count)
 	return tmp;
 }
 
-/**
-* Create an array from a string separated by some special char.
-*  Divides the src string in pieces, each delimited by token
-*  and storing the total of pieces in total
-* @param src String to parse
-* @param token Character delimiter to search.
-* @param total An integer variable passed as reference, which stores the total of
-* itens of the array
-* @return The array, where each item is one separated by token
-*
-* \code
-*
-*  char **pieces;
-*  char *name = "This,is,a,string,of,test";
-*  int total, i;
-*  pieces = explode(name, ",", &total);
-*  for (i = 0; i < total; i++)
-*  	printf("Piece %d: %s\n", i, *(pieces+i));
-* \endcode
-**/
 char **explode(char *src, const char *token, int *total)
 {
 	char **str;
@@ -359,27 +215,6 @@ char **explode(char *src, const char *token, int *total)
 	return str;
 }
 
-/**
-* Replace characters in a string, but not more than 'n'.
-*  Replace all occourences of *delim on *src with characters pointed by *with,
-*  stopping after 'n' char.
-*  @param *src String to parse
-*  @param *delim Character to search that will be replaced
-*  @param with String to replace with
-*  @param n Maximum number of chars to parse
-*  @return The new string
-*  @see str_replace
-*
-*  \code
-*  char *linux = "Linux C";
-*  linux = str_nreplace(linux, "C", "Cool", strlen(linux));
-*  puts(linux);
-* //  -- OR --
-*  char *name = "rAfAel steil";
-*  name = str_nreplace(name, "A", "a", 3);
-*  puts(name);
-*  \endcode
-**/
 char *str_nreplace(char *src, const char *delim, const char *with, int n)
 {
 	unsigned int w_len, i, n_len, counter;
@@ -424,28 +259,6 @@ char *str_nreplace(char *src, const char *delim, const char *with, int n)
 	return buf;
 }
 
-/**
-* Replace characters in a string.
-*  Replace all occourences of *delim on *src with characters pointed by *with.
-*  The problem with the following code is that the function only searches for the
-*  first character of *delim, ignoring the rest. Other problem is speed relacioned:
-*  note that the function ever compare the length of *with to do the correct action.
-*  @param src String to parse
-*  @param delim Character to search that will be replaced
-*  @param with String to replace with
-*  @return The new string
-*  @see str_nreplace
-*
-*  \code
-*  char *linux = "Linux C";
-*  linux = str_replace(linux, "C", "Cool");
-*  puts(linux);
-* //  -- OR --
-*  char *name = "rAfAel steil";
-*  name = str_replace(name, "A", "a");
-*  puts(name);
-*  \endcode
-**/
 char *str_replace(char *str, const char *delim, const char *with)
 {
 	return str_nreplace(str, delim, with, strlen(str));
@@ -457,13 +270,6 @@ char *replace(char *str, const char *delim, const char *with)
 	return str_nreplace(str, delim, with, strlen(str));
 }
 
-/**
- * Returns the position of a character in a string, but parses no more that 'n' chars
- * @param s String where the search will be done
- * @param ch Character to search
- * @param count Maximum number of chars to parse before exiting the function
- * @see strpos()
- */
 int strnpos(char *s, char *ch, unsigned int count)
 {
 	register unsigned int pos = 0, i;
@@ -478,34 +284,11 @@ int strnpos(char *s, char *ch, unsigned int count)
 	return -1;
 }
 
-/**
-* Returns the position of a character in a string.
-* @param s String where the search will be done
-* @param ch Character to search
-* @param count Maximum number of ch to search
-* @see strnpos()
-**/
 int strpos(char *s, char *ch)
 {
 	return strnpos(s, ch, strlen(s));
 }
 
-/**
-* Delete characters from a string.
-*  Delete count characters of s, starting in start
-*  @param s String to search
-*  @param start Initial offset to begin search
-*  @param count Number of characters to delete
-*  @return The new string
-*  @see strndel()
-*
-*  \code
-*  *txt = "Some text to test anything";
-*  puts(txt);
-*  txt = strdel(txt, 2, 8);
-*  puts(txt);
-* \endcode
-**/
 char *strdel(char *s, int start, int count)
 {
 	register int i, len, contador = 0;
@@ -532,16 +315,6 @@ char *strdel(char *s, int start, int count)
 	return tmp;
 }
 
-/**
-* Reads an entire line.
-* Reads a line from the file specified by the file pointer passed
-* as parameter. This function is instead to replace the non-portable
-* GNU getline() function.
-*
-* @param s File pointer to the file to read from.
-* @return String containing the line read or NULL if no more line are available
-* @author Robert Csok
-**/
 char *recvline(FILE *s)
 {
 	int i = 0, ch;
@@ -574,19 +347,6 @@ char *recvline(FILE *s)
 	return NULL;
 }
 
-/**
-* Makes a string.
-* Works like printf(), with the difference
-* that it returns a string that is the
-* concatenation of the values passed as parameter.
-*
-* @param *s Inicial String and optionally formatation parameters ( just %s is allowed )
-* @return The new String
-* \code
-* char *sql = make_string("INSERT INTO myTable VALUES ('%s', '%s', '%s')", varValue1, varValue2, varValue3);
-* \endcode
-* \todo String limits/error checking
-**/
 char *make_string(char *s, ...)
 {
 	va_list ptr, bkp;
@@ -650,7 +410,3 @@ char *strcat_ex(const char *str1, const char *str2)
 
 	return new_str;
 }
-
-/**
-* @}
-*/

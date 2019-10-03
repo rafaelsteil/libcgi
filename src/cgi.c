@@ -56,8 +56,6 @@ static const char hextable[256] = {
 	0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF
 	};
 
-
-
 int headers_initialized = 0;
 
 formvars *formvars_start = NULL;
@@ -132,20 +130,6 @@ formvars *process_data(const char *query, formvars **start, formvars **last,
 	return *start;
 }
 
-/*****************************************************
-					CGI GROUP
-*****************************************************/
-/** @defgroup libcgi_cgi CGI manipulation
-* @{
-*/
-
-/**
-* Process HTML form or URL data.
-* Used to retrieve GET or POST data. It handles automatically the correct REQUEST_METHOD, so you don't need to afraid about it.
-* @return Returns the contents of URL or FORM into a formvars variable, or NULL if FALSE. Most of time, you
-* don't need any variable to store the form data, because is used an internal variable to manipulate the contents.
-* @see cgi_init, cgi_init_headers
-**/
 formvars *cgi_process_form()
 {
 	formvars *ret = NULL;
@@ -199,11 +183,6 @@ formvars *cgi_process_form()
 	return ret;
 }
 
-/**
-* Kills the application with a message.
-* Writes msg and terminate
-* @param msg Message to send to the browser before killing
-*/
 void cgi_fatal(const char *msg)
 {
 	cgi_init_headers();
@@ -214,22 +193,6 @@ void cgi_fatal(const char *msg)
 	exit(1);
 }
 
-/**
-* Include static files.
-* Function used to include static data ( normally html files ).
-* File contents will never be processed.
-* Note that I don't scan for any special character. The reason
-* I did it is, if the you are using this library, you have a shell
-* where you can compile the cgi program. And can do much more ;-)
-* @param filename Filename with full path to include
-* @return If an error occurs and libcgi_debug is true, then a warning
-* message is showed.
-* @see libcgi_debug
-*
-* \code
-* cgi_include("top_bar.htm");
-* \endcode
-*/
 int cgi_include(const char *path)
 /* flow: path != NULL
  *       get file stats (for file size)
@@ -286,11 +249,6 @@ err_memory:
 	goto cleanup; /* silence compiler warnings */
 }
 
-/**
-* Initialize HTML headers.
-* You need to call this function before that any content is send to the brosert, otherwise you'll get an error (Error 500).
-* @see cgi_init
-**/
 void cgi_init_headers()
 {
 	if (!headers_initialized) {
@@ -300,33 +258,6 @@ void cgi_init_headers()
 	}
 }
 
-/**
-* Return all values with the same name sent by a form.
-* @param name Form variable name
-* @return Form variable contents
-* @see cgi_param
-*
-* Example:
-* For example, if in your HTML you have something like<br>
-*  <br>
-* <pre>
-* "What do you like??"<br>
-*  Computers : &lt;input type='checkbox' name='like' value='computers'&gt;&lt;br&gt;
-*  Internet : &lt;input type='checkbox' name='like' value='net'&gt;&lt;br&gt;
-*  games : &lt;input type='checkbox' name='like' 'value='games''&gt;&lt;br&gt;
-* </pre>
-*       <br>
-* then, to retrieve all values, you can make a code like<br><br>
-*
-* \code
-* // ...
-* char *data;
-* \\ ...
-* while ((data = cgi_param_multiple("like")) != NULL)
-* 	puts(data);
-* \\ ...
-* \endcode
-**/
 char *cgi_param_multiple(const char *name)
 {
 	/* DFrostByte: caching of 'name' would allow beginning new name search
@@ -355,18 +286,7 @@ char *cgi_param_multiple(const char *name)
 	/* both iter and value will be NULL if no match was found */
 	return value;
 }
-/**
-*  Recirects to the specified url.
-* Remember that you cannot send any header before this function, or it will not work.
-* <b>Note:</b><br>
-* LibCGI does not implement RFC 2396 to make the lib simple and quick. You should be sure
-* to pass a correct URI to this function.
-* @param url url to redirect the browser
-*
-* \code
-* cgi_redirect("http://wwww.linux.org");
-* \endcode
-**/
+
 void cgi_redirect(char *url)
 {
 	if (headers_initialized) {
@@ -378,12 +298,6 @@ void cgi_redirect(char *url)
 	printf("Location: %s\r\n\r\n", url);
 }
 
-/**
-*  Main cgi function.
-*  Configures all (most?) we need to  get cgi library working correctly. It MUST be called before
-*  any other cgi function.
-*  @see cgi_end, cgi_process_form, cgi_init_headers
-**/
 int cgi_init()
 {
 	// Well... the reason I put cgi_get_cookies() here is to not
@@ -396,11 +310,6 @@ int cgi_init()
 	return 1;
 }
 
-/**
-* Performs cgi clean ups.
-* Provides some methods to clean memory or any other job that need to be done before the end of the application.
-* @see cgi_init
-**/
 void cgi_end()
 {
 	slist_free(&formvars_start);
@@ -414,13 +323,6 @@ void cgi_end()
 		slist_free(&cookies_start);
 }
 
-/**
-* Transforms' URL special chars.
-* Search for special chars ( like %%E1 ) in str, converting them to the ascii character correspondent.
-* @param str String containing data to parse
-* @return The new string
-* @see cgi_escape_special_chars
-**/
 char *cgi_unescape_special_chars(const char *str)
 {
 	char *new, *write;
@@ -468,12 +370,6 @@ char *cgi_unescape_special_chars(const char *str)
 	return new;
 }
 
-/**
-* Transforms' special characters into hexadecimal form ( %%E1 ).
-* @param str String to parse
-* @return The new string
-* @see cgi_unescape_special_chars
-**/
 char *cgi_escape_special_chars(const char *str)
 {
 	static const char hex[] = "0123456789ABCDEF";
@@ -508,38 +404,11 @@ char *cgi_escape_special_chars(const char *str)
 	return new;
 }
 
-/**
-* Gets the of HTML or URL variable indicated by 'name'
-* @param name Form Variable name
-* @see cgi_param_multiple,  cgi_process_form, cgi_init
-*
-* \code
-* // ...
-* char *contents;
-*
-* cgi_init();
-* cgi_process_form();
-* cgi_init_headers();
-*
-* contents = cgi_param("foo");
-*
-* puts(contents);
-*
-* // ...
-* \endcode
-**/
 char *cgi_param(const char *var_name)
 {
 	return slist_item(var_name, formvars_start);
 }
 
-/**
-* Sends a specific header.
-* Sends a specific HTTP header. You won't need to add '\\n\\n' chars.
-* @param header HTTP header to send, without new line characters
-* @return True
-* @see cgi_init_headers
-**/
 void cgi_send_header(const char *header)
 {
 	printf("%s\r\n", header);
@@ -565,7 +434,3 @@ void cgi_redirect_status( enum cgi_http_status_code status_code,
 			"\r\n",
 			status_code, uri );
 }
-
-/**
-* @}
-*/

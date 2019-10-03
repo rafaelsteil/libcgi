@@ -15,9 +15,9 @@
 #define CGI_TYPES_H
 
 /**
- *	HTTP status codes.
+ * HTTP status codes.
  *
- *	@see	http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+ * @see http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
  */
 enum cgi_http_status_code {
 	HTTP_STATUS_CONTINUE			= 100,
@@ -71,9 +71,9 @@ extern "C" {
 #endif
 
 /**
- *	General purpose linked list. Actually isn't very portable because
- *	uses only 'name' and 'value' variables to store data. Probably, in
- *	a future release, this will be replaced by another type of struct.
+ * General purpose linked list. Actually isn't very portable because
+ * uses only 'name' and 'value' variables to store data. Probably, in
+ * a future release, this will be replaced by another type of struct.
  */
 typedef struct formvarsA {
 	char *name;

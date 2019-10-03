@@ -13,8 +13,8 @@
 
 #include "libcgi/error.h"
 
-static const char cb64[]="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-static const char cd64[]="|$$$}rstuvwxyz{$$$$$$$>?@ABCDEFGHIJKLMNOPQRSTUVW$$$$$$XYZ[\\]^_`abcdefghijklmnopq";
+static const char cb64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+static const char cd64[] = "|$$$}rstuvwxyz{$$$$$$$>?@ABCDEFGHIJKLMNOPQRSTUVW$$$$$$XYZ[\\]^_`abcdefghijklmnopq";
 
 void encodeblock( unsigned char in[3], unsigned char out[4], int len )
 {
@@ -31,17 +31,6 @@ void decodeblock( unsigned char in[4], unsigned char out[3] )
 	out[2] = (unsigned char ) (((in[2] << 6) & 0xc0) | in[3]);
 }
 
-/**
-* @ingroup libcgi_string
-*/
-
-/**
-* Encodes a given string to its base64 form.
-*
-* @param *str String to convert
-* @return Base64 encoded String
-* @see str_base64_decode
-**/
 char *str_base64_encode(char *str)
 {
 	unsigned char in[3], out[4];
@@ -78,17 +67,6 @@ char *str_base64_encode(char *str)
 	return result;
 }
 
-/**
-* @ingroup libcgi_string
-*/
-
-/**
-* Decode a base64 encoded string.
-*
-* @param *str Encoded String to decode
-* @return The decoded string
-* @see str_base64_encode
-**/
 char *str_base64_decode(char *str)
 {
 	unsigned char in[4], out[3], v;
