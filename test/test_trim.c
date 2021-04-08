@@ -64,7 +64,7 @@ int main( int argc, char *argv[] )
 
 int test_ltrim( void )
 {
-	char		*str_1, *str_2;
+	char		*str_1 = NULL, *str_2 = NULL;
 	const char	**test_str;
 
 	for ( test_str = test_strings; *test_str; test_str++ )
@@ -78,18 +78,22 @@ int test_ltrim( void )
 		check( !strcmp( str_1, str_2 ), "strcmp" );
 
 		free( str_1 );
+		str_1 = NULL;
 		free( str_2 );
+		str_2 = NULL;
 	}
 
 	return EXIT_SUCCESS;
 
 error:
+	free( str_1 );
+	free( str_2 );
 	return EXIT_FAILURE;
 }
 
 int test_rtrim( void )
 {
-	char		*str_1, *str_2;
+	char		*str_1 = NULL, *str_2 = NULL;
 	const char	**test_str;
 
 	for ( test_str = test_strings; *test_str; test_str++ )
@@ -103,18 +107,22 @@ int test_rtrim( void )
 		check( !strcmp( str_1, str_2 ), "strcmp" );
 
 		free( str_1 );
+		str_1 = NULL;
 		free( str_2 );
+		str_2 = NULL;
 	}
 
 	return EXIT_SUCCESS;
 
 error:
+	free( str_1 );
+	free( str_2 );
 	return EXIT_FAILURE;
 }
 
 int test_trim( void )
 {
-	char		*str_1, *str_2;
+	char		*str_1 = NULL, *str_2 = NULL;
 	const char	**test_str;
 
 	for ( test_str = test_strings; *test_str; test_str++ )
@@ -128,12 +136,16 @@ int test_trim( void )
 		check( !strcmp( str_1, str_2 ), "strcmp" );
 
 		free( str_1 );
+		str_1 = NULL;
 		free( str_2 );
+		str_2 = NULL;
 	}
 
 	return EXIT_SUCCESS;
 
 error:
+	free( str_1 );
+	free( str_2 );
 	return EXIT_FAILURE;
 }
 

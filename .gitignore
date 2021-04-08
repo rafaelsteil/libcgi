@@ -9,3 +9,4 @@ libcgi.so
 autom4te.cache
 configure
 *swp
+/.kdev4
