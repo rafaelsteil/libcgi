@@ -29,15 +29,21 @@ option(BUILD_SHARED_LIBS
 	"Global flag to cause add_library to create shared libraries if on."
 	ON
 )
+option(BUILD_TESTING
+	"Build tests."
+	ON
+)
 
 # subdirectories
 add_subdirectory("include/libcgi")
 add_subdirectory("src")
 
 # test
-enable_testing()
-include(CTest)
-add_subdirectory("test")
+if(BUILD_TESTING)
+	enable_testing()
+	include(CTest)
+	add_subdirectory("test")
+endif(BUILD_TESTING)
 
 # cmake package stuff
 configure_package_config_file(${PROJECT_NAME_LC}-config.cmake.in
